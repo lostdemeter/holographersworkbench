@@ -92,29 +92,31 @@ print(f'PV: {pv:.4f}, Refined PSNR gain: +{compute_psnr(sig, refined):.1f}dB')
 
 ---
 
-## 3. Optimization: Sublinear + SRT
+### 3. Optimization: Sublinear + SRT
 
-**Core Math**: Reduce n → m (m<<n) via pre-score + top-k. Complexity: O(√n) if m≤√n. SRT: Hermitian Dirac \( D_{ij} = a_i \delta_{ij} + \gamma_{ij} e^{i z \zeta_k \theta} \), resonance \( R = \sum_{i<j} 1/|\lambda_i - \lambda_j| \) (min R via grid-search z∈[0.01,0.1], corr∈[0.05,0.25]).
+**Core Math**: Reduce \( n \to m \) (\( m \ll n \)) via spectral pre-score + top-k select. Complexity: \( O(\sqrt{n}) \) if \( m \leq \sqrt{n} \); else \( O(m/n \cdot n) \). Pipeline: Score → Refine → ArgSort → Top-K.
+
+SRT: Hermitian Dirac \( D_{ij} = a_i \delta_{ij} + \gamma_{ij} e^{i z \zeta_k \theta} \) (\( z \): zeta strength [0.01-0.15], \( \corr \): correlation weight [0.05-0.35], \( \theta \): deformation [0-0.01]). Eigenvalues \( \lambda_k \); resonance \( R = \sum_{i<j} 1/|\lambda_i - \lambda_j| \) (min \( R < 1.0 \) via grid-search for spectral gap).
 
 **API Table**:
 
 | Class/Func | Init Params | Key Methods | Output |
 |------------|-------------|-------------|--------|
-| `SublinearOptimizer(holo=True, method='hilbert', beta=0.6)` | - | `optimize(cands, score_fn, top_k=100)` | (top_cands, OptimizationStats) |
-| `SRTCalibrator(gt_idx, gt_val, aff_funcs)` | - | `calibrate(grid='coarse')` | (SRTParams, dict metrics) |
-| `optimize_sublinear(cands, score_fn, top_k, holo=True)` | - | - | np.array top-k |
+| `SublinearOptimizer(holo=True, method='hilbert', beta=0.6)` | holo: bool (use refinement), method: 'hilbert'/'gs' | `optimize(cands, score_fn, top_k=100)` | (top_cands: np.array, stats: dict {n_orig, n_final, reduction, complexity, time}) |
+| `SRTCalibrator(gt_idx, gt_val, aff_funcs)` | gt_idx/val: np.array (mock GT), aff_funcs: dict[str, callable] | `calibrate(grid='coarse', train_frac=0.7)` | (params: SRTParams {z, corr, theta, L=20}, metrics: dict {pred_err, R, eig_spread, gap}) |
+| `optimize_sublinear(cands, score_fn, top_k, holo=True)` | - | - | np.array (top-k indices) |
 
 **Snippet: Optimize + Calibrate**:
 ```python
 from workbench import SublinearOptimizer, SRTCalibrator
 cands = np.arange(10000); def score(c): return np.sin(c*0.01)
 opt = SublinearOptimizer(use_holographic=True); top100, stats = opt.optimize(cands, score, top_k=100)
-print(f'Reduced {stats.n_original}→{stats.n_final}, O({stats.complexity_estimate})')  # O(√n), 99% off
+print(f'Reduced {stats.n_original}→{stats.n_final}, O({stats.complexity_estimate})')  # O(√n), 99% off, time<0.05s
 # SRT: gt_idx=np.array([100,200]); gt_val=np.array([0.8,0.9]); aff={'def':lambda i:1/(1+i/1000)}
-cal = SRTCalibrator(gt_idx, gt_val, aff); params, mets = cal.calibrate(); print(f'R: {mets["resonance"]:.2f}')
+cal = SRTCalibrator(gt_idx, gt_val, aff); params, mets = cal.calibrate(); print(f'R: {mets["resonance"]:.2f}, Gap: {mets["spectral_gap"]:.3f}')
 ```
 
-**AI Hook**: Scale searches—prototype: Top-100 zeta-scored embeddings in 1M dataset.
+**AI Hook**: Scale searches—prototype: Top-100 zeta-scored embeddings in 1M dataset (chain with demo_5 for baseline).
 
 ---
 

@@ -6,7 +6,7 @@ A unified toolkit for holographic signal processing, spectral optimization, and 
 
 ## Overview
 
-The workbench consolidates techniques from multiple specialized modules into a coherent library with shared patterns and reusable components. AIs should start at AI_README.md for the quickest overview.
+The workbench consolidates techniques from multiple specialized modules into a coherent library with shared patterns and reusable components. AIs should start at AI_README.md for the quickest overview (https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md).
 
 ### Unified From
 
