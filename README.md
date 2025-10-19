@@ -4,9 +4,61 @@
 
 A unified toolkit for holographic signal processing, spectral optimization, and sublinear algorithms.
 
+## 🤖 New AI? Start Here
+
+**The Optimization Toolkit is the most powerful part of this workbench.** It provides a complete pipeline from profiling to deployment:
+
+### The 4-Step Optimization Pipeline
+
+```python
+from workbench import (
+    PerformanceProfiler,      # Step 1: Identify bottlenecks
+    ErrorPatternAnalyzer,     # Step 2: Discover corrections
+    FormulaCodeGenerator,     # Step 3: Generate production code
+    ConvergenceAnalyzer       # Step 4: Decide when to stop
+)
+
+# Step 1: Profile your code
+profiler = PerformanceProfiler()
+result, profile = profiler.profile_function(my_slow_function, args)
+print(f"Bottleneck: {profile.execution_time:.3f}s")
+
+# Step 2: Analyze errors and discover corrections
+analyzer = ErrorPatternAnalyzer(actual, predicted, x_values)
+report = analyzer.analyze_all()
+print(f"Found {len(report.suggestions)} correction patterns")
+
+# Step 3: Generate production-ready code
+generator = FormulaCodeGenerator(base_formula, name="improved_formula")
+for correction in report.suggestions:
+    generator.add_correction(correction)
+generator.export_to_file("improved_formula.py", format="module")
+
+# Step 4: Monitor convergence and know when to stop
+conv_analyzer = ConvergenceAnalyzer(rmse_history, "RMSE")
+conv_report = conv_analyzer.analyze()
+if conv_report.stopping_recommendation.should_stop:
+    print(f"Stop: {conv_report.stopping_recommendation.reason}")
+```
+
+### Quick Start for AIs
+
+1. **Read AI_README.md first**: [AI_README.md](https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md) - Concise API tables and code snippets
+2. **Try the demos**: Start with `demo_11_performance_profiler.ipynb` through `demo_14_convergence_analyzer.ipynb`
+3. **Real-world example**: See `fast_zetas.py` - we used this toolkit to achieve 26× speedup
+
+### Why This Matters
+
+- **Automates manual optimization**: What took hours now takes minutes
+- **Discovers patterns you'd miss**: FFT-based error analysis finds hidden corrections
+- **Generates production code**: No manual code writing after discovery
+- **Prevents over-optimization**: Knows when to stop with confidence
+
+**→ For the complete toolkit guide, see [Optimization Toolkit](#optimization-toolkit) below.**
+
 ## Overview
 
-The workbench consolidates techniques from multiple specialized modules into a coherent library with shared patterns and reusable components. AIs should start at AI_README.md for the quickest overview (https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md).
+The workbench consolidates techniques from multiple specialized modules into a coherent library with shared patterns and reusable components.
 
 ### Unified From
 
@@ -287,6 +339,10 @@ print(f"Error: {result.time_error:.6f}s")
 - Diagnose why certain configurations run faster
 - Calibrate algorithms without theoretical models
 - Empirical SRT parameter tuning
+
+## Optimization Toolkit
+
+The following four modules form a complete optimization pipeline from profiling to deployment. This is the most powerful and novel part of the workbench.
 
 ### 8. Performance Profiler Module (`performance_profiler.py`)
 
