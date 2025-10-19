@@ -26,7 +26,10 @@ def compute_envelope(signal: np.ndarray, method: str = "hilbert") -> np.ndarray:
         Signal envelope.
     """
     if method == "hilbert":
-        from .holographic import phase_retrieve_hilbert
+        try:
+            from .holographic import phase_retrieve_hilbert
+        except ImportError:
+            from holographic import phase_retrieve_hilbert
         envelope, _ = phase_retrieve_hilbert(signal)
         return envelope
     elif method == "abs":

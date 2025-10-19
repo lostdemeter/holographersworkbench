@@ -10,7 +10,10 @@ Core Modules:
 - spectral: Frequency-domain analysis and zeta-based scoring
 - holographic: Phase retrieval, interference patterns, and signal refinement
 - optimization: Sublinear algorithms and parameter calibration
-- compression: Lossless holographic image compression
+- fractal_peeling: Recursive fractal peeling for lossless compression
+- holographic_compression: Holographic image compression via harmonic encoding
+- fast_zetas: High-performance Riemann zeta zero computation (26× faster)
+- time_affinity: Walltime-based parameter optimization
 - utils: Common utilities and helper functions
 
 Philosophy:
@@ -60,6 +63,42 @@ from .utils import (
     smooth_signal,
 )
 
+from .fractal_peeling import (
+    FractalPeeler,
+    resfrac_score,
+    extract_pattern,
+    compress,
+    decompress,
+    compression_ratio,
+    tree_statistics,
+    visualize_tree,
+    CompressionTree,
+    CompressionNode,
+    CompressionLeaf,
+    PredictorModel,
+)
+
+from .holographic_compression import (
+    HolographicCompressor,
+    compress_image,
+    decompress_image,
+    CompressionStats,
+)
+
+from .fast_zetas import (
+    zetazero,
+    zetazero_batch,
+    zetazero_range,
+    ZetaZeroParameters,
+)
+
+from .time_affinity import (
+    TimeAffinityOptimizer,
+    GridSearchTimeAffinity,
+    TimeAffinityResult,
+    quick_calibrate,
+)
+
 __all__ = [
     # Spectral
     'SpectralScorer',
@@ -85,4 +124,36 @@ __all__ = [
     'compute_psnr',
     'detect_peaks',
     'smooth_signal',
+    
+    # Fractal Peeling
+    'FractalPeeler',
+    'resfrac_score',
+    'extract_pattern',
+    'compress',
+    'decompress',
+    'compression_ratio',
+    'tree_statistics',
+    'visualize_tree',
+    'CompressionTree',
+    'CompressionNode',
+    'CompressionLeaf',
+    'PredictorModel',
+    
+    # Holographic Compression
+    'HolographicCompressor',
+    'compress_image',
+    'decompress_image',
+    'CompressionStats',
+    
+    # Fast Zetas
+    'zetazero',
+    'zetazero_batch',
+    'zetazero_range',
+    'ZetaZeroParameters',
+    
+    # Time Affinity
+    'TimeAffinityOptimizer',
+    'GridSearchTimeAffinity',
+    'TimeAffinityResult',
+    'quick_calibrate',
 ]

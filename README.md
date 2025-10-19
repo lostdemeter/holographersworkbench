@@ -46,19 +46,32 @@ Run demos in Jupyter/Colab: `jupyter notebook demos/` or open in [Colab](https:/
 
 ```
 workbench/
-├── __init__.py          # Main exports
-├── spectral.py          # Frequency-domain analysis
-├── holographic.py       # Phase retrieval & interference
-├── optimization.py      # Sublinear algorithms & calibration
-└── utils.py             # Common utilities
-
-demos/                   # Interactive Jupyter notebooks
-├── demo_1_spectral_scoring.ipynb
-├── demo_2_phase_retrieval.ipynb
-├── demo_3_holographic_refinement.ipynb
-├── demo_4_sublinear_optimization.ipynb
-├── demo_5_complete_workflow.ipynb
-└── demo_6_srt_calibration.ipynb
+├── __init__.py                 # Main exports
+├── spectral.py                 # Frequency-domain analysis
+├── holographic.py              # Phase retrieval & interference
+├── optimization.py             # Sublinear algorithms & calibration
+├── fractal_peeling.py          # Recursive lossless compression
+├── holographic_compression.py  # Image compression via harmonics
+├── fast_zetas.py               # High-performance zeta zeros (26× faster)
+├── time_affinity.py            # Walltime-based parameter discovery
+├── utils.py                    # Common utilities
+├── requirements.txt            # Dependencies
+├── .gitignore                  # Git configuration
+├── demos/                      # Interactive Jupyter notebooks (10 demos)
+│   ├── demo_1_spectral_scoring.ipynb
+│   ├── demo_2_phase_retrieval.ipynb
+│   ├── demo_3_holographic_refinement.ipynb
+│   ├── demo_4_sublinear_optimization.ipynb
+│   ├── demo_5_complete_workflow.ipynb
+│   ├── demo_6_srt_calibration.ipynb
+│   ├── demo_7_fractal_peeling.ipynb
+│   ├── demo_8_holographic_compression.ipynb
+│   ├── demo_9_fast_zetas.ipynb
+│   └── demo_10_time_affinity.ipynb
+├── tests/                      # Test suite
+│   ├── test_workbench.py       # Comprehensive tests (9/9 passing)
+│   └── TEST_RESULTS.md         # Latest test results
+└── temp/                       # Temporary files (gitignored)
 ```
 
 ## Core Modules
@@ -130,7 +143,144 @@ print(f"Reduced {stats.n_original} → {stats.n_final}")
 print(f"Complexity: {stats.complexity_estimate}")
 ```
 
-### 4. Utils Module (`utils.py`)
+### 4. Fractal Peeling Module (`fractal_peeling.py`)
+
+**Purpose**: Recursive lossless compression via autoregressive pattern extraction
+
+**Key Classes**:
+- `FractalPeeler` - High-level compression interface
+- `CompressionTree` - Tree structure (NODE/LEAF)
+
+**Key Functions**:
+- `resfrac_score()` - Measure predictability (ρ ∈ [0,1])
+- `compress()` - Build compression tree
+- `decompress()` - Lossless reconstruction
+
+**Example**:
+```python
+from workbench import FractalPeeler, resfrac_score
+
+# Analyze predictability
+rho = resfrac_score(signal)  # 0=structured, 1=random
+
+# Compress and decompress (lossless)
+peeler = FractalPeeler(order=4, max_depth=6)
+tree = peeler.compress(signal)
+reconstructed = peeler.decompress(tree)
+
+# Get statistics
+ratio = peeler.compression_ratio(tree, len(signal))
+stats = peeler.tree_stats(tree)
+```
+
+### 5. Holographic Compression Module (`holographic_compression.py`)
+
+**Purpose**: Lossless image compression exploiting 15th order harmonic structure
+
+**Key Classes**:
+- `HolographicCompressor` - FFT-based image compressor
+- `CompressionStats` - Compression statistics
+
+**Key Functions**:
+- `compress_image()` - Compress grayscale image
+- `decompress_image()` - Lossless reconstruction
+
+**Example**:
+```python
+from workbench import compress_image, decompress_image
+import numpy as np
+
+# Load image (grayscale, 0-255)
+image = np.random.randint(0, 256, (128, 128), dtype=np.uint8)
+
+# Compress
+compressed, stats = compress_image(image, harmonic_order=15)
+print(f"Compression: {stats.compression_ratio:.2f}x")
+print(f"Phase symmetry: {stats.phase_symmetry_score:.3f}")
+
+# Decompress (lossless)
+reconstructed = decompress_image(compressed)
+assert np.array_equal(image, reconstructed)
+```
+
+### 6. Fast Zetas Module (`fast_zetas.py`)
+
+**Purpose**: High-performance Riemann zeta zero computation (26× faster than mpmath)
+
+**Key Functions**:
+- `zetazero()` - Single zero computation (~2.5ms)
+- `zetazero_batch()` - Parallel batch computation (~1.68ms/zero)
+- `zetazero_range()` - Memory-efficient generator
+
+**Key Optimization**: Cached ζ'(s) in Newton refinement (compute derivative once, reuse across iterations)
+
+**Example**:
+```python
+from workbench import zetazero, zetazero_batch
+
+# Single zero (drop-in replacement for mp.zetazero)
+z = zetazero(100)  # 2.5ms vs 65ms
+print(f"100th zero: {z}")
+
+# Batch computation (parallel)
+zeros = zetazero_batch(1, 1000, parallel=True)  # 1.68s total
+print(f"First 5: {[float(zeros[i]) for i in range(1, 6)]}")
+
+# Memory-efficient for large ranges
+for n, z in zetazero_range(1, 10000):
+    process(n, z)  # Yields one at a time
+```
+
+### 7. Time Affinity Module (`time_affinity.py`)
+
+**Purpose**: Diagnostic tool for discovering optimal parameters using walltime as a fitness signal
+
+**Key Principle**: Correct/resonant parameters → Less work → Faster execution
+
+**Key Classes**:
+- `TimeAffinityOptimizer` - Gradient-based parameter discovery
+- `GridSearchTimeAffinity` - Exhaustive grid search
+- `TimeAffinityResult` - Results with convergence history
+
+**Key Functions**:
+- `quick_calibrate()` - One-liner convenience function
+
+**Diagnostic Use**: This is a **discovery tool** for empirically finding unknown parameter values, revealing hidden relationships, and diagnosing performance characteristics when theoretical models are unavailable.
+
+**Example**:
+```python
+from workbench import quick_calibrate
+
+# Black-box algorithm with unknown optimal parameters
+def mystery_algorithm(threshold, complexity):
+    # Complex computation with hidden optimal config
+    return expensive_operation(threshold, complexity)
+
+# Discover parameters that make it run in 100ms
+result = quick_calibrate(
+    mystery_algorithm,
+    target_time=0.1,
+    param_bounds={
+        'threshold': (0.0, 1.0),
+        'complexity': (1.0, 10.0)
+    },
+    method='gradient',
+    max_iterations=50
+)
+
+print(f"Discovered optimal params: {result.best_params}")
+print(f"Achieved time: {result.best_time:.6f}s")
+print(f"Error: {result.time_error:.6f}s")
+```
+
+**Use Cases**:
+- Discover unknown optimal parameter values
+- Reveal hidden parameter relationships
+- Diagnose why certain configurations run faster
+- Calibrate algorithms without theoretical models
+- Empirical SRT parameter tuning
+
+### 8. Utils Module (`utils.py`)
 
 **Purpose**: Common utilities
 
@@ -409,6 +559,31 @@ recon = encoder.decode(holograms)
 - More spectral scoring variants
 - Integration with ML frameworks
 
+## Testing
+
+Run the comprehensive test suite:
+
+```bash
+# Activate virtual environment
+source venv/bin/activate
+
+# Run all tests
+python3 tests/test_workbench.py
+```
+
+**Test Coverage**: 9/9 tests passing (100%)
+- Module imports
+- Spectral analysis
+- Holographic processing
+- Fractal peeling
+- Holographic compression
+- Fast zeta zeros
+- Time affinity optimization
+- Sublinear optimization
+- Utility functions
+
+See `tests/TEST_RESULTS.md` for detailed results.
+
 ## Contributing
 
 To add new functionality:
@@ -417,7 +592,8 @@ To add new functionality:
 2. Check if similar functionality exists
 3. Add to appropriate module with consistent API
 4. Update `__init__.py` exports
-5. Add examples to this README or `demos/`
+5. Add tests to `tests/test_workbench.py`
+6. Add examples to this README or `demos/`
 
 ---
 

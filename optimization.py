@@ -13,8 +13,12 @@ import numpy as np
 from typing import Callable, Optional, Tuple, Dict, Any
 from dataclasses import dataclass
 
-from .spectral import SpectralScorer, DiracOperator, ZetaFiducials
-from .holographic import holographic_refinement
+try:
+    from .spectral import SpectralScorer, DiracOperator, ZetaFiducials
+    from .holographic import holographic_refinement
+except ImportError:
+    from spectral import SpectralScorer, DiracOperator, ZetaFiducials
+    from holographic import holographic_refinement
 
 
 @dataclass
