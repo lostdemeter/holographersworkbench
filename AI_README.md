@@ -17,6 +17,10 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | `holographic_compression.py` | Image compression via harmonics | `HolographicCompressor`, `compress_image`, `decompress_image`, `CompressionStats` | numpy, zlib |
 | `fast_zetas.py` | High-performance zeta zeros | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaZeroParameters` | numpy, scipy, mpmath |
 | `time_affinity.py` | Walltime-based param discovery | `TimeAffinityOptimizer`, `GridSearchTimeAffinity`, `quick_calibrate` | numpy |
+| `performance_profiler.py` | Bottleneck identification | `PerformanceProfiler`, `ProfileResult`, `profile`, `compare_profiles`, `estimate_complexity` | numpy, tracemalloc |
+| `error_pattern_visualizer.py` | Error pattern discovery | `ErrorPatternAnalyzer`, `ErrorVisualizer`, `SpectralPattern`, `PolynomialPattern` | numpy, scipy |
+| `formula_code_generator.py` | Production code generation | `FormulaCodeGenerator`, `CodeValidator`, `TestGenerator`, `BenchmarkGenerator` | numpy, ast |
+| `convergence_analyzer.py` | Convergence & stopping decisions | `ConvergenceAnalyzer`, `ConvergenceVisualizer`, `ConvergenceRate`, `StoppingRecommendation` | numpy, scipy |
 | `utils.py` | Shared utils | `normalize_signal`, `compute_psnr`, `detect_peaks`, `adaptive_blend`, `smooth_signal` | numpy, scipy (some) |
 
 **Import Pattern**: `from workbench import *` (all public in `__init__.py`). Cache: Zeta zeros auto-cached.
@@ -338,9 +342,223 @@ print(f'Time: {result.best_time:.6f}s, Error: {result.time_error:.6f}s')
 
 ---
 
+## 8. Performance Profiler: Bottleneck Identification
+
+**Core Principle**: Profile execution time/memory to identify bottlenecks. Use walltime + tracemalloc to measure component performance, detect convergence, analyze scaling.
+
+**Diagnostic Tool**: Find slow components, compare before/after optimization, measure batch scaling complexity.
+
+**API Table**:
+
+| Class/Func | Params | Output | Use Case |
+|------------|--------|--------|----------|
+| `PerformanceProfiler(track_memory=True, warmup_runs=1)` | memory tracking, warmup | `profile_function(func, *args)` → (result, ProfileResult) | Profile any function |
+| `profile_components(components_dict)` | {name: (func, args, kwargs)} | List[ProfileResult] | Profile algorithm stages |
+| `profile_iterations(func, iterations)` | iterative function | IterationProfile (convergence detection) | Analyze iterative algorithms |
+| `profile_batch(func, batch_sizes)` | batch processor | BatchProfile (scaling factor) | Measure O(n) complexity |
+| `identify_bottlenecks(threshold=0.1)` | min fraction of time | BottleneckReport (recommendations) | Find slow components |
+| `compare_profiles(before, after)` | two ProfileResults | dict (speedup, improvement%) | Compare optimizations |
+
+**Snippet: Profile + Optimize**:
+```python
+from workbench import PerformanceProfiler, compare_profiles
+profiler = PerformanceProfiler()
+# Profile components
+components = {
+    "step1": (func1, (arg1,), {}),
+    "step2": (func2, (arg2,), {}),
+}
+profiler.profile_components(components)
+bottlenecks = profiler.identify_bottlenecks(threshold=0.1)
+print(profiler.generate_report())  # Text table with times/percentages
+# Compare before/after
+_, before = profiler.profile_function(slow_func, args)
+_, after = profiler.profile_function(fast_func, args)
+comp = compare_profiles(before, after)
+print(f'Speedup: {comp["speedup"]:.2f}x')  # e.g., 185x faster
+```
+
+**AI Hook**: Optimize algorithms—prototype: Profile zeta computation, identify Newton iteration bottleneck, measure batch scaling.
+
+---
+
+## 9. Error Pattern Visualizer: Automatic Correction Discovery
+
+**Core Principle**: Errors contain structure. Extract patterns (spectral, polynomial, autocorr, scale) and generate correction code automatically.
+
+**Discovery Tool**: Automates manual error analysis. Input: actual vs predicted. Output: correction suggestions with executable code.
+
+**API Table**:
+
+| Class/Func | Params | Output | Use Case |
+|------------|--------|--------|----------|
+| `ErrorPatternAnalyzer(actual, predicted, x_values)` | arrays | `analyze_all()` → ErrorAnalysisReport | Discover all patterns |
+| `analyze_spectral(n_harmonics=10)` | harmonics to extract | SpectralPattern (FFT-based) | Periodic corrections |
+| `analyze_polynomial(max_degree=5)` | max poly degree | PolynomialPattern (BIC-penalized) | Systematic bias |
+| `analyze_autocorrelation(max_lag=50)` | max lag | AutocorrPattern (AR model) | Recursive patterns |
+| `analyze_scale_dependence(n_bins=10)` | bins | ScalePattern (power/exp/log) | Scale-dependent errors |
+| `suggest_corrections(top_k=3)` | num suggestions | List[CorrectionSuggestion] | Prioritized fixes with code |
+| `apply_correction(correction)` | suggestion | New analyzer (residuals) | Apply and iterate |
+| `recursive_refinement(max_depth=5)` | depth, threshold | RefinementHistory | Auto-apply until convergence |
+
+**Snippet: Discover + Apply**:
+```python
+from workbench import ErrorPatternAnalyzer
+# Analyze errors
+analyzer = ErrorPatternAnalyzer(actual, predicted, x_values, name="My Formula")
+report = analyzer.analyze_all()
+report.print_summary()  # Shows detected patterns + suggestions
+# Get correction code
+for sug in report.suggestions[:3]:
+    print(sug.description)
+    print(sug.code_snippet)  # Executable Python with correction
+# Recursive refinement
+history = analyzer.recursive_refinement(max_depth=5, improvement_threshold=0.01)
+print(f'Improvement: {history.improvement:.1%}')  # e.g., 93.7% better
+# Generated code is production-ready
+```
+
+**AI Hook**: Formula optimization—prototype: Analyze zeta zero errors, discover missing harmonics, generate correction terms.
+
+**Use Cases**:
+- Optimize mathematical formulas (zeta zeros, special functions)
+- Improve signal approximations
+- Analyze ML model residuals
+- Discover missing correction terms
+- Generate production correction code
+
+**Key Insight**: Error = actual - predicted contains patterns revealing missing terms. This tool extracts and codes them.
+
+---
+
+## 10. Formula Code Generator: Production Code from Discoveries
+
+**Core Principle**: Once you've discovered the formula, writing the code should be automatic. Generate production-ready Python from components.
+
+**Code Generation Tool**: Input: base formula + corrections. Output: complete module with tests, benchmarks, docs.
+
+**API Table**:
+
+| Class/Func | Params | Output | Use Case |
+|------------|--------|--------|----------|
+| `FormulaCodeGenerator(base_formula, name)` | formula (str/callable), name | generator instance | Create code generator |
+| `add_correction(correction, priority, description)` | correction (str/CorrectionSuggestion) | None | Add correction layer |
+| `add_parameter(name, value, description, optimized)` | param details | None | Add optimized parameter |
+| `generate_function(style, include_docstring, include_type_hints)` | code style options | str (Python code) | Generate standalone function |
+| `generate_module(include_tests, include_benchmarks)` | module options | str (complete module) | Generate full module |
+| `validate_code(code)` | code string | ValidationReport | Check syntax, imports, quality |
+| `optimize_code(code)` | code string | str (optimized code) | Apply performance optimizations |
+| `export_to_file(filepath, format, overwrite)` | file path, format | None | Export to .py file |
+| `generate_tests(ground_truth, test_cases, tolerance)` | test params | str (pytest code) | Generate test cases |
+| `generate_benchmark(baseline, test_sizes)` | benchmark params | str (benchmark code) | Generate performance tests |
+
+**Snippet: Complete Pipeline**:
+```python
+from workbench import ErrorPatternAnalyzer, FormulaCodeGenerator
+# 1. Discover corrections
+analyzer = ErrorPatternAnalyzer(actual, predicted, x_values)
+report = analyzer.analyze_all()
+# 2. Generate production code
+generator = FormulaCodeGenerator(
+    base_formula="np.sin(x)",
+    name="improved_sin",
+    description="Sine with discovered corrections"
+)
+for correction in report.suggestions:
+    generator.add_correction(correction)
+# 3. Generate complete module
+module = generator.generate_module(
+    include_tests=True,
+    include_benchmarks=True
+)
+# 4. Validate and export
+validation = generator.validate_code(module)
+if validation.is_valid:
+    generator.export_to_file("improved_formula.py", format="module")
+# Result: Production-ready module with docs, tests, benchmarks
+```
+
+**AI Hook**: Code generation—prototype: Analyze zeta errors, generate improved formula module, export production code.
+
+**Use Cases**:
+- Generate production code from ErrorPatternAnalyzer discoveries
+- Create well-documented, tested formula implementations
+- Automate code writing after optimization
+- Generate multiple formats (function, class, module)
+- Save hours of manual code construction
+
+**The Complete Pipeline**:
+1. **Performance Profiler** → Identify bottlenecks
+2. **Error Pattern Visualizer** → Discover corrections
+3. **Formula Code Generator** → Generate production code
+
+**Key Insight**: Discovered formula → automatic code. No manual construction needed.
+
+---
+
+## 11. Convergence Analyzer: Optimal Stopping Decisions
+
+**Core Principle**: Know when to stop. Detect diminishing returns, predict future improvements, recommend optimal stopping points.
+
+**Decision Tool**: Input: metric history. Output: stopping recommendation with confidence + predictions.
+
+**API Table**:
+
+| Class/Func | Params | Output | Use Case |
+|------------|--------|--------|----------|
+| `ConvergenceAnalyzer(metric_history, metric_name, lower_is_better)` | history, name, direction | analyzer instance | Create analyzer |
+| `analyze()` | none | ConvergenceReport | Complete analysis |
+| `detect_convergence_rate()` | none | ConvergenceRate (exp/power/linear/log) | Fit convergence model |
+| `predict_future_improvements(n_future)` | num iterations | (iters, metrics) | Extrapolate future |
+| `detect_diminishing_returns(threshold)` | threshold (e.g., 0.01) | DiminishingReturnsPoint | Find when returns drop |
+| `recommend_stopping_point()` | thresholds | StoppingRecommendation | Should stop? |
+| `detect_stagnation()` | window, tolerance | bool | Check if stuck |
+| `compute_improvement_rates()` | none | np.ndarray | Rate per iteration |
+
+**Snippet: Stop When Ready**:
+```python
+from workbench import ConvergenceAnalyzer
+# Analyze convergence
+analyzer = ConvergenceAnalyzer(
+    metric_history=rmse_history,  # [0.5, 0.3, 0.2, 0.15, ...]
+    metric_name="RMSE",
+    lower_is_better=True
+)
+report = analyzer.analyze()
+report.print_summary()
+# Decision
+if report.stopping_recommendation.should_stop:
+    print(f"STOP: {report.stopping_recommendation.reason}")
+    print(f"Confidence: {report.stopping_recommendation.confidence:.0%}")
+else:
+    print("Continue optimizing")
+# Predict future
+future_iters, future_metrics = analyzer.predict_future_improvements(10)
+print(f"After 10 more: {future_metrics[-1]:.6f}")
+```
+
+**AI Hook**: Stopping decisions—prototype: Monitor zeta optimization, detect diminishing returns, recommend when to stop.
+
+**Use Cases**:
+- Decide when to stop recursive refinement
+- Detect diminishing returns in optimization
+- Predict future improvements before committing
+- Prevent over-optimization and wasted effort
+- Cost-benefit analysis of additional iterations
+
+**The Complete Toolkit**:
+1. **Performance Profiler** → Identify bottlenecks
+2. **Error Pattern Visualizer** → Discover corrections
+3. **Formula Code Generator** → Generate production code
+4. **Convergence Analyzer** → Decide when to stop
+
+**Key Insight**: Knowing when to stop is as important as knowing how to optimize.
+
+---
+
 ## Demos: REPL-Ready Notebooks
 
-`demos/` (10 .ipnb, <1min run, NumPy-only). Copy cells to code_execution:
+`demos/` (14 .ipnb, <1min run, NumPy-only). Copy cells to code_execution:
 
 | Demo | Ties To | Output | Prototype Use |
 |------|---------|--------|---------------|
@@ -354,6 +572,10 @@ print(f'Time: {result.best_time:.6f}s, Error: {result.time_error:.6f}s')
 | `demo_8_holographic_compression.ipynb` | Sec5 | Lossless, 1.1x, H₁₅ | Compress images |
 | `demo_9_fast_zetas.ipynb` | Sec6 | 26× speedup, 1.68ms/zero | Fast zeta computation |
 | `demo_10_time_affinity.ipynb` | Sec7 | Discover params, diagnose | Empirical calibration |
+| `demo_11_performance_profiler.ipynb` | Sec8 | Bottlenecks, 185× speedup | Profile & optimize |
+| `demo_12_error_pattern_visualizer.ipynb` | Sec9 | 93.7% error reduction, code gen | Discover corrections |
+| `demo_13_formula_code_generator.ipynb` | Sec10 | Production module, validated | Generate code |
+| `demo_14_convergence_analyzer.ipynb` | Sec11 | Stop at layer 5, 93% improvement | Decide when to stop |
 
 Start: `demo_5` for pipeline baseline.
 
@@ -369,6 +591,10 @@ Direct REPL starters (extend with your data):
 5. **Fractal Compress**: Time series → lossless tree + resfrac analysis.
 6. **Image Compress**: Images → 15th harmonic + residuals, lossless.
 7. **Param Discovery**: Black-box algorithm → discover optimal params via walltime.
+8. **Profile & Optimize**: Any algorithm → identify bottlenecks, measure speedup.
+9. **Error Analysis**: actual vs predicted → discover patterns, generate corrections.
+10. **Code Generation**: formula + corrections → production module with tests.
+11. **Convergence Monitor**: metric history → stopping recommendation, predict future.
 
 Query: "Prototype [toy] with [data]" → I'll chain.
 

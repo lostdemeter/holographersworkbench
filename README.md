@@ -54,10 +54,14 @@ workbench/
 ├── holographic_compression.py  # Image compression via harmonics
 ├── fast_zetas.py               # High-performance zeta zeros (26× faster)
 ├── time_affinity.py            # Walltime-based parameter discovery
+├── performance_profiler.py     # Performance profiling & bottleneck detection
+├── error_pattern_visualizer.py # Error pattern discovery & correction
+├── formula_code_generator.py   # Production code generation
+├── convergence_analyzer.py     # Convergence analysis & stopping decisions
 ├── utils.py                    # Common utilities
 ├── requirements.txt            # Dependencies
 ├── .gitignore                  # Git configuration
-├── demos/                      # Interactive Jupyter notebooks (10 demos)
+├── demos/                      # Interactive Jupyter notebooks (14 demos)
 │   ├── demo_1_spectral_scoring.ipynb
 │   ├── demo_2_phase_retrieval.ipynb
 │   ├── demo_3_holographic_refinement.ipynb
@@ -67,7 +71,11 @@ workbench/
 │   ├── demo_7_fractal_peeling.ipynb
 │   ├── demo_8_holographic_compression.ipynb
 │   ├── demo_9_fast_zetas.ipynb
-│   └── demo_10_time_affinity.ipynb
+│   ├── demo_10_time_affinity.ipynb
+│   ├── demo_11_performance_profiler.ipynb
+│   ├── demo_12_error_pattern_visualizer.ipynb
+│   ├── demo_13_formula_code_generator.ipynb
+│   └── demo_14_convergence_analyzer.ipynb
 ├── tests/                      # Test suite
 │   ├── test_workbench.py       # Comprehensive tests (9/9 passing)
 │   └── TEST_RESULTS.md         # Latest test results
@@ -280,7 +288,184 @@ print(f"Error: {result.time_error:.6f}s")
 - Calibrate algorithms without theoretical models
 - Empirical SRT parameter tuning
 
-### 8. Utils Module (`utils.py`)
+### 8. Performance Profiler Module (`performance_profiler.py`)
+
+**Purpose**: Identify bottlenecks and optimize algorithm performance
+
+**Key Classes**:
+- `PerformanceProfiler` - Main profiling interface
+- `ProfileResult` - Single component results
+- `IterationProfile` - Iterative algorithm analysis
+- `BatchProfile` - Batch processing scaling
+- `BottleneckReport` - Bottleneck identification
+
+**Example**:
+```python
+from workbench import PerformanceProfiler
+
+profiler = PerformanceProfiler()
+
+# Profile components
+components = {
+    "component_1": (func1, (arg1,), {}),
+    "component_2": (func2, (arg2,), {}),
+}
+results = profiler.profile_components(components)
+
+# Identify bottlenecks
+bottlenecks = profiler.identify_bottlenecks(threshold=0.1)
+print(profiler.generate_report())
+```
+
+**Use Cases**:
+- Profile any holographic algorithm
+- Identify performance bottlenecks
+- Analyze iteration convergence
+- Measure batch processing scaling
+- Compare before/after optimization
+- Track memory usage patterns
+
+### 9. Error Pattern Visualizer Module (`error_pattern_visualizer.py`)
+
+**Purpose**: Automatically discover correction patterns in error signals
+
+**Key Classes**:
+- `ErrorPatternAnalyzer` - Main analysis interface
+- `ErrorVisualizer` - Visualization tools
+- `SpectralPattern` - Periodic error patterns (FFT-based)
+- `PolynomialPattern` - Systematic bias detection
+- `AutocorrPattern` - Recursive error patterns
+- `ScalePattern` - Scale-dependent errors
+
+**Example**:
+```python
+from workbench import ErrorPatternAnalyzer
+
+# Analyze prediction errors
+analyzer = ErrorPatternAnalyzer(actual, predicted, x_values)
+report = analyzer.analyze_all()
+
+# Get correction suggestions with code
+for suggestion in report.suggestions:
+    print(suggestion.description)
+    print(suggestion.code_snippet)  # Executable Python code
+
+# Apply recursive refinement
+history = analyzer.recursive_refinement(max_depth=5)
+print(f"Improvement: {history.improvement:.1%}")
+```
+
+**Use Cases**:
+- Optimize mathematical formulas (e.g., zeta zero approximations)
+- Improve signal approximations
+- Analyze model prediction errors
+- Discover missing correction terms automatically
+- Generate production-ready correction code
+
+**Key Insight**: Errors are not random—they contain structure that reveals missing terms.
+
+### 10. Formula Code Generator Module (`formula_code_generator.py`)
+
+**Purpose**: Generate production-ready code from formula discoveries
+
+**Key Classes**:
+- `FormulaCodeGenerator` - Main code generation interface
+- `CodeValidator` - Syntax and quality validation
+- `CodeOptimizer` - Performance optimization
+- `TestGenerator` - Automatic test case generation
+- `BenchmarkGenerator` - Performance benchmark generation
+
+**Example**:
+```python
+from workbench import FormulaCodeGenerator, ErrorPatternAnalyzer
+
+# Discover corrections
+analyzer = ErrorPatternAnalyzer(actual, predicted, x_values)
+report = analyzer.analyze_all()
+
+# Generate production code
+generator = FormulaCodeGenerator(
+    base_formula="np.sin(x)",
+    name="improved_sin"
+)
+
+# Add discovered corrections
+for correction in report.suggestions:
+    generator.add_correction(correction)
+
+# Generate complete module with tests and benchmarks
+module = generator.generate_module(
+    include_tests=True,
+    include_benchmarks=True
+)
+
+# Validate and export
+validation = generator.validate_code(module)
+if validation.is_valid:
+    generator.export_to_file("improved_formula.py")
+```
+
+**Use Cases**:
+- Generate production code from error analysis discoveries
+- Create well-documented, tested formula implementations
+- Automate code writing after optimization
+- Generate multiple code formats (function, class, module)
+- Save hours of manual code construction
+
+**The Complete Pipeline**:
+1. **Performance Profiler** → Identify bottlenecks
+2. **Error Pattern Visualizer** → Discover corrections
+3. **Formula Code Generator** → Generate production code
+
+### 11. Convergence Analyzer Module (`convergence_analyzer.py`)
+
+**Purpose**: Detect when to stop iterative optimization
+
+**Key Classes**:
+- `ConvergenceAnalyzer` - Main convergence analysis interface
+- `ConvergenceVisualizer` - Visualization tools
+- `ConvergenceModelFitter` - Fit convergence models
+- `ConvergenceRate` - Convergence rate analysis
+- `StoppingRecommendation` - Stopping point recommendation
+
+**Example**:
+```python
+from workbench import ConvergenceAnalyzer
+
+# Analyze optimization history
+analyzer = ConvergenceAnalyzer(
+    metric_history=rmse_history,
+    metric_name="RMSE",
+    lower_is_better=True
+)
+
+report = analyzer.analyze()
+report.print_summary()
+
+# Should we stop?
+if report.stopping_recommendation.should_stop:
+    print(f"Stop: {report.stopping_recommendation.reason}")
+else:
+    print("Continue optimizing")
+
+# Predict future improvements
+future_iters, future_metrics = analyzer.predict_future_improvements(10)
+```
+
+**Use Cases**:
+- Decide when to stop recursive refinement
+- Detect diminishing returns automatically
+- Predict future improvements
+- Prevent over-optimization
+- Cost-benefit analysis of additional iterations
+
+**The Complete Optimization Toolkit**:
+1. **Performance Profiler** → Identify bottlenecks
+2. **Error Pattern Visualizer** → Discover corrections
+3. **Formula Code Generator** → Generate production code
+4. **Convergence Analyzer** → Decide when to stop
+
+### 12. Utils Module (`utils.py`)
 
 **Purpose**: Common utilities
 

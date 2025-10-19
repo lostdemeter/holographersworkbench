@@ -13,6 +13,7 @@ The workbench follows these principles:
 ## Module Dependencies
 
 ```
+Core Pipeline:
 ┌─────────────┐
 │   utils.py  │  (No dependencies - pure utilities)
 └─────────────┘
@@ -31,6 +32,41 @@ The workbench follows these principles:
 ┌──────────────┐
 │optimization.py│ (Uses both spectral and holographic)
 └──────────────┘
+
+Compression Modules:
+┌──────────────────┐
+│fractal_peeling.py│ (Independent - numpy only)
+└──────────────────┘
+
+┌─────────────────────────┐
+│holographic_compression.py│ (Independent - numpy, zlib)
+└─────────────────────────┘
+
+High-Performance Computing:
+┌──────────────┐
+│fast_zetas.py │ (Independent - numpy, scipy, mpmath)
+└──────────────┘
+
+┌──────────────────┐
+│time_affinity.py  │ (Independent - numpy)
+└──────────────────┘
+
+Optimization Toolkit:
+┌─────────────────────┐
+│performance_profiler.py│ (Independent - numpy, tracemalloc)
+└─────────────────────┘
+       ↓
+┌──────────────────────────┐
+│error_pattern_visualizer.py│ (Uses scipy for FFT)
+└──────────────────────────┘
+       ↓
+┌─────────────────────────┐
+│formula_code_generator.py │ (Uses ast for validation)
+└─────────────────────────┘
+       ↓
+┌────────────────────────┐
+│convergence_analyzer.py │ (Uses scipy for curve fitting)
+└────────────────────────┘
 ```
 
 ## Core Abstractions
@@ -73,6 +109,21 @@ noisy_signal → phase_retrieval → envelope → refined_signal
 **Pattern**:
 ```python
 large_set → spectral_score → holographic_refine → top_k
+```
+
+### 4. Optimization Toolkit
+
+**Purpose**: Complete optimization pipeline from profiling to deployment
+
+**Key Modules**:
+- `performance_profiler.py` - Identify bottlenecks and measure performance
+- `error_pattern_visualizer.py` - Discover correction patterns in errors
+- `formula_code_generator.py` - Generate production-ready code
+- `convergence_analyzer.py` - Decide when to stop optimizing
+
+**Pattern**:
+```python
+profile → discover_corrections → generate_code → monitor_convergence
 ```
 
 ## Data Flow
@@ -317,28 +368,52 @@ obj = obj[:n]
 ref = ref[:n]
 ```
 
+## Complete Module List
+
+### Core Modules (v0.1.0)
+1. **spectral.py** - Frequency-domain analysis and zeta-based scoring
+2. **holographic.py** - Phase retrieval and interference patterns
+3. **optimization.py** - Sublinear algorithms and parameter calibration
+4. **fractal_peeling.py** - Recursive lossless compression
+5. **holographic_compression.py** - Image compression via harmonics
+6. **fast_zetas.py** - High-performance zeta zero computation (26× faster)
+7. **time_affinity.py** - Walltime-based parameter discovery
+8. **performance_profiler.py** - Performance profiling and bottleneck detection
+9. **error_pattern_visualizer.py** - Error pattern discovery and correction
+10. **formula_code_generator.py** - Production code generation
+11. **convergence_analyzer.py** - Convergence analysis and stopping decisions
+12. **utils.py** - Common utilities and helper functions
+
+### Demos
+14 interactive Jupyter notebooks demonstrating all features
+
+### Tests
+Comprehensive test suite with 9/9 passing tests
+
 ## Future Enhancements
 
 ### Short Term
 
+- [x] Performance profiling tools (completed)
+- [x] Error pattern discovery (completed)
+- [x] Code generation (completed)
+- [x] Convergence analysis (completed)
 - [ ] GPU acceleration for FFT operations
 - [ ] Parallel batch processing
-- [ ] More phase retrieval methods
-- [ ] Additional spectral scoring modes
 
 ### Medium Term
 
-- [ ] Automatic parameter tuning
-- [ ] Adaptive algorithm selection
 - [ ] Integration with ML frameworks
-- [ ] Visualization tools
+- [ ] Real-time convergence monitoring
+- [ ] Automated test generation
+- [ ] Interactive dashboards
 
 ### Long Term
 
 - [ ] Quantum-inspired methods
 - [ ] Distributed computing support
-- [ ] Real-time processing
 - [ ] Hardware acceleration
+- [ ] Cloud deployment tools
 
 ## Versioning
 

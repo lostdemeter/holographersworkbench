@@ -14,6 +14,10 @@ Core Modules:
 - holographic_compression: Holographic image compression via harmonic encoding
 - fast_zetas: High-performance Riemann zeta zero computation (26× faster)
 - time_affinity: Walltime-based parameter optimization
+- performance_profiler: Performance profiling and bottleneck identification
+- error_pattern_visualizer: Automatic error pattern discovery and correction
+- formula_code_generator: Production code generation from formula discoveries
+- convergence_analyzer: Convergence analysis and optimal stopping decisions
 - utils: Common utilities and helper functions
 
 Philosophy:
@@ -99,6 +103,53 @@ from .time_affinity import (
     quick_calibrate,
 )
 
+from .performance_profiler import (
+    PerformanceProfiler,
+    ProfileResult,
+    IterationProfile,
+    BatchProfile,
+    BottleneckReport,
+    profile,
+    ProfileContext,
+    compare_profiles,
+    estimate_complexity,
+    format_time,
+    format_memory,
+)
+
+from .error_pattern_visualizer import (
+    ErrorPatternAnalyzer,
+    ErrorVisualizer,
+    SpectralPattern,
+    PolynomialPattern,
+    AutocorrPattern,
+    ScalePattern,
+    CorrectionSuggestion,
+    ErrorAnalysisReport,
+    RefinementHistory,
+)
+
+from .formula_code_generator import (
+    FormulaCodeGenerator,
+    CodeValidator,
+    CodeOptimizer,
+    TestGenerator,
+    BenchmarkGenerator,
+    ValidationReport,
+    ValidationIssue,
+)
+
+from .convergence_analyzer import (
+    ConvergenceAnalyzer,
+    ConvergenceVisualizer,
+    ConvergenceModelFitter,
+    ConvergenceRate,
+    DiminishingReturnsPoint,
+    StoppingRecommendation,
+    OscillationPattern,
+    ConvergenceReport,
+)
+
 __all__ = [
     # Spectral
     'SpectralScorer',
@@ -156,4 +207,47 @@ __all__ = [
     'GridSearchTimeAffinity',
     'TimeAffinityResult',
     'quick_calibrate',
+    
+    # Performance Profiler
+    'PerformanceProfiler',
+    'ProfileResult',
+    'IterationProfile',
+    'BatchProfile',
+    'BottleneckReport',
+    'profile',
+    'ProfileContext',
+    'compare_profiles',
+    'estimate_complexity',
+    'format_time',
+    'format_memory',
+    
+    # Error Pattern Visualizer
+    'ErrorPatternAnalyzer',
+    'ErrorVisualizer',
+    'SpectralPattern',
+    'PolynomialPattern',
+    'AutocorrPattern',
+    'ScalePattern',
+    'CorrectionSuggestion',
+    'ErrorAnalysisReport',
+    'RefinementHistory',
+    
+    # Formula Code Generator
+    'FormulaCodeGenerator',
+    'CodeValidator',
+    'CodeOptimizer',
+    'TestGenerator',
+    'BenchmarkGenerator',
+    'ValidationReport',
+    'ValidationIssue',
+    
+    # Convergence Analyzer
+    'ConvergenceAnalyzer',
+    'ConvergenceVisualizer',
+    'ConvergenceModelFitter',
+    'ConvergenceRate',
+    'DiminishingReturnsPoint',
+    'StoppingRecommendation',
+    'OscillationPattern',
+    'ConvergenceReport',
 ]
