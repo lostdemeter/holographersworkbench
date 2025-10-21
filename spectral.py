@@ -36,16 +36,17 @@ class ZetaFiducials:
     _cache = {}
     
     @classmethod
-    def compute(cls, n: int, method: str = "auto") -> np.ndarray:
+    def compute(cls, n: int, method: str = "fast_zetas") -> np.ndarray:
         """
-        Compute first n zeta zeros.
+        Compute first n zeta zeros using fast_zetas.
         
         Parameters
         ----------
         n : int
             Number of zeros to compute.
         method : str
-            'auto', 'fast', or 'mpmath'
+            Method to use. Default 'fast_zetas' (only supported method).
+            'auto' is an alias for 'fast_zetas'.
         
         Returns
         -------
@@ -55,26 +56,23 @@ class ZetaFiducials:
         if n in cls._cache:
             return cls._cache[n]
         
+        # Handle 'auto' as alias for 'fast_zetas'
         if method == "auto":
-            # Try fast method first
+            method = "fast_zetas"
+        
+        if method == "fast_zetas":
             try:
                 from fast_zetas import zetazero
                 zeros = np.array([float(zetazero(k)) for k in range(1, n + 1)])
                 cls._cache[n] = zeros
                 return zeros
             except ImportError:
-                method = "mpmath"
+                raise ImportError(
+                    "fast_zetas module required for zeta zero computation. "
+                    "This workbench uses mathematically-based fast_zetas instead of mpmath."
+                )
         
-        if method == "mpmath":
-            try:
-                from mpmath import zetazero as mp_zetazero
-                zeros = np.array([float(mp_zetazero(k).imag) for k in range(1, n + 1)])
-                cls._cache[n] = zeros
-                return zeros
-            except ImportError:
-                raise ImportError("No zeta zero computation method available")
-        
-        raise ValueError(f"Unknown method: {method}")
+        raise ValueError(f"Unknown method: {method}. Only 'fast_zetas' (or 'auto') is supported.")
     
     @classmethod
     def get_standard(cls, count: int = 20) -> np.ndarray:

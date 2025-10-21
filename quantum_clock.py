@@ -51,21 +51,14 @@ from typing import Optional, Tuple
 # Import fast_zetas for high-performance zero computation
 try:
     from .fast_zetas import zetazero_batch
-    _FAST_ZETAS_AVAILABLE = True
 except ImportError:
     try:
         from fast_zetas import zetazero_batch
-        _FAST_ZETAS_AVAILABLE = True
     except ImportError:
-        _FAST_ZETAS_AVAILABLE = False
-        # Fallback to mpmath if fast_zetas not available
-        try:
-            from mpmath import zetazero as mp_zetazero
-        except ImportError:
-            raise ImportError(
-                "Either fast_zetas or mpmath must be installed. "
-                "Install with: pip install mpmath"
-            )
+        raise ImportError(
+            "fast_zetas module required for QuantumClock. "
+            "This workbench uses mathematically-based fast_zetas for zeta zero computation."
+        )
 
 
 class QuantumClock:
@@ -99,14 +92,9 @@ class QuantumClock:
         print(f"Computing {self.n_zeros} Riemann zeta zeros...")
         start_time = time.time()
        
-        if _FAST_ZETAS_AVAILABLE:
-            # Use fast batch computation
-            zeros_dict = zetazero_batch(1, self.n_zeros + 1)
-            zeros = np.array([float(zeros_dict[k]) for k in range(1, self.n_zeros + 1)])
-        else:
-            # Fallback to mpmath (slower)
-            print("  (using mpmath - consider installing fast_zetas for 26× speedup)")
-            zeros = np.array([float(mp_zetazero(k).imag) for k in range(1, self.n_zeros + 1)])
+        # Use fast batch computation
+        zeros_dict = zetazero_batch(1, self.n_zeros + 1)
+        zeros = np.array([float(zeros_dict[k]) for k in range(1, self.n_zeros + 1)])
         
         self.spacings = np.diff(zeros)
        
@@ -248,12 +236,8 @@ class QuantumClock:
         """
         print(f"\nTesting RH falsification with β-shift={beta_shift} (n={n_test})...")
         
-        if _FAST_ZETAS_AVAILABLE:
-            zeros_dict = zetazero_batch(1, n_test + 2)
-            zeros = [zeros_dict[k] for k in range(1, n_test + 2)]
-        else:
-            zeros = [mp_zetazero(k).imag for k in range(1, n_test + 2)]
-        
+        zeros_dict = zetazero_batch(1, n_test + 2)
+        zeros = [zeros_dict[k] for k in range(1, n_test + 2)]
         zeros = [float(z) for z in zeros]
         
         if beta_shift > 0:
