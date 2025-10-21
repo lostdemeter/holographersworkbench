@@ -14,6 +14,7 @@ Core Modules:
 - holographic_compression: Holographic image compression via harmonic encoding
 - fast_zetas: High-performance Riemann zeta zero computation (26× faster)
 - quantum_clock: Fractal peel quantum clock analysis of zeta zero spacings
+- holographic_encoder: Quantum mode projection for neural network weights
 - time_affinity: Walltime-based parameter optimization
 - performance_profiler: Performance profiling and bottleneck identification
 - error_pattern_visualizer: Automatic error pattern discovery and correction
@@ -99,6 +100,10 @@ from .fast_zetas import (
 
 from .quantum_clock import (
     QuantumClock,
+)
+
+from .holographic_encoder import (
+    HolographicEncoder,
 )
 
 from .time_affinity import (
@@ -209,6 +214,9 @@ __all__ = [
     
     # Quantum Clock
     'QuantumClock',
+    
+    # Holographic Encoder
+    'HolographicEncoder',
     
     # Time Affinity
     'TimeAffinityOptimizer',

@@ -29,6 +29,7 @@ def test_imports():
         import holographic_compression
         import fast_zetas
         import quantum_clock
+        import holographic_encoder
         import time_affinity
         import performance_profiler
         import error_pattern_visualizer
@@ -243,10 +244,60 @@ def test_quantum_clock():
         return False
 
 
+def test_holographic_encoder():
+    """Test holographic encoder."""
+    print("\n" + "="*70)
+    print("TEST 8: Holographic Encoder")
+    print("="*70)
+    
+    try:
+        from holographic_encoder import HolographicEncoder
+        from quantum_clock import QuantumClock
+        
+        # Initialize quantum clock
+        qc = QuantumClock(n_zeros=50)
+        
+        # Initialize encoder (will compute zeros automatically)
+        encoder = HolographicEncoder(qc)
+        assert encoder.qc is not None, "Encoder should have quantum clock"
+        print(f"✓ HolographicEncoder initialized")
+        
+        # Test encoding
+        test_array = np.random.randn(10, 20)
+        hologram = encoder.encode(test_array, quantum_modes=[2, 3, 5])
+        assert 'mode_coefficients' in hologram, "Should have mode coefficients"
+        assert len(hologram['mode_coefficients']) == 3, "Should have 3 modes"
+        print(f"✓ Encoded array shape {test_array.shape} with 3 modes")
+        
+        # Test lossy decoding
+        reconstructed_lossy = encoder.decode(hologram, use_residual=False)
+        assert reconstructed_lossy.shape == test_array.shape, "Shape should match"
+        print(f"✓ Lossy decoding successful")
+        
+        # Test lossless decoding
+        reconstructed_lossless = encoder.decode(hologram, use_residual=True)
+        fidelity = encoder.measure_fidelity(test_array, reconstructed_lossless)
+        assert fidelity['abs_error'] < 0.1, "Lossless should be reasonably accurate"
+        print(f"✓ Lossless decoding: error={fidelity['abs_error']:.2e}")
+        
+        # Test resonance analysis
+        resonances = encoder.analyze_resonances(hologram)
+        assert len(resonances) == 3, "Should have 3 resonances"
+        assert resonances[0]['energy_fraction'] > 0, "Should have energy"
+        print(f"✓ Resonance analysis: top mode={resonances[0]['mode']}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Holographic encoder test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def test_time_affinity():
     """Test time affinity optimization."""
     print("\n" + "="*70)
-    print("TEST 8: Time Affinity")
+    print("TEST 9: Time Affinity")
     print("="*70)
     
     try:
@@ -281,7 +332,7 @@ def test_time_affinity():
 def test_optimization():
     """Test optimization module."""
     print("\n" + "="*70)
-    print("TEST 9: Optimization Module")
+    print("TEST 10: Optimization Module")
     print("="*70)
     
     try:
@@ -306,7 +357,7 @@ def test_optimization():
 def test_utils():
     """Test utility functions."""
     print("\n" + "="*70)
-    print("TEST 10: Utility Functions")
+    print("TEST 11: Utility Functions")
     print("="*70)
     
     try:
@@ -340,7 +391,7 @@ def test_utils():
 def test_performance_profiler():
     """Test performance profiler."""
     print("\n" + "="*70)
-    print("TEST 11: Performance Profiler")
+    print("TEST 12: Performance Profiler")
     print("="*70)
     
     try:
@@ -375,7 +426,7 @@ def test_performance_profiler():
 def test_error_pattern_visualizer():
     """Test error pattern visualizer."""
     print("\n" + "="*70)
-    print("TEST 12: Error Pattern Visualizer")
+    print("TEST 13: Error Pattern Visualizer")
     print("="*70)
     
     try:
@@ -408,7 +459,7 @@ def test_error_pattern_visualizer():
 def test_formula_code_generator():
     """Test formula code generator."""
     print("\n" + "="*70)
-    print("TEST 13: Formula Code Generator")
+    print("TEST 14: Formula Code Generator")
     print("="*70)
     
     try:
@@ -440,7 +491,7 @@ def test_formula_code_generator():
 def test_convergence_analyzer():
     """Test convergence analyzer."""
     print("\n" + "="*70)
-    print("TEST 14: Convergence Analyzer")
+    print("TEST 15: Convergence Analyzer")
     print("="*70)
     
     try:
@@ -485,6 +536,7 @@ def run_all_tests():
         ("Holographic Compression", test_holographic_compression),
         ("Fast Zetas", test_fast_zetas),
         ("Quantum Clock", test_quantum_clock),
+        ("Holographic Encoder", test_holographic_encoder),
         ("Time Affinity", test_time_affinity),
         ("Optimization", test_optimization),
         ("Utils", test_utils),
