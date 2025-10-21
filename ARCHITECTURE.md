@@ -2,440 +2,533 @@
 
 ## Design Philosophy
 
-The workbench follows these principles:
+The workbench follows a **5-layer architecture** with strict unidirectional dependencies:
 
-1. **Separation of Concerns**: Spectral, holographic, and optimization are distinct
-2. **Reusable Components**: Common patterns extracted into shared utilities
-3. **Consistent Interfaces**: Same API patterns across all modules
-4. **Minimal Dependencies**: Each module depends only on what it needs
-5. **Easy Extension**: Clear where new functionality belongs
+1. **Separation of Concerns**: Each layer has a single, well-defined responsibility
+2. **Unidirectional Dependencies**: Higher layers depend on lower layers, never vice-versa
+3. **Pure Functions at Base**: Layer 1 contains only pure, stateless functions
+4. **Stateful Transformers Above**: Layers 2-4 introduce state and complexity progressively
+5. **Clear Extension Points**: New functionality has an obvious home
 
-## Module Dependencies
+## 5-Layer Architecture
 
 ```
-Core Pipeline:
-┌─────────────┐
-│   utils.py  │  (No dependencies - pure utilities)
-└─────────────┘
-       ↑
-       │
-┌─────────────┐
-│ spectral.py │  (Uses utils for normalization)
-└─────────────┘
-       ↑
-       │
-┌──────────────┐
-│holographic.py│  (Uses spectral for some operations)
-└──────────────┘
-       ↑
-       │
-┌──────────────┐
-│optimization.py│ (Uses both spectral and holographic)
-└──────────────┘
-
-Compression Modules:
-┌──────────────────┐
-│fractal_peeling.py│ (Independent - numpy only)
-└──────────────────┘
-
-┌─────────────────────────┐
-│holographic_compression.py│ (Independent - numpy, zlib)
-└─────────────────────────┘
-
-High-Performance Computing:
-┌──────────────┐
-│fast_zetas.py │ (Independent - numpy, scipy, mpmath)
-└──────────────┘
-
-┌──────────────────┐
-│time_affinity.py  │ (Independent - numpy)
-└──────────────────┘
-
-Optimization Toolkit:
-┌─────────────────────┐
-│performance_profiler.py│ (Independent - numpy, tracemalloc)
-└─────────────────────┘
-       ↓
-┌──────────────────────────┐
-│error_pattern_visualizer.py│ (Uses scipy for FFT)
-└──────────────────────────┘
-       ↓
-┌─────────────────────────┐
-│formula_code_generator.py │ (Uses ast for validation)
-└─────────────────────────┘
-       ↓
-┌────────────────────────┐
-│convergence_analyzer.py │ (Uses scipy for curve fitting)
-└────────────────────────┘
+Layer 5: generation/     (Generates external artifacts: code files, reports)
+    ↓
+Layer 4: processors/     (Stateful transformers: scorers, optimizers, compressors)
+    ↓
+Layer 3: analysis/       (Read-only analyzers: profilers, pattern detectors)
+    ↓
+Layer 2: core/           (Domain primitives: zeta zeros, quantum modes)
+    ↓
+Layer 1: primitives/     (Pure utility functions: signal processing, FFT, phase math)
 ```
 
-## Core Abstractions
+### Layer 1: Primitives (`workbench/primitives/`)
 
-### 1. Spectral Domain
+**Purpose**: Pure, stateless utility functions with no side effects
 
-**Purpose**: Transform problems into frequency space
+**Modules**:
+- `signal.py` - Signal processing (normalize, smooth, detect_peaks, psnr, etc.)
+- `frequency.py` - FFT and power spectrum computation
+- `phase.py` - Phase retrieval (retrieve_hilbert, retrieve_gs, align)
+- `kernels.py` - Kernel functions (exponential_decay, gaussian)
 
-**Key Classes**:
-- `ZetaFiducials` - Manages zeta zeros (the "carrier frequencies")
-- `SpectralScorer` - Scores using oscillatory patterns
-- `DiracOperator` - Constructs SRT-style operators
+**Rules**:
+- No classes, only functions
+- No state, no side effects
+- No dependencies on other workbench layers
+- Only depends on: numpy, scipy
 
-**Pattern**:
+**Example**:
 ```python
-frequencies → oscillatory_sum → scores
+from workbench.primitives import signal, frequency, phase
+
+# Pure function calls
+normalized = signal.normalize(data, method='minmax')
+fft_result = frequency.compute_fft(normalized)
+envelope = signal.compute_envelope(data)
 ```
 
-### 2. Holographic Domain
+### Layer 2: Core (`workbench/core/`)
 
-**Purpose**: Extract signal from noise via interference
+**Purpose**: Domain-specific primitives (zeta zeros, quantum modes)
 
-**Key Classes**:
-- `PhaseRetrieval` - Extracts amplitude/phase
-- `FourPhaseShifting` - Lossless encoding/decoding
+**Modules**:
+- `zeta.py` - Riemann zeta zero computation, ZetaFiducials class
+- `quantum.py` - QuantumClock for fractal peel analysis
 
-**Pattern**:
+**Rules**:
+- Can use Layer 1 (primitives)
+- Introduces domain-specific concepts
+- Minimal state (mostly caching)
+- No dependencies on Layers 3-5
+
+**Example**:
 ```python
-noisy_signal → phase_retrieval → envelope → refined_signal
+from workbench.core import zetazero, ZetaFiducials, QuantumClock
+
+# Domain primitives
+zeros = ZetaFiducials.get_standard(20)
+z = zetazero(100)
+qc = QuantumClock(n_zeros=500)
 ```
 
-### 3. Optimization Domain
+### Layer 3: Analysis (`workbench/analysis/`)
 
-**Purpose**: Reduce computational complexity
+**Purpose**: Read-only analyzers that inspect data without modifying it
 
-**Key Classes**:
-- `SublinearOptimizer` - O(n) → O(√n) conversion
-- `SRTCalibrator` - Automated parameter tuning
+**Modules**:
+- `performance.py` - Performance profiling and bottleneck detection
+- `errors.py` - Error pattern discovery and visualization
+- `convergence.py` - Convergence analysis and stopping decisions
+- `affinity.py` - Time affinity optimization
 
-**Pattern**:
+**Rules**:
+- Can use Layers 1-2
+- Read-only operations (no data transformation)
+- Produces reports, metrics, visualizations
+- No dependencies on Layers 4-5
+
+**Example**:
 ```python
-large_set → spectral_score → holographic_refine → top_k
+from workbench.analysis import PerformanceProfiler, ErrorPatternAnalyzer
+
+# Analyze without modifying
+profiler = PerformanceProfiler()
+result, profile = profiler.profile_function(my_func, args)
+
+analyzer = ErrorPatternAnalyzer(actual, predicted, x)
+report = analyzer.analyze_all()
 ```
 
-### 4. Optimization Toolkit
+### Layer 4: Processors (`workbench/processors/`)
 
-**Purpose**: Complete optimization pipeline from profiling to deployment
+**Purpose**: Stateful transformers that modify data
 
-**Key Modules**:
-- `performance_profiler.py` - Identify bottlenecks and measure performance
-- `error_pattern_visualizer.py` - Discover correction patterns in errors
-- `formula_code_generator.py` - Generate production-ready code
-- `convergence_analyzer.py` - Decide when to stop optimizing
+**Modules**:
+- `spectral.py` - Spectral scoring with zeta zeros
+- `holographic.py` - Phase retrieval and holographic refinement
+- `optimization.py` - Sublinear optimization algorithms
+- `compression.py` - Fractal peeling + holographic compression
+- `encoding.py` - Holographic encoding
+- `ergodic.py` - Ergodic jump diagnostics
 
-**Pattern**:
+**Rules**:
+- Can use Layers 1-3
+- Stateful classes that transform data
+- Main computational workhorses
+- No dependencies on Layer 5
+
+**Example**:
 ```python
-profile → discover_corrections → generate_code → monitor_convergence
+from workbench.processors import SpectralScorer, SublinearOptimizer
+
+# Stateful transformers
+scorer = SpectralScorer(use_zeta=True, n_zeta=20)
+scores = scorer.compute_scores(candidates)
+
+optimizer = SublinearOptimizer(scorer=scorer)
+top_k, stats = optimizer.optimize(candidates, score_fn, top_k=100)
 ```
 
-## Data Flow
+### Layer 5: Generation (`workbench/generation/`)
 
-### Typical Pipeline
+**Purpose**: Generate external artifacts (code files, reports, etc.)
+
+**Modules**:
+- `code.py` - Formula code generation, validation, optimization
+
+**Rules**:
+- Can use all lower layers (1-4)
+- Produces external artifacts
+- Top of the dependency chain
+
+**Example**:
+```python
+from workbench.generation import FormulaCodeGenerator
+
+# Generate production code
+generator = FormulaCodeGenerator(base_formula="x**2", name="improved")
+generator.add_correction("correction = 0.1 * x")
+generator.export_to_file("improved.py", format="module")
+```
+
+## Dependency Graph
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 5: generation/                                        │
+│   code.py                                                   │
+└─────────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 4: processors/                                        │
+│   spectral.py, holographic.py, optimization.py,            │
+│   compression.py, encoding.py, ergodic.py                  │
+└─────────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 3: analysis/                                          │
+│   performance.py, errors.py, convergence.py, affinity.py   │
+└─────────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 2: core/                                              │
+│   zeta.py, quantum.py                                       │
+└─────────────────────────────────────────────────────────────┘
+                           ↓
+┌─────────────────────────────────────────────────────────────┐
+│ Layer 1: primitives/                                        │
+│   signal.py, frequency.py, phase.py, kernels.py            │
+└─────────────────────────────────────────────────────────────┘
+                           ↓
+                    numpy, scipy, mpmath
+```
+
+## Import Patterns
+
+### High-Level Imports (Recommended for Users)
+
+```python
+from workbench import (
+    # Layer 2: Core
+    zetazero, ZetaFiducials, QuantumClock,
+    
+    # Layer 3: Analysis
+    PerformanceProfiler, ErrorPatternAnalyzer, ConvergenceAnalyzer,
+    
+    # Layer 4: Processors
+    SpectralScorer, SublinearOptimizer, HolographicCompressor,
+    
+    # Layer 5: Generation
+    FormulaCodeGenerator,
+)
+```
+
+### Explicit Layer Imports (Recommended for Developers)
+
+```python
+# Layer 1: Pure functions
+from workbench.primitives import signal, frequency, phase
+
+# Layer 2: Domain primitives
+from workbench.core.zeta import zetazero, ZetaFiducials
+from workbench.core.quantum import QuantumClock
+
+# Layer 3: Analyzers
+from workbench.analysis.performance import PerformanceProfiler
+from workbench.analysis.errors import ErrorPatternAnalyzer
+
+# Layer 4: Processors
+from workbench.processors.spectral import SpectralScorer
+from workbench.processors.optimization import SublinearOptimizer
+
+# Layer 5: Generators
+from workbench.generation.code import FormulaCodeGenerator
+```
+
+## Data Flow Patterns
+
+### Pattern 1: Spectral Scoring Pipeline
 
 ```
 Input Data
     ↓
-[Spectral Scoring]
+[Layer 2: Get Zeta Zeros]
     ↓
-Raw Scores (noisy)
+Frequencies
     ↓
-[Holographic Refinement]
+[Layer 4: Spectral Scoring]
     ↓
-Refined Scores (clean)
+Raw Scores
     ↓
-[Sublinear Optimization]
+[Layer 4: Holographic Refinement]
     ↓
-Top-K Results
+Refined Scores
 ```
 
-### Example Code Flow
+### Pattern 2: Optimization Toolkit Pipeline
+
+```
+Slow Function
+    ↓
+[Layer 3: Profile Performance]
+    ↓
+Bottleneck Identified
+    ↓
+[Layer 3: Analyze Error Patterns]
+    ↓
+Correction Patterns
+    ↓
+[Layer 5: Generate Code]
+    ↓
+Optimized Function
+    ↓
+[Layer 3: Monitor Convergence]
+    ↓
+Stop Decision
+```
+
+### Pattern 3: Complete Workflow
 
 ```python
-# 1. Get frequencies
+# Layer 2: Get domain primitives
 zeros = ZetaFiducials.get_standard(20)
 
-# 2. Spectral scoring
+# Layer 4: Score candidates
 scorer = SpectralScorer(frequencies=zeros)
 scores = scorer.compute_scores(candidates)
 
-# 3. Holographic refinement
+# Layer 4: Refine with holographic processing
 refined = holographic_refinement(scores, reference)
 
-# 4. Optimization
+# Layer 4: Optimize
 optimizer = SublinearOptimizer()
 top_k, stats = optimizer.optimize(candidates, lambda c: refined[c], top_k=100)
-```
 
-## Shared Patterns
-
-### Pattern 1: Frequency-Based Scoring
-
-Used in: `SpectralScorer`, `DiracOperator`, `compute_spectral_scores`
-
-```python
-# General form
-for frequency in frequencies:
-    taper = exp(-damping * frequency^2)
-    phase = exp(i * frequency * log(x))
-    score += taper * phase / (0.5 + i*frequency)
-```
-
-### Pattern 2: Phase Retrieval
-
-Used in: `phase_retrieve_hilbert`, `phase_retrieve_gs`, `holographic_refinement`
-
-```python
-# General form
-analytic_signal = hilbert_transform(signal)
-envelope = abs(analytic_signal)
-phase = angle(analytic_signal)
-phase_variance = var(diff(phase))
-```
-
-### Pattern 3: Holographic Refinement
-
-Used in: `holographic_refinement`, `SublinearOptimizer.optimize`
-
-```python
-# General form
-theta, aligned = align_phase(object, reference)
-envelope, phase_var = phase_retrieve(aligned)
-refined = blend_ratio * aligned * envelope + (1-blend_ratio) * reference
-if phase_var > threshold:
-    refined *= damping_factor
-```
-
-### Pattern 4: Normalization
-
-Used everywhere via `utils.normalize_signal`
-
-```python
-# General form
-normalized = (signal - min) / (max - min + epsilon)
-# or
-normalized = signal / (max(abs(signal)) + epsilon)
+# Layer 3: Analyze performance
+profiler = PerformanceProfiler()
+result, profile = profiler.profile_function(optimizer.optimize, args)
 ```
 
 ## Extension Points
 
-### Adding New Spectral Methods
+### Adding New Primitive Functions (Layer 1)
 
-Add to `spectral.py`:
+Add to appropriate module in `workbench/primitives/`:
 
 ```python
-class MySpectralMethod:
-    def __init__(self, frequencies):
-        self.frequencies = frequencies
+# workbench/primitives/signal.py
+def my_new_signal_function(signal: np.ndarray, param: float) -> np.ndarray:
+    """Pure function with no side effects."""
+    return processed_signal
+```
+
+Update `workbench/primitives/__init__.py` to export it.
+
+### Adding New Domain Primitives (Layer 2)
+
+Add to `workbench/core/`:
+
+```python
+# workbench/core/my_domain.py
+class MyDomainPrimitive:
+    """Domain-specific primitive with minimal state."""
+    def __init__(self, params):
+        self.params = params
     
-    def compute_scores(self, candidates):
-        # Your implementation
-        return scores
+    def compute(self, data):
+        # Can use Layer 1 primitives
+        from workbench.primitives import signal
+        return signal.normalize(data)
 ```
 
-### Adding New Phase Retrieval Methods
+### Adding New Analyzers (Layer 3)
 
-Add to `holographic.py`:
+Add to `workbench/analysis/`:
 
 ```python
-def phase_retrieve_mymethod(signal, **kwargs):
-    # Your implementation
-    envelope = ...
-    phase_variance = ...
-    return envelope, phase_variance
+# workbench/analysis/my_analyzer.py
+class MyAnalyzer:
+    """Read-only analyzer."""
+    def analyze(self, data):
+        # Can use Layers 1-2
+        # Returns report, doesn't modify data
+        return report
 ```
 
-Then update `PhaseRetrieval` class to support it.
+### Adding New Processors (Layer 4)
 
-### Adding New Optimization Strategies
-
-Add to `optimization.py`:
+Add to `workbench/processors/`:
 
 ```python
-class MyOptimizer:
-    def optimize(self, candidates, score_fn, top_k):
-        # Your implementation
-        return top_candidates, stats
+# workbench/processors/my_processor.py
+class MyProcessor:
+    """Stateful transformer."""
+    def __init__(self, params):
+        self.params = params
+        self.state = {}
+    
+    def process(self, data):
+        # Can use Layers 1-3
+        # Transforms data
+        return transformed_data
+```
+
+### Adding New Generators (Layer 5)
+
+Add to `workbench/generation/`:
+
+```python
+# workbench/generation/my_generator.py
+class MyGenerator:
+    """Generates external artifacts."""
+    def generate(self, spec):
+        # Can use all lower layers
+        # Produces files, reports, etc.
+        with open("output.txt", "w") as f:
+            f.write(generated_content)
 ```
 
 ## Testing Strategy
 
-### Unit Tests
+### Layer-Specific Testing
 
-Each module should have tests:
+Each layer should have focused tests:
 
 ```python
-# test_spectral.py
+# tests/test_primitives.py
+def test_signal_normalize():
+    """Test pure function."""
+    data = np.array([1, 2, 3, 4, 5])
+    normalized = signal.normalize(data, method='minmax')
+    assert np.min(normalized) == 0
+    assert np.max(normalized) == 1
+
+# tests/test_core.py
 def test_zeta_fiducials():
+    """Test domain primitive."""
     zeros = ZetaFiducials.get_standard(20)
     assert len(zeros) == 20
     assert zeros[0] > 14.0  # First zero ~14.13
 
-# test_holographic.py
-def test_phase_retrieval():
-    signal = np.sin(np.linspace(0, 10, 100))
-    env, pv = phase_retrieve_hilbert(signal)
-    assert len(env) == len(signal)
-    assert pv >= 0
+# tests/test_analysis.py
+def test_performance_profiler():
+    """Test analyzer."""
+    profiler = PerformanceProfiler()
+    result, profile = profiler.profile_function(lambda x: x**2, 10)
+    assert result == 100
+    assert profile.execution_time > 0
 
-# test_optimization.py
-def test_sublinear_optimizer():
-    candidates = np.arange(1000)
-    optimizer = SublinearOptimizer()
-    top, stats = optimizer.optimize(candidates, lambda c: c, top_k=10)
-    assert len(top) == 10
+# tests/test_processors.py
+def test_spectral_scorer():
+    """Test processor."""
+    scorer = SpectralScorer(use_zeta=True, n_zeta=10)
+    candidates = np.arange(100, 200)
+    scores = scorer.compute_scores(candidates)
+    assert len(scores) == len(candidates)
+
+# tests/test_generation.py
+def test_code_generator():
+    """Test generator."""
+    gen = FormulaCodeGenerator("x**2", "test")
+    code = gen.generate_function()
+    assert "def test" in code
 ```
 
-### Integration Tests
+### Integration Testing
 
-Test complete workflows:
+Test cross-layer workflows:
 
 ```python
-def test_complete_workflow():
-    # Full pipeline
+def test_complete_pipeline():
+    """Test full workflow across all layers."""
+    # Layer 2
     zeros = ZetaFiducials.get_standard(20)
-    scorer = SpectralScorer(frequencies=zeros)
-    scores = scorer.compute_scores(candidates)
-    refined = holographic_refinement(scores, reference)
-    optimizer = SublinearOptimizer()
-    top_k, stats = optimizer.optimize(candidates, lambda c: refined[c], top_k=100)
     
-    assert len(top_k) == 100
-    assert stats.reduction_ratio < 0.1  # 90%+ reduction
+    # Layer 4
+    scorer = SpectralScorer(frequencies=zeros)
+    scores = scorer.compute_scores(np.arange(100))
+    
+    # Layer 3
+    profiler = PerformanceProfiler()
+    _, profile = profiler.profile_function(scorer.compute_scores, np.arange(100))
+    
+    assert len(scores) == 100
+    assert profile.execution_time > 0
 ```
 
 ## Performance Considerations
 
-### Caching
+### Caching Strategy
 
-- `ZetaFiducials` caches computed zeros
-- `@lru_cache` on expensive functions
-- Reuse scorer/optimizer instances
+- **Layer 2**: ZetaFiducials caches computed zeros
+- **Layer 4**: Reuse scorer/optimizer instances
+- Use `@lru_cache` for expensive pure functions
 
-### Memory
+### Memory Management
 
-- Use `np.float32` instead of `float64` when precision allows
-- Process in chunks for large datasets
-- Delete intermediate results when done
+- Use `np.float32` when precision allows
+- Process large datasets in chunks
+- Delete intermediate results explicitly
 
-### Speed
+### Speed Optimization
 
-- Vectorize operations with NumPy
-- Use FFT for convolutions
-- Avoid Python loops over large arrays
+- Vectorize with NumPy (Layer 1)
+- Use FFT for convolutions (Layer 1)
+- Avoid Python loops over arrays
+- Profile before optimizing (Layer 3)
 
 ## Common Pitfalls
 
-### 1. Division by Zero
+### 1. Violating Layer Dependencies
 
-Always add epsilon:
 ```python
-# Bad
-score = 1 / x
+# ✗ BAD: Layer 1 depending on Layer 4
+def normalize(signal):
+    scorer = SpectralScorer()  # Layer 4 in Layer 1!
+    return scorer.process(signal)
 
-# Good
-score = 1 / (x + 1e-12)
+# ✓ GOOD: Layer 1 stays pure
+def normalize(signal):
+    return (signal - np.min(signal)) / (np.max(signal) - np.min(signal) + 1e-12)
 ```
 
-### 2. Phase Wrapping
+### 2. Stateful Functions in Layer 1
 
-Use `arctan2` for phase differences:
 ```python
-# Bad
-phase_diff = phase[1:] - phase[:-1]
+# ✗ BAD: State in Layer 1
+cache = {}
+def compute_fft(signal):
+    if id(signal) in cache:
+        return cache[id(signal)]
+    result = np.fft.fft(signal)
+    cache[id(signal)] = result
+    return result
 
-# Good
-phase_diff = np.arctan2(np.sin(phase_diff), np.cos(phase_diff))
+# ✓ GOOD: Pure function
+def compute_fft(signal):
+    return np.fft.fft(signal)
 ```
 
-### 3. Normalization
+### 3. Circular Dependencies
 
-Check for zero range:
 ```python
-# Bad
-normalized = (x - min(x)) / (max(x) - min(x))
+# ✗ BAD: Circular import
+# processors/spectral.py
+from workbench.generation.code import FormulaCodeGenerator
 
-# Good
-normalized = (x - min(x)) / (max(x) - min(x) + 1e-12)
+# generation/code.py
+from workbench.processors.spectral import SpectralScorer
+
+# ✓ GOOD: Respect layer hierarchy
+# processors/spectral.py - no imports from Layer 5
+# generation/code.py - can import from Layer 4
 ```
-
-### 4. Array Shapes
-
-Always validate:
-```python
-# Good practice
-obj = np.asarray(object_signal, dtype=float).ravel()
-ref = np.asarray(reference_signal, dtype=float).ravel()
-n = min(len(obj), len(ref))
-obj = obj[:n]
-ref = ref[:n]
-```
-
-## Complete Module List
-
-### Core Modules (v0.1.0)
-1. **spectral.py** - Frequency-domain analysis and zeta-based scoring
-2. **holographic.py** - Phase retrieval and interference patterns
-3. **optimization.py** - Sublinear algorithms and parameter calibration
-4. **fractal_peeling.py** - Recursive lossless compression
-5. **holographic_compression.py** - Image compression via harmonics
-6. **fast_zetas.py** - High-performance zeta zero computation (26× faster)
-7. **time_affinity.py** - Walltime-based parameter discovery
-8. **performance_profiler.py** - Performance profiling and bottleneck detection
-9. **error_pattern_visualizer.py** - Error pattern discovery and correction
-10. **formula_code_generator.py** - Production code generation
-11. **convergence_analyzer.py** - Convergence analysis and stopping decisions
-12. **utils.py** - Common utilities and helper functions
-
-### Demos
-14 interactive Jupyter notebooks demonstrating all features
-
-### Tests
-Comprehensive test suite with 9/9 passing tests
-
-## Future Enhancements
-
-### Short Term
-
-- [x] Performance profiling tools (completed)
-- [x] Error pattern discovery (completed)
-- [x] Code generation (completed)
-- [x] Convergence analysis (completed)
-- [ ] GPU acceleration for FFT operations
-- [ ] Parallel batch processing
-
-### Medium Term
-
-- [ ] Integration with ML frameworks
-- [ ] Real-time convergence monitoring
-- [ ] Automated test generation
-- [ ] Interactive dashboards
-
-### Long Term
-
-- [ ] Quantum-inspired methods
-- [ ] Distributed computing support
-- [ ] Hardware acceleration
-- [ ] Cloud deployment tools
 
 ## Versioning
 
 Current: **v0.1.0**
 
 Semantic versioning:
-- **Major**: Breaking API changes
+- **Major**: Breaking API changes, layer restructuring
 - **Minor**: New features, backward compatible
-- **Patch**: Bug fixes
+- **Patch**: Bug fixes, documentation
 
-## Contributing Guidelines
+## Migration from Old Structure
 
-1. **Before adding code**: Check if similar functionality exists
-2. **Choose the right module**: Spectral, holographic, or optimization?
-3. **Follow patterns**: Use existing code as template
-4. **Add tests**: Unit tests for new functions
-5. **Update docs**: Add examples to README
-6. **Update exports**: Add to `__init__.py`
+Old flat files have been moved to `deprecated/` folder:
+- `utils.py` → `workbench/primitives/`
+- `fast_zetas.py` → `workbench/core/zeta.py`
+- `spectral.py` → `workbench/processors/spectral.py`
+- etc.
+
+See `deprecated/README.md` for complete mapping.
 
 ## Questions?
 
-See:
-- `README.md` - Usage guide
-- `examples.py` - Working examples
-- `WORKBENCH_SUMMARY.md` - High-level overview
+- **README.md** - Usage guide and quick start
+- **AI_README.md** - Concise API reference for AI assistants
+- **examples/** - Working code examples
+- **tests/** - Test suite demonstrating usage

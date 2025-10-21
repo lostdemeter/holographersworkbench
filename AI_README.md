@@ -6,27 +6,48 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 
 ---
 
-## Spec: Modules & Exports
+## Spec: 5-Layer Architecture
 
+**Layers**: 1=Primitives → 2=Core → 3=Analysis → 4=Processors → 5=Generation (unidirectional deps)
+
+### Layer 1: Primitives (Pure Functions)
 | Module | Purpose | Key Exports | Deps |
 |--------|---------|-------------|------|
-| `spectral.py` | Zeta/freq-domain scoring | `ZetaFiducials`, `SpectralScorer`, `DiracOperator`, `compute_spectral_scores` | numpy, mpmath (optional) |
-| `holographic.py` | Phase retrieval + interference | `PhaseRetrieval`, `phase_retrieve_hilbert`, `phase_retrieve_gs`, `holographic_refinement`, `FourPhaseShifting` | numpy, scipy.fft |
-| `optimization.py` | Sublinear search + SRT tuning | `SublinearOptimizer`, `SRTCalibrator`, `optimize_sublinear` | spectral, holographic |
-| `fractal_peeling.py` | Recursive lossless compression | `FractalPeeler`, `resfrac_score`, `compress`, `decompress`, `tree_statistics` | numpy |
-| `holographic_compression.py` | Image compression via harmonics | `HolographicCompressor`, `compress_image`, `decompress_image`, `CompressionStats` | numpy, zlib |
-| `fast_zetas.py` | High-performance zeta zeros | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaZeroParameters` | numpy, scipy, mpmath |
-| `quantum_clock.py` | Fractal peel quantum clock | `QuantumClock` | numpy, matplotlib, fast_zetas (optional) |
-| `holographic_encoder.py` | Quantum mode projection | `HolographicEncoder` | numpy, quantum_clock |
-| `ergodic_jump.py` | Ergodic jump diagnostics | `ErgodicJump` | numpy, fractal_peeling |
-| `time_affinity.py` | Walltime-based param discovery | `TimeAffinityOptimizer`, `GridSearchTimeAffinity`, `quick_calibrate` | numpy |
-| `performance_profiler.py` | Bottleneck identification | `PerformanceProfiler`, `ProfileResult`, `profile`, `compare_profiles`, `estimate_complexity` | numpy, tracemalloc |
-| `error_pattern_visualizer.py` | Error pattern discovery | `ErrorPatternAnalyzer`, `ErrorVisualizer`, `SpectralPattern`, `PolynomialPattern` | numpy, scipy |
-| `formula_code_generator.py` | Production code generation | `FormulaCodeGenerator`, `CodeValidator`, `TestGenerator`, `BenchmarkGenerator` | numpy, ast |
-| `convergence_analyzer.py` | Convergence & stopping decisions | `ConvergenceAnalyzer`, `ConvergenceVisualizer`, `ConvergenceRate`, `StoppingRecommendation` | numpy, scipy |
-| `utils.py` | Shared utils | `normalize_signal`, `compute_psnr`, `detect_peaks`, `adaptive_blend`, `smooth_signal` | numpy, scipy (some) |
+| `primitives.signal` | Signal processing | `normalize`, `smooth`, `detect_peaks`, `psnr`, `compute_envelope`, `adaptive_blend` | numpy, scipy |
+| `primitives.frequency` | FFT operations | `compute_fft`, `compute_ifft`, `compute_power_spectrum` | numpy |
+| `primitives.phase` | Phase math | `align`, `retrieve_hilbert`, `retrieve_gs` | numpy, scipy |
+| `primitives.kernels` | Kernel functions | `exponential_decay_kernel`, `gaussian_kernel` | numpy |
 
-**Import Pattern**: `from workbench import *` (all public in `__init__.py`). Cache: Zeta zeros auto-cached.
+### Layer 2: Core (Domain Primitives)
+| Module | Purpose | Key Exports | Deps |
+|--------|---------|-------------|------|
+| `core.zeta` | Fast zeta zeros (26× faster) | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaFiducials` | numpy, scipy, mpmath |
+| `core.quantum` | Quantum clock analysis | `QuantumClock` | numpy, matplotlib |
+
+### Layer 3: Analysis (Read-Only)
+| Module | Purpose | Key Exports | Deps |
+|--------|---------|-------------|------|
+| `analysis.performance` | Profiling & bottlenecks | `PerformanceProfiler`, `profile`, `compare_profiles` | numpy, tracemalloc |
+| `analysis.errors` | Error pattern detection | `ErrorPatternAnalyzer`, `SpectralPattern`, `PolynomialPattern` | numpy, scipy |
+| `analysis.convergence` | Convergence monitoring | `ConvergenceAnalyzer`, `ConvergenceRate`, `StoppingRecommendation` | numpy, scipy |
+| `analysis.affinity` | Time-based param discovery | `TimeAffinityOptimizer`, `quick_calibrate` | numpy |
+
+### Layer 4: Processors (Stateful Transformers)
+| Module | Purpose | Key Exports | Deps |
+|--------|---------|-------------|------|
+| `processors.spectral` | Zeta-based scoring | `SpectralScorer`, `DiracOperator`, `compute_spectral_scores` | L1, L2 |
+| `processors.holographic` | Phase retrieval & refinement | `PhaseRetrieval`, `phase_retrieve_hilbert`, `holographic_refinement` | L1, L2 |
+| `processors.optimization` | Sublinear algorithms | `SublinearOptimizer`, `SRTCalibrator`, `optimize_sublinear` | L1-L3 |
+| `processors.compression` | Fractal + holographic compression | `FractalPeeler`, `HolographicCompressor`, `resfrac_score` | L1 |
+| `processors.encoding` | Holographic encoding | `HolographicEncoder` | L1, L2 |
+| `processors.ergodic` | Ergodic diagnostics | `ErgodicJump` | L1 |
+
+### Layer 5: Generation (Artifact Creation)
+| Module | Purpose | Key Exports | Deps |
+|--------|---------|-------------|------|
+| `generation.code` | Code generation | `FormulaCodeGenerator`, `CodeValidator`, `TestGenerator` | L1-L4 |
+
+**Import Pattern**: `from workbench import <Class>` or `from workbench.<layer>.<module> import <Class>`. Cache: Zeta zeros auto-cached.
 
 ---
 

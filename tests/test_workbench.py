@@ -21,37 +21,26 @@ def test_imports():
     print("="*70)
     
     try:
-        # Import from local modules
-        import spectral
-        import holographic
-        import optimization
-        import fractal_peeling
-        import holographic_compression
-        import fast_zetas
-        import quantum_clock
-        import holographic_encoder
-        import ergodic_jump
-        import time_affinity
-        import performance_profiler
-        import error_pattern_visualizer
-        import formula_code_generator
-        import convergence_analyzer
-        import utils
+        # Import from new workbench structure
+        from workbench.processors import spectral, holographic, optimization
+        from workbench.processors.compression import FractalPeeler, HolographicCompressor
+        from workbench.core import zeta, quantum
+        from workbench.processors import encoding, ergodic
+        from workbench.analysis import affinity, performance, errors, convergence
+        from workbench.generation import code
+        from workbench.primitives import signal
         
         # Test specific imports
-        from spectral import (
-            SpectralScorer, ZetaFiducials
-        )
-        from holographic import phase_retrieve_hilbert
-        from fractal_peeling import FractalPeeler
-        from holographic_compression import compress_image
-        from fast_zetas import zetazero
-        from time_affinity import quick_calibrate
-        from performance_profiler import PerformanceProfiler
-        from error_pattern_visualizer import ErrorPatternAnalyzer
-        from formula_code_generator import FormulaCodeGenerator
-        from convergence_analyzer import ConvergenceAnalyzer
-        from utils import normalize_signal
+        from workbench.processors.spectral import SpectralScorer
+        from workbench.core.zeta import ZetaFiducials, zetazero
+        from workbench.processors.holographic import phase_retrieve_hilbert
+        from workbench.processors.compression import FractalPeeler, compress_image
+        from workbench.analysis.affinity import quick_calibrate
+        from workbench.analysis.performance import PerformanceProfiler
+        from workbench.analysis.errors import ErrorPatternAnalyzer
+        from workbench.generation.code import FormulaCodeGenerator
+        from workbench.analysis.convergence import ConvergenceAnalyzer
+        from workbench.primitives.signal import normalize
         print("✓ All imports successful")
         return True
     except Exception as e:
@@ -66,7 +55,8 @@ def test_spectral():
     print("="*70)
     
     try:
-        from spectral import ZetaFiducials, SpectralScorer
+        from workbench.core.zeta import ZetaFiducials
+        from workbench.processors.spectral import SpectralScorer
         
         # Test zeta fiducials
         zeros = ZetaFiducials.get_standard(10)
@@ -94,7 +84,7 @@ def test_holographic():
     print("="*70)
     
     try:
-        from holographic import phase_retrieve_hilbert, holographic_refinement
+        from workbench.processors.holographic import phase_retrieve_hilbert, holographic_refinement
         
         # Test phase retrieval
         signal = np.sin(np.linspace(0, 10*np.pi, 500))
@@ -122,7 +112,7 @@ def test_fractal_peeling():
     print("="*70)
     
     try:
-        from fractal_peeling import FractalPeeler, resfrac_score
+        from workbench.processors.compression import FractalPeeler, resfrac_score
         
         # Test resfrac score
         signal = np.sin(np.linspace(0, 4*np.pi, 200))
@@ -151,7 +141,7 @@ def test_holographic_compression():
     print("="*70)
     
     try:
-        from holographic_compression import compress_image, decompress_image
+        from workbench.processors.compression import compress_image, decompress_image
         
         # Create test image
         size = 64
@@ -183,7 +173,7 @@ def test_fast_zetas():
     print("="*70)
     
     try:
-        from fast_zetas import zetazero, zetazero_batch
+        from workbench.core.zeta import zetazero, zetazero_batch
         
         # Test single zero
         z = zetazero(10)
@@ -208,7 +198,7 @@ def test_quantum_clock():
     print("="*70)
     
     try:
-        from quantum_clock import QuantumClock
+        from workbench.core.quantum import QuantumClock
         
         # Test instantiation
         qc = QuantumClock(n_zeros=20)
@@ -252,8 +242,8 @@ def test_holographic_encoder():
     print("="*70)
     
     try:
-        from holographic_encoder import HolographicEncoder
-        from quantum_clock import QuantumClock
+        from workbench.processors.encoding import HolographicEncoder
+        from workbench.core.quantum import QuantumClock
         
         # Initialize quantum clock
         qc = QuantumClock(n_zeros=50)
@@ -302,7 +292,7 @@ def test_ergodic_jump():
     print("="*70)
     
     try:
-        from ergodic_jump import ErgodicJump
+        from workbench.processors.ergodic import ErgodicJump
         
         # Initialize
         jump = ErgodicJump(injection_freq=1/np.sqrt(5), amp=0.15)
@@ -340,7 +330,7 @@ def test_time_affinity():
     print("="*70)
     
     try:
-        from time_affinity import quick_calibrate
+        from workbench.analysis.affinity import quick_calibrate
         
         # Simple test algorithm
         def test_algo(x, y):
@@ -375,7 +365,7 @@ def test_optimization():
     print("="*70)
     
     try:
-        from optimization import SublinearOptimizer
+        from workbench.processors.optimization import SublinearOptimizer
         
         # Test sublinear optimizer
         candidates = np.arange(1000)
@@ -400,7 +390,9 @@ def test_utils():
     print("="*70)
     
     try:
-        from utils import normalize_signal, compute_psnr, detect_peaks
+        from workbench.primitives.signal import normalize, psnr, detect_peaks
+        normalize_signal = normalize  # Alias for backward compatibility
+        compute_psnr = psnr  # Alias for backward compatibility
         
         # Test normalize
         signal = np.random.randn(100)
@@ -434,7 +426,7 @@ def test_performance_profiler():
     print("="*70)
     
     try:
-        from performance_profiler import PerformanceProfiler, profile
+        from workbench.analysis.performance import PerformanceProfiler, profile
         
         # Test basic profiling
         profiler = PerformanceProfiler(track_memory=False)
@@ -469,7 +461,7 @@ def test_error_pattern_visualizer():
     print("="*70)
     
     try:
-        from error_pattern_visualizer import ErrorPatternAnalyzer
+        from workbench.analysis.errors import ErrorPatternAnalyzer
         
         # Create synthetic error with known pattern
         x = np.linspace(0, 10, 100)
@@ -502,7 +494,7 @@ def test_formula_code_generator():
     print("="*70)
     
     try:
-        from formula_code_generator import FormulaCodeGenerator, CodeValidator
+        from workbench.generation.code import FormulaCodeGenerator, CodeValidator
         
         # Test code generation
         generator = FormulaCodeGenerator(
@@ -534,7 +526,7 @@ def test_convergence_analyzer():
     print("="*70)
     
     try:
-        from convergence_analyzer import ConvergenceAnalyzer
+        from workbench.analysis.convergence import ConvergenceAnalyzer
         
         # Test with exponential convergence
         history = [1.0, 0.5, 0.25, 0.125, 0.0625]

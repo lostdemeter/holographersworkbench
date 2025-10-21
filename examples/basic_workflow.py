@@ -19,9 +19,8 @@ from workbench import (
     SublinearOptimizer,
     holographic_refinement,
     phase_retrieve_hilbert,
-    normalize_signal,
-    compute_psnr,
 )
+from workbench.primitives.signal import normalize as normalize_signal, psnr as compute_psnr
 
 
 def example_1_spectral_scoring():

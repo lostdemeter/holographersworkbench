@@ -92,49 +92,56 @@ The workbench consolidates techniques from multiple specialized modules into a c
    print(ZetaFiducials.get_standard(5))  # Should print first 5 zeta zeros
    ```
 
-Run demos in Jupyter/Colab: `jupyter notebook demos/` or open in [Colab](https://colab.research.google.com/github/lostdemeter/holographerworkbench/blob/main/demos/demo_5_complete_workflow.ipynb) (example for full workflow).
+Run notebooks: `jupyter notebook examples/notebooks/`
 
 ## Architecture
 
+5-layer architecture with unidirectional dependencies:
+
 ```
 workbench/
-├── __init__.py                 # Main exports
-├── spectral.py                 # Frequency-domain analysis
-├── holographic.py              # Phase retrieval & interference
-├── optimization.py             # Sublinear algorithms & calibration
-├── fractal_peeling.py          # Recursive lossless compression
-├── holographic_compression.py  # Image compression via harmonics
-├── fast_zetas.py               # High-performance zeta zeros (26× faster)
-├── time_affinity.py            # Walltime-based parameter discovery
-├── performance_profiler.py     # Performance profiling & bottleneck detection
-├── error_pattern_visualizer.py # Error pattern discovery & correction
-├── formula_code_generator.py   # Production code generation
-├── convergence_analyzer.py     # Convergence analysis & stopping decisions
-├── utils.py                    # Common utilities
-├── requirements.txt            # Dependencies
-├── .gitignore                  # Git configuration
-├── demos/                      # Interactive Jupyter notebooks (14 demos)
-│   ├── demo_1_spectral_scoring.ipynb
-│   ├── demo_2_phase_retrieval.ipynb
-│   ├── demo_3_holographic_refinement.ipynb
-│   ├── demo_4_sublinear_optimization.ipynb
-│   ├── demo_5_complete_workflow.ipynb
-│   ├── demo_6_srt_calibration.ipynb
-│   ├── demo_7_fractal_peeling.ipynb
-│   ├── demo_8_holographic_compression.ipynb
-│   ├── demo_9_fast_zetas.ipynb
-│   ├── demo_10_time_affinity.ipynb
-│   ├── demo_11_performance_profiler.ipynb
-│   ├── demo_12_error_pattern_visualizer.ipynb
-│   ├── demo_13_formula_code_generator.ipynb
-│   ├── demo_14_convergence_analyzer.ipynb
-│   ├── demo_15_quantum_clock.ipynb
-│   └── demo_16_ergodic_jump.ipynb
-├── tests/                      # Test suite
-│   ├── test_workbench.py       # Comprehensive tests (16/16 passing)
-│   └── TEST_RESULTS.md         # Latest test results
-└── temp/                       # Temporary files (gitignored)
+├── primitives/          # Layer 1: Pure utility functions
+│   ├── signal.py        # Signal processing (normalize, smooth, psnr, etc.)
+│   ├── frequency.py     # FFT and power spectrum
+│   ├── phase.py         # Phase retrieval (Hilbert, GS, align)
+│   └── kernels.py       # Kernel functions
+├── core/                # Layer 2: Domain primitives
+│   ├── zeta.py          # Fast zeta zero computation (26× faster)
+│   └── quantum.py       # Quantum clock fractal analysis
+├── analysis/            # Layer 3: Read-only analyzers
+│   ├── performance.py   # Performance profiling
+│   ├── errors.py        # Error pattern detection
+│   ├── convergence.py   # Convergence analysis
+│   └── affinity.py      # Time affinity optimization
+├── processors/          # Layer 4: Stateful transformers
+│   ├── spectral.py      # Spectral scoring with zeta zeros
+│   ├── holographic.py   # Phase retrieval & refinement
+│   ├── optimization.py  # Sublinear optimization
+│   ├── compression.py   # Fractal + holographic compression
+│   ├── encoding.py      # Holographic encoding
+│   └── ergodic.py       # Ergodic jump diagnostics
+└── generation/          # Layer 5: Artifact generators
+    └── code.py          # Formula code generation
+
+examples/
+└── notebooks/           # 5 comprehensive notebooks
+    ├── utilities_1_fast_zetas.ipynb
+    ├── utilities_2_quantum_clock.ipynb
+    ├── utilities_3_optimization_toolkit.ipynb
+    ├── techniques_1_core_processors.ipynb
+    └── techniques_2_ergodic_jump.ipynb
 ```
+
+## Notebooks
+
+### Utilities (Foundational Tools)
+1. **Fast Zetas** - High-performance zeta zero computation
+2. **Quantum Clock** - Fractal peel analysis using zeta spacings
+3. **Optimization Toolkit** - Complete 4-step optimization pipeline
+
+### Techniques (Processing Methods)
+4. **Core Processors** - All main processing techniques
+5. **Ergodic Jump** - Specialized diagnostic for hidden structure
 
 ## Core Modules
 
