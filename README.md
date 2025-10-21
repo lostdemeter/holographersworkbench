@@ -44,7 +44,7 @@ if conv_report.stopping_recommendation.should_stop:
 ### Quick Start for AIs
 
 1. **Read AI_README.md first**: [AI_README.md](https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md) - Concise API tables and code snippets
-2. **Try the demos**: Start with `demo_11_performance_profiler.ipynb` through `demo_14_convergence_analyzer.ipynb`
+2. **Try the demos**: Start with `demo_11_performance_profiler.ipynb` through `demo_16_ergodic_jump.ipynb`
 3. **Real-world example**: See `fast_zetas.py` - we used this toolkit to achieve 26× speedup
 
 ### Why This Matters
@@ -127,9 +127,11 @@ workbench/
 │   ├── demo_11_performance_profiler.ipynb
 │   ├── demo_12_error_pattern_visualizer.ipynb
 │   ├── demo_13_formula_code_generator.ipynb
-│   └── demo_14_convergence_analyzer.ipynb
+│   ├── demo_14_convergence_analyzer.ipynb
+│   ├── demo_15_quantum_clock.ipynb
+│   └── demo_16_ergodic_jump.ipynb
 ├── tests/                      # Test suite
-│   ├── test_workbench.py       # Comprehensive tests (9/9 passing)
+│   ├── test_workbench.py       # Comprehensive tests (16/16 passing)
 │   └── TEST_RESULTS.md         # Latest test results
 └── temp/                       # Temporary files (gitignored)
 ```
@@ -701,6 +703,84 @@ print(f"Reduced {stats.n_original} → {stats.n_final}")
 print(f"Complexity: {stats.complexity_estimate}")
 print(f"Top 10: {top_100[:10]}")
 ```
+
+### 8. Holographic Encoder Module (`holographic_encoder.py`)
+
+**Purpose**: Quantum mode projection for neural network weights using Riemann zeta zero spacings as basis functions
+
+**Key Classes**:
+- `HolographicEncoder` - Encode/decode arrays via quantum modes
+
+**Key Methods**:
+- `.encode()` - Project onto quantum mode basis
+- `.decode()` - Reconstruct from modes (lossy or lossless)
+- `.measure_fidelity()` - Reconstruction quality metrics
+- `.analyze_resonances()` - Identify dominant modes
+
+**Example**:
+```python
+from workbench import HolographicEncoder, QuantumClock
+import numpy as np
+
+# Initialize
+qc = QuantumClock(n_zeros=100)
+encoder = HolographicEncoder(qc)
+
+# Encode weight matrix
+weights = np.random.randn(128, 784)
+hologram = encoder.encode(weights, quantum_modes=[2, 3, 5, 7, 11])
+
+# Decode (lossy - high compression)
+reconstructed_lossy = encoder.decode(hologram, use_residual=False)
+fidelity = encoder.measure_fidelity(weights, reconstructed_lossy)
+
+# Decode (lossless - perfect reconstruction)
+reconstructed_lossless = encoder.decode(hologram, use_residual=True)
+
+# Analyze resonances
+resonances = encoder.analyze_resonances(hologram)
+print(f"Top mode: {resonances[0]['mode']}, energy: {resonances[0]['energy_fraction']:.2%}")
+```
+
+### 9. Ergodic Jump Module (`ergodic_jump.py`)
+
+**Purpose**: Diagnostic for uncovering hidden structure in ergodic signals via harmonic injection and recursive peeling
+
+**Key Classes**:
+- `ErgodicJump` - Jump sequence analyzer
+
+**Key Methods**:
+- `.inject_harmonic()` - Inject non-ergodic harmonic
+- `.execute()` - Execute ergodic jump analysis
+- `.diagnose_ergodicity()` - Quick ergodicity test
+
+**Example**:
+```python
+from workbench import ErgodicJump
+import numpy as np
+
+# Initialize with golden ratio frequency
+jump = ErgodicJump(injection_freq=1/np.sqrt(5), amp=0.15)
+
+# Test on signal
+signal = np.random.randn(1024)
+result = jump.execute(signal)
+
+print(f"Resfrac drop: {result['resfrac_drop']:.4f}")
+print(f"Hurst shift: {result['hurst_shift']:.4f}")
+
+# Quick diagnosis
+diagnosis = jump.diagnose_ergodicity(signal)
+print(f"Is ergodic: {diagnosis['is_ergodic']}")
+print(f"Confidence: {diagnosis['confidence']:.2f}")
+print(f"Recommendation: {diagnosis['recommendation']}")
+```
+
+**Use Cases**:
+- Uncover latent biases in "random" errors
+- Stress-test ergodicity in quantum clocks
+- Extract filaments for holographic refinement
+- Detect hidden harmonics in residuals
 
 ## Demos
 

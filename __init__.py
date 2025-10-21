@@ -15,6 +15,7 @@ Core Modules:
 - fast_zetas: High-performance Riemann zeta zero computation (26× faster)
 - quantum_clock: Fractal peel quantum clock analysis of zeta zero spacings
 - holographic_encoder: Quantum mode projection for neural network weights
+- ergodic_jump: Ergodic jump diagnostics via harmonic injection
 - time_affinity: Walltime-based parameter optimization
 - performance_profiler: Performance profiling and bottleneck identification
 - error_pattern_visualizer: Automatic error pattern discovery and correction
@@ -104,6 +105,10 @@ from .quantum_clock import (
 
 from .holographic_encoder import (
     HolographicEncoder,
+)
+
+from .ergodic_jump import (
+    ErgodicJump,
 )
 
 from .time_affinity import (
@@ -217,6 +222,9 @@ __all__ = [
     
     # Holographic Encoder
     'HolographicEncoder',
+    
+    # Ergodic Jump
+    'ErgodicJump',
     
     # Time Affinity
     'TimeAffinityOptimizer',

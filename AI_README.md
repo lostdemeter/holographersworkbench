@@ -17,6 +17,8 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | `holographic_compression.py` | Image compression via harmonics | `HolographicCompressor`, `compress_image`, `decompress_image`, `CompressionStats` | numpy, zlib |
 | `fast_zetas.py` | High-performance zeta zeros | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaZeroParameters` | numpy, scipy, mpmath |
 | `quantum_clock.py` | Fractal peel quantum clock | `QuantumClock` | numpy, matplotlib, fast_zetas (optional) |
+| `holographic_encoder.py` | Quantum mode projection | `HolographicEncoder` | numpy, quantum_clock |
+| `ergodic_jump.py` | Ergodic jump diagnostics | `ErgodicJump` | numpy, fractal_peeling |
 | `time_affinity.py` | Walltime-based param discovery | `TimeAffinityOptimizer`, `GridSearchTimeAffinity`, `quick_calibrate` | numpy |
 | `performance_profiler.py` | Bottleneck identification | `PerformanceProfiler`, `ProfileResult`, `profile`, `compare_profiles`, `estimate_complexity` | numpy, tracemalloc |
 | `error_pattern_visualizer.py` | Error pattern discovery | `ErrorPatternAnalyzer`, `ErrorVisualizer`, `SpectralPattern`, `PolynomialPattern` | numpy, scipy |
@@ -364,7 +366,82 @@ qc.export_metrics('metrics.txt')
 
 ---
 
-## 8. Time Affinity: Diagnostic Parameter Discovery
+## 8. Ergodic Jump: Jump Sequence Diagnostics
+
+**Core Math**: Uncover hidden structure in ergodic (fully mixed, high-entropy) signals by injecting targeted harmonics to induce non-ergodic "stickiness," then peeling to extract the resonant filament.
+
+Inject: \( s' = s + A \cdot \sin(2\pi f \cdot t) \) where \( f = 1/\sqrt{5} \) (golden ratio inverse).
+
+Peel: Haar-style variance cascade \( v_l = \text{Var}(\text{downsample}_l(s')) \).
+
+Extract filament: \( \text{filament} = \text{peel}(s') - \text{peel}(s) \) (residual difference).
+
+Hurst exponent: \( H = -\frac{\text{slope}(\log v_l / \log 2^l)}{2} \)
+- \( H = 0.5 \): White noise (ergodic)
+- \( H > 0.5 \): Persistent (non-ergodic, sticky)
+- \( H < 0.5 \): Anti-persistent
+
+Metrics: resfrac drop \( > 0.05 \) and Hurst shift \( > 0.1 \) indicate pullable structure.
+
+Algorithm:
+1. Compute baseline ergodic peel → baseline Hurst \( H_0 \)
+2. Inject harmonic to break ergodicity
+3. Peel injected signal → injected Hurst \( H_1 \)
+4. Extract filament (difference between peels)
+5. Compute metrics: resfrac drop, Hurst shift \( \Delta H = H_1 - H_0 \)
+
+Performance: 1024-sample signal → ~10ms analysis.
+
+**API Table**:
+
+| Class/Method | Params | Output | Description |
+|--------------|--------|--------|-------------|
+| `ErgodicJump(injection_freq=1/√5, amp=0.15)` | injection_freq: float, amp: float | ErgodicJump instance | Initialize analyzer |
+| `.inject_harmonic(signal)` | signal: np.array | np.array | Inject non-ergodic harmonic |
+| `.execute(signal, peel_levels=None)` | signal: np.array | dict (metrics) | Execute ergodic jump |
+| `.diagnose_ergodicity(signal)` | signal: np.array | dict (diagnosis) | Quick ergodicity test |
+
+**Snippet: Ergodic Jump Analysis**:
+```python
+from workbench import ErgodicJump
+import numpy as np
+
+# Initialize with golden ratio frequency
+jump = ErgodicJump(injection_freq=1/np.sqrt(5), amp=0.15)
+
+# Test on ergodic signal
+ergodic_signal = np.random.randn(1024)
+result = jump.execute(ergodic_signal)
+
+print(f'Resfrac drop: {result["resfrac_drop"]:.4f}')
+print(f'Hurst shift: {result["hurst_shift"]:.4f}')
+print(f'Filament length: {len(result["filament"])}')
+
+# Quick diagnosis
+diagnosis = jump.diagnose_ergodicity(ergodic_signal)
+print(f'Is ergodic: {diagnosis["is_ergodic"]}')
+print(f'Confidence: {diagnosis["confidence"]:.2f}')
+print(f'Recommendation: {diagnosis["recommendation"]}')
+```
+
+**Metrics**:
+- **Resfrac Drop**: Change in residual fraction after injection (>0.05 = structure)
+- **Hurst Shift**: Change in Hurst exponent (>0.1 = non-ergodic)
+- **Filament**: Extracted harmonic residue for refinement
+- **Confidence**: Ergodicity confidence score [0, 1]
+
+**AI Hook**: Ergodic diagnostics—prototype: Detect hidden biases in "random" error residuals, stress-test zeta clock ergodicity, extract filaments for holographic refinement.
+
+**Applications**:
+- Uncover latent biases in error patterns
+- Stress-test ergodicity in quantum clocks
+- Enhance holographic refinement with filaments
+- Detect hidden harmonics in residuals
+- Validate RH via β-shift injection
+
+---
+
+## 9. Time Affinity: Diagnostic Parameter Discovery
 
 **Core Principle**: Use walltime as fitness signal to discover optimal parameters empirically. Correct/resonant parameters → less work → faster execution.
 

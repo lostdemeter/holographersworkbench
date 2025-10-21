@@ -30,6 +30,7 @@ def test_imports():
         import fast_zetas
         import quantum_clock
         import holographic_encoder
+        import ergodic_jump
         import time_affinity
         import performance_profiler
         import error_pattern_visualizer
@@ -294,10 +295,48 @@ def test_holographic_encoder():
         return False
 
 
+def test_ergodic_jump():
+    """Test ergodic jump diagnostics."""
+    print("\n" + "="*70)
+    print("TEST 9: Ergodic Jump")
+    print("="*70)
+    
+    try:
+        from ergodic_jump import ErgodicJump
+        
+        # Initialize
+        jump = ErgodicJump(injection_freq=1/np.sqrt(5), amp=0.15)
+        assert jump.injection_freq > 0, "Should have injection frequency"
+        print(f"✓ ErgodicJump initialized with freq={jump.injection_freq:.4f}")
+        
+        # Test on ergodic signal
+        ergodic_signal = np.random.randn(512)
+        result = jump.execute(ergodic_signal)
+        
+        assert 'filament' in result, "Should have filament"
+        assert 'resfrac_drop' in result, "Should have resfrac_drop"
+        assert 'hurst_shift' in result, "Should have hurst_shift"
+        print(f"✓ Executed jump: resfrac_drop={result['resfrac_drop']:.4f}")
+        
+        # Test ergodicity diagnosis
+        diagnosis = jump.diagnose_ergodicity(ergodic_signal)
+        assert 'is_ergodic' in diagnosis, "Should have ergodicity flag"
+        assert 'confidence' in diagnosis, "Should have confidence"
+        assert 0 <= diagnosis['confidence'] <= 1, "Confidence in [0,1]"
+        print(f"✓ Diagnosis: ergodic={diagnosis['is_ergodic']}, conf={diagnosis['confidence']:.2f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Ergodic jump test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def test_time_affinity():
     """Test time affinity optimization."""
     print("\n" + "="*70)
-    print("TEST 9: Time Affinity")
+    print("TEST 10: Time Affinity")
     print("="*70)
     
     try:
@@ -332,7 +371,7 @@ def test_time_affinity():
 def test_optimization():
     """Test optimization module."""
     print("\n" + "="*70)
-    print("TEST 10: Optimization Module")
+    print("TEST 11: Optimization Module")
     print("="*70)
     
     try:
@@ -357,7 +396,7 @@ def test_optimization():
 def test_utils():
     """Test utility functions."""
     print("\n" + "="*70)
-    print("TEST 11: Utility Functions")
+    print("TEST 12: Utility Functions")
     print("="*70)
     
     try:
@@ -391,7 +430,7 @@ def test_utils():
 def test_performance_profiler():
     """Test performance profiler."""
     print("\n" + "="*70)
-    print("TEST 12: Performance Profiler")
+    print("TEST 13: Performance Profiler")
     print("="*70)
     
     try:
@@ -426,7 +465,7 @@ def test_performance_profiler():
 def test_error_pattern_visualizer():
     """Test error pattern visualizer."""
     print("\n" + "="*70)
-    print("TEST 13: Error Pattern Visualizer")
+    print("TEST 14: Error Pattern Visualizer")
     print("="*70)
     
     try:
@@ -459,7 +498,7 @@ def test_error_pattern_visualizer():
 def test_formula_code_generator():
     """Test formula code generator."""
     print("\n" + "="*70)
-    print("TEST 14: Formula Code Generator")
+    print("TEST 15: Formula Code Generator")
     print("="*70)
     
     try:
@@ -491,7 +530,7 @@ def test_formula_code_generator():
 def test_convergence_analyzer():
     """Test convergence analyzer."""
     print("\n" + "="*70)
-    print("TEST 15: Convergence Analyzer")
+    print("TEST 16: Convergence Analyzer")
     print("="*70)
     
     try:
@@ -537,6 +576,7 @@ def run_all_tests():
         ("Fast Zetas", test_fast_zetas),
         ("Quantum Clock", test_quantum_clock),
         ("Holographic Encoder", test_holographic_encoder),
+        ("Ergodic Jump", test_ergodic_jump),
         ("Time Affinity", test_time_affinity),
         ("Optimization", test_optimization),
         ("Utils", test_utils),
