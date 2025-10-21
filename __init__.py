@@ -13,6 +13,7 @@ Core Modules:
 - fractal_peeling: Recursive fractal peeling for lossless compression
 - holographic_compression: Holographic image compression via harmonic encoding
 - fast_zetas: High-performance Riemann zeta zero computation (26× faster)
+- quantum_clock: Fractal peel quantum clock analysis of zeta zero spacings
 - time_affinity: Walltime-based parameter optimization
 - performance_profiler: Performance profiling and bottleneck identification
 - error_pattern_visualizer: Automatic error pattern discovery and correction
@@ -94,6 +95,10 @@ from .fast_zetas import (
     zetazero_batch,
     zetazero_range,
     ZetaZeroParameters,
+)
+
+from .quantum_clock import (
+    QuantumClock,
 )
 
 from .time_affinity import (
@@ -201,6 +206,9 @@ __all__ = [
     'zetazero_batch',
     'zetazero_range',
     'ZetaZeroParameters',
+    
+    # Quantum Clock
+    'QuantumClock',
     
     # Time Affinity
     'TimeAffinityOptimizer',

@@ -16,6 +16,7 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | `fractal_peeling.py` | Recursive lossless compression | `FractalPeeler`, `resfrac_score`, `compress`, `decompress`, `tree_statistics` | numpy |
 | `holographic_compression.py` | Image compression via harmonics | `HolographicCompressor`, `compress_image`, `decompress_image`, `CompressionStats` | numpy, zlib |
 | `fast_zetas.py` | High-performance zeta zeros | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaZeroParameters` | numpy, scipy, mpmath |
+| `quantum_clock.py` | Fractal peel quantum clock | `QuantumClock` | numpy, matplotlib, fast_zetas (optional) |
 | `time_affinity.py` | Walltime-based param discovery | `TimeAffinityOptimizer`, `GridSearchTimeAffinity`, `quick_calibrate` | numpy |
 | `performance_profiler.py` | Bottleneck identification | `PerformanceProfiler`, `ProfileResult`, `profile`, `compare_profiles`, `estimate_complexity` | numpy, tracemalloc |
 | `error_pattern_visualizer.py` | Error pattern discovery | `ErrorPatternAnalyzer`, `ErrorVisualizer`, `SpectralPattern`, `PolynomialPattern` | numpy, scipy |
@@ -290,7 +291,80 @@ for n, z in zetazero_range(1, 10000):
 
 ---
 
-## 7. Time Affinity: Diagnostic Parameter Discovery
+## 7. Quantum Clock: Fractal Peel Analysis
+
+**Core Math**: Analyze Riemann zeta zero spacings as quantum timing reference with fractal structure. Fractal peel via Haar wavelet variance cascade:
+\[
+v_l = \text{Var}\left(\frac{\tilde{u}_{2j} + \tilde{u}_{2j+1}}{\sqrt{2}}\right), \quad \text{resfrac} = \frac{v_L}{v_0}
+\]
+
+Fractal dimension: \( D = -\frac{\text{slope}(\log v_l / \log 2^l)}{2} \) (Hurst exponent analog).
+
+Spectral sharpness: \( S = 1 - \frac{H}{H_{max}} \), where \( H = -\sum p_q \log p_q \) (entropy of power spectrum).
+
+RH falsification test: Compute resfrac under β-shift; resfrac > 0.05 falsifies β = 1/2 (zeros off critical line).
+
+Algorithm:
+1. Compute zeta zero spacings: \( \Delta_n = \gamma_{n+1} - \gamma_n \) (uses fast_zetas for 26× speedup).
+2. Fractal peel: Recursively downsample by 2, compute variance at each scale.
+3. Spectral analysis: FFT → power spectrum → sharpness metric.
+4. RH test: Apply β-shift, compute resfrac on unfolded residuals.
+
+Performance: 500 zeros → ~4min complete analysis with visualization.
+
+**API Table**:
+
+| Class/Method | Params | Output | Description |
+|--------------|--------|--------|-------------|
+| `QuantumClock(n_zeros=500)` | n_zeros: number of zeros | QuantumClock instance | Initialize quantum clock |
+| `.compute_zeta_spacings()` | - | np.array (spacings) | Compute zero spacings |
+| `.fractal_peel(signal, max_levels=8)` | signal: np.array, max_levels: int | dict {levels, variances, fractal_dim, coherence_time, resfrac} | Multi-scale variance analysis |
+| `.analyze()` | - | dict (metrics) | Complete analysis pipeline |
+| `.visualize(save_path=None)` | save_path: str (optional) | None (displays plot) | Comprehensive visualization |
+| `.test_rh_falsification(beta_shift=0.01, n_test=100)` | beta_shift: float, n_test: int | (resfrac: float, falsify: bool) | RH falsification test |
+
+**Snippet: Quantum Clock Analysis**:
+```python
+from workbench import QuantumClock
+
+# Create quantum clock with 500 zeros
+qc = QuantumClock(n_zeros=500)
+
+# Run complete analysis
+metrics = qc.analyze()
+print(f'Fractal Dimension: {metrics["fractal_dim"]:.3f}')
+print(f'Coherence Time: {metrics["coherence_time"]} ticks')
+print(f'Spectral Sharpness: {metrics["spectral_sharpness"]:.3f}')
+
+# RH falsification test
+resfrac, falsify = qc.test_rh_falsification(beta_shift=0.0)  # β=1/2 (RH)
+print(f'RH case: resfrac={resfrac:.2e}, Falsifies: {falsify}')
+
+# Visualize
+qc.visualize('quantum_clock_analysis.png')
+
+# Export metrics
+qc.export_metrics('metrics.txt')
+```
+
+**Metrics**:
+- **Fractal Dimension**: Hurst exponent (0.5 = white noise, >0.5 = persistent, <0.5 = anti-persistent)
+- **Coherence Time**: Scale where variance drops 50% (measures temporal correlation)
+- **Residual Fraction**: Final/initial variance ratio (measures predictability)
+- **Spectral Sharpness**: Concentration of power spectrum (higher = more ordered)
+
+**AI Hook**: Quantum timing—prototype: Analyze zeta spacings for fractal structure, test RH via β-shift, use as precision timing reference.
+
+**Applications**:
+- Precision timing and synchronization
+- Quantum computing error correction
+- Signal processing and communications
+- Gravitational wave detection
+- Riemann Hypothesis verification
+
+---
+
+## 8. Time Affinity: Diagnostic Parameter Discovery
 
 **Core Principle**: Use walltime as fitness signal to discover optimal parameters empirically. Correct/resonant parameters → less work → faster execution.
 

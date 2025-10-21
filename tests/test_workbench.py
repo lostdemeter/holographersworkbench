@@ -28,6 +28,7 @@ def test_imports():
         import fractal_peeling
         import holographic_compression
         import fast_zetas
+        import quantum_clock
         import time_affinity
         import performance_profiler
         import error_pattern_visualizer
@@ -198,10 +199,54 @@ def test_fast_zetas():
         return False
 
 
+def test_quantum_clock():
+    """Test quantum clock analysis."""
+    print("\n" + "="*70)
+    print("TEST 7: Quantum Clock")
+    print("="*70)
+    
+    try:
+        from quantum_clock import QuantumClock
+        
+        # Test instantiation
+        qc = QuantumClock(n_zeros=20)
+        assert qc.n_zeros == 20, "Should initialize with 20 zeros"
+        print(f"✓ QuantumClock initialized with {qc.n_zeros} zeros")
+        
+        # Test compute spacings
+        spacings = qc.compute_zeta_spacings()
+        assert len(spacings) == 19, "Should get 19 spacings from 20 zeros"
+        assert np.all(spacings > 0), "All spacings should be positive"
+        print(f"✓ Computed {len(spacings)} spacings, mean={np.mean(spacings):.4f}")
+        
+        # Test fractal peel
+        fractal_data = qc.fractal_peel(spacings, max_levels=5)
+        assert 'fractal_dim' in fractal_data, "Should have fractal_dim"
+        assert 'coherence_time' in fractal_data, "Should have coherence_time"
+        assert 'resfrac' in fractal_data, "Should have resfrac"
+        assert 0 <= fractal_data['resfrac'] <= 1, "Resfrac should be in [0,1]"
+        print(f"✓ Fractal peel: dim={fractal_data['fractal_dim']:.3f}, resfrac={fractal_data['resfrac']:.2e}")
+        
+        # Test spectral analysis
+        freqs, power = qc.compute_structure_factor(spacings)
+        sharpness = qc.compute_spectral_sharpness(freqs, power)
+        assert len(freqs) > 0, "Should have frequencies"
+        assert len(power) == len(freqs), "Power and freqs should match"
+        assert sharpness >= 0, "Sharpness should be non-negative"
+        print(f"✓ Spectral analysis: sharpness={sharpness:.3f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Quantum clock test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def test_time_affinity():
     """Test time affinity optimization."""
     print("\n" + "="*70)
-    print("TEST 7: Time Affinity")
+    print("TEST 8: Time Affinity")
     print("="*70)
     
     try:
@@ -236,7 +281,7 @@ def test_time_affinity():
 def test_optimization():
     """Test optimization module."""
     print("\n" + "="*70)
-    print("TEST 8: Optimization Module")
+    print("TEST 9: Optimization Module")
     print("="*70)
     
     try:
@@ -261,7 +306,7 @@ def test_optimization():
 def test_utils():
     """Test utility functions."""
     print("\n" + "="*70)
-    print("TEST 9: Utility Functions")
+    print("TEST 10: Utility Functions")
     print("="*70)
     
     try:
@@ -295,7 +340,7 @@ def test_utils():
 def test_performance_profiler():
     """Test performance profiler."""
     print("\n" + "="*70)
-    print("TEST 10: Performance Profiler")
+    print("TEST 11: Performance Profiler")
     print("="*70)
     
     try:
@@ -330,7 +375,7 @@ def test_performance_profiler():
 def test_error_pattern_visualizer():
     """Test error pattern visualizer."""
     print("\n" + "="*70)
-    print("TEST 11: Error Pattern Visualizer")
+    print("TEST 12: Error Pattern Visualizer")
     print("="*70)
     
     try:
@@ -363,7 +408,7 @@ def test_error_pattern_visualizer():
 def test_formula_code_generator():
     """Test formula code generator."""
     print("\n" + "="*70)
-    print("TEST 12: Formula Code Generator")
+    print("TEST 13: Formula Code Generator")
     print("="*70)
     
     try:
@@ -395,7 +440,7 @@ def test_formula_code_generator():
 def test_convergence_analyzer():
     """Test convergence analyzer."""
     print("\n" + "="*70)
-    print("TEST 13: Convergence Analyzer")
+    print("TEST 14: Convergence Analyzer")
     print("="*70)
     
     try:
@@ -439,6 +484,7 @@ def run_all_tests():
         ("Fractal Peeling", test_fractal_peeling),
         ("Holographic Compression", test_holographic_compression),
         ("Fast Zetas", test_fast_zetas),
+        ("Quantum Clock", test_quantum_clock),
         ("Time Affinity", test_time_affinity),
         ("Optimization", test_optimization),
         ("Utils", test_utils),
