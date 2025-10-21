@@ -518,13 +518,14 @@ Semantic versioning:
 
 ## Migration from Old Structure
 
-Old flat files have been moved to `deprecated/` folder:
-- `utils.py` → `workbench/primitives/`
-- `fast_zetas.py` → `workbench/core/zeta.py`
-- `spectral.py` → `workbench/processors/spectral.py`
-- etc.
+The repository has been reorganized from a flat structure to a 5-layer architecture:
+- Old utility functions → `workbench/primitives/`
+- Old zeta computation → `workbench/core/zeta.py`
+- Old processors → `workbench/processors/`
+- Old analysis tools → `workbench/analysis/`
+- Old code generation → `workbench/generation/`
 
-See `deprecated/README.md` for complete mapping.
+All functionality has been preserved and enhanced with the new structure.
 
 ## Questions?
 
