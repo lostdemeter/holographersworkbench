@@ -6,15 +6,14 @@ Demonstrates the Recursive Fractal Peeling algorithm for lossless
 data compression and structure analysis.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
-from fractal_peeling import (
+from workbench.processors.compression import (
     FractalPeeler,
-    resfrac_score,
-    compress,
-    decompress,
-    compression_ratio,
-    tree_statistics,
-    visualize_tree
+    resfrac_score
 )
 
 

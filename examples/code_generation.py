@@ -5,9 +5,13 @@ Example: Using the Formula Code Generator
 Demonstrates automatic production code generation from formula discoveries.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
-from formula_code_generator import FormulaCodeGenerator
-from error_pattern_visualizer import ErrorPatternAnalyzer
+from workbench.generation.code import FormulaCodeGenerator
+from workbench.analysis.errors import ErrorPatternAnalyzer
 
 
 # Example 1: Generate from Error Analysis

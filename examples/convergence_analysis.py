@@ -5,8 +5,12 @@ Example: Using the Convergence Analyzer
 Demonstrates automatic convergence analysis and stopping recommendations.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
-from convergence_analyzer import ConvergenceAnalyzer, ConvergenceVisualizer
+from workbench.analysis.convergence import ConvergenceAnalyzer
 
 print("=" * 70)
 print("EXAMPLE 1: Fast Zetas Convergence (Real Data)")

@@ -5,9 +5,13 @@ Example: Using the Performance Profiler
 Demonstrates the Performance Profiler module with various profiling patterns.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
 import time
-from performance_profiler import (
+from workbench.analysis.performance import (
     PerformanceProfiler,
     profile,
     compare_profiles,

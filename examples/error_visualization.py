@@ -5,11 +5,12 @@ Example: Using the Error Pattern Visualizer
 Demonstrates automatic error pattern discovery and correction suggestions.
 """
 
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import numpy as np
-from error_pattern_visualizer import (
-    ErrorPatternAnalyzer,
-    ErrorVisualizer
-)
+from workbench.analysis.errors import ErrorPatternAnalyzer
 
 
 # ============================================================================
