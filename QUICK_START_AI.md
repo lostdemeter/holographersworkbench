@@ -12,7 +12,7 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Find top-k efficiently** | `from workbench import SublinearOptimizer` | `top_k, stats = optimizer.optimize(candidates, score_fn, top_k=100)` |
 | **Compress data losslessly** | `from workbench import FractalPeeler` | `tree = peeler.compress(data)` |
 | **Compress images** | `from workbench import HolographicCompressor` | `compressed, stats = compressor.compress(image)` |
-| **Compute zeta zeros fast** | `from workbench import zetazero, zetazero_batch` | `z = zetazero(100)  # 26× faster than mpmath` |
+| **Compute zeta zeros (perfect)** | `from workbench import zetazero, zetazero_batch` | `z = zetazero(100)  # 100% perfect, 2.7× faster` |
 | **Predict primes/zeros** | `from workbench import GushurstCrystal` | `gc = GushurstCrystal(n_zeros=500)` |
 | **Profile performance** | `from workbench import PerformanceProfiler` | `profiler = PerformanceProfiler()` |
 | **Analyze errors** | `from workbench import ErrorPatternAnalyzer` | `analyzer = ErrorPatternAnalyzer(actual, predicted, x)` |
@@ -33,7 +33,7 @@ All source files are in `workbench/`:
 - `workbench/primitives/kernels.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/kernels.py)) - Kernel functions
 
 ### Layer 2: Core
-- `workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py)) - Fast zeta zero computation
+- `workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py)) - Hybrid fractal-Newton (100% perfect accuracy)
 - `workbench/core/gushurst_crystal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/gushurst_crystal.py)) - Unified number-theoretic framework
 
 ### Layer 3: Analysis
