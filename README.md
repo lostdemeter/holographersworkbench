@@ -145,7 +145,9 @@ examples/
 
 ## Core Modules
 
-### 🌟 Gushurst Crystal (`gushurst_crystal.py`)
+### 🌟 Gushurst Crystal
+
+`workbench/core/gushurst_crystal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/gushurst_crystal.py))
 
 **Purpose**: Unified number-theoretic crystalline structure connecting primes and zeta zeros
 
@@ -195,7 +197,9 @@ gc.visualize_unified_structure('crystal_analysis.png')
 
 **See**: `experimental/GUSHURST_CRYSTAL.md` for complete documentation
 
-### 1. Spectral Module (`spectral.py`)
+### 1. Spectral Module
+
+`workbench/processors/spectral.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/spectral.py))
 
 **Purpose**: Frequency-domain analysis and zeta-based scoring
 
@@ -216,7 +220,9 @@ scorer = SpectralScorer(frequencies=zeros, damping=0.05)
 scores = scorer.compute_scores(candidates, shift=0.05)
 ```
 
-### 2. Holographic Module (`holographic.py`)
+### 2. Holographic Module
+
+`workbench/processors/holographic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/holographic.py))
 
 **Purpose**: Phase retrieval, interference patterns, signal refinement
 
@@ -241,7 +247,9 @@ envelope, phase_var = phase_retrieve_hilbert(signal)
 refined = holographic_refinement(scores, reference, method="hilbert")
 ```
 
-### 3. Optimization Module (`optimization.py`)
+### 3. Optimization Module
+
+`workbench/processors/optimization.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/optimization.py))
 
 **Purpose**: Sublinear algorithms and parameter calibration
 
@@ -262,7 +270,9 @@ print(f"Reduced {stats.n_original} → {stats.n_final}")
 print(f"Complexity: {stats.complexity_estimate}")
 ```
 
-### 4. Fractal Peeling Module (`fractal_peeling.py`)
+### 4. Fractal Peeling Module
+
+`workbench/processors/compression.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/compression.py))
 
 **Purpose**: Recursive lossless compression via autoregressive pattern extraction
 
@@ -292,7 +302,9 @@ ratio = peeler.compression_ratio(tree, len(signal))
 stats = peeler.tree_stats(tree)
 ```
 
-### 5. Holographic Compression Module (`holographic_compression.py`)
+### 5. Holographic Compression Module
+
+`workbench/processors/compression.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/compression.py))
 
 **Purpose**: Lossless image compression exploiting 15th order harmonic structure
 
@@ -322,7 +334,9 @@ reconstructed = decompress_image(compressed)
 assert np.array_equal(image, reconstructed)
 ```
 
-### 6. Fast Zetas Module (`fast_zetas.py`)
+### 6. Fast Zetas Module
+
+`workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py))
 
 **Purpose**: High-performance Riemann zeta zero computation (26× faster than mpmath)
 
@@ -350,7 +364,9 @@ for n, z in zetazero_range(1, 10000):
     process(n, z)  # Yields one at a time
 ```
 
-### 7. Time Affinity Module (`time_affinity.py`)
+### 7. Time Affinity Module
+
+`workbench/analysis/affinity.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/affinity.py))
 
 **Purpose**: Diagnostic tool for discovering optimal parameters using walltime as a fitness signal
 
@@ -403,7 +419,9 @@ print(f"Error: {result.time_error:.6f}s")
 
 The following four modules form a complete optimization pipeline from profiling to deployment. This is the most powerful and novel part of the workbench.
 
-### 8. Performance Profiler Module (`performance_profiler.py`)
+### 8. Performance Profiler Module
+
+`workbench/analysis/performance.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/performance.py))
 
 **Purpose**: Identify bottlenecks and optimize algorithm performance
 
@@ -440,7 +458,9 @@ print(profiler.generate_report())
 - Compare before/after optimization
 - Track memory usage patterns
 
-### 9. Error Pattern Visualizer Module (`error_pattern_visualizer.py`)
+### 9. Error Pattern Visualizer Module
+
+`workbench/analysis/errors.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/errors.py))
 
 **Purpose**: Automatically discover correction patterns in error signals
 
@@ -479,7 +499,9 @@ print(f"Improvement: {history.improvement:.1%}")
 
 **Key Insight**: Errors are not random—they contain structure that reveals missing terms.
 
-### 10. Formula Code Generator Module (`formula_code_generator.py`)
+### 10. Formula Code Generator Module
+
+`workbench/generation/code.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/generation/code.py))
 
 **Purpose**: Generate production-ready code from formula discoveries
 
@@ -532,7 +554,9 @@ if validation.is_valid:
 2. **Error Pattern Visualizer** → Discover corrections
 3. **Formula Code Generator** → Generate production code
 
-### 11. Convergence Analyzer Module (`convergence_analyzer.py`)
+### 11. Convergence Analyzer Module
+
+`workbench/analysis/convergence.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/convergence.py))
 
 **Purpose**: Detect when to stop iterative optimization
 
@@ -580,7 +604,9 @@ future_iters, future_metrics = analyzer.predict_future_improvements(10)
 3. **Formula Code Generator** → Generate production code
 4. **Convergence Analyzer** → Decide when to stop
 
-### 12. Utils Module (`utils.py`)
+### 12. Utils Module
+
+`workbench/primitives/signal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/signal.py))
 
 **Purpose**: Common utilities
 
@@ -761,7 +787,9 @@ print(f"Complexity: {stats.complexity_estimate}")
 print(f"Top 10: {top_100[:10]}")
 ```
 
-### 8. Holographic Encoder Module (`holographic_encoder.py`)
+### 8. Holographic Encoder Module
+
+`workbench/processors/encoding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/encoding.py))
 
 **Purpose**: Quantum mode projection for neural network weights using Riemann zeta zero spacings as basis functions
 
@@ -799,7 +827,9 @@ resonances = encoder.analyze_resonances(hologram)
 print(f"Top mode: {resonances[0]['mode']}, energy: {resonances[0]['energy_fraction']:.2%}")
 ```
 
-### 9. Ergodic Jump Module (`ergodic_jump.py`)
+### 9. Ergodic Jump Module
+
+`workbench/processors/ergodic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/ergodic.py))
 
 **Purpose**: Diagnostic for uncovering hidden structure in ergodic signals via harmonic injection and recursive peeling
 
