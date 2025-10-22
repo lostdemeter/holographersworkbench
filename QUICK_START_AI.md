@@ -55,19 +55,92 @@ All source files are in `workbench/`:
 
 ## 🔄 Dependency Flow
 
-```
-Layer 5: generation/     ← Generates code, tests, benchmarks
-    ↓ uses
-Layer 4: processors/     ← Stateful transformers (scorers, optimizers)
-    ↓ uses
-Layer 3: analysis/       ← Read-only analyzers (profilers, error detectors)
-    ↓ uses
-Layer 2: core/           ← Domain primitives (zeta zeros, crystals)
-    ↓ uses
-Layer 1: primitives/     ← Pure utility functions (signal, FFT, phase)
+```mermaid
+graph TD
+    subgraph Layer5[Layer 5: generation/]
+        L5A[FormulaCodeGenerator]
+        L5B[CodeValidator]
+        L5C[TestGenerator]
+    end
+    
+    subgraph Layer4[Layer 4: processors/]
+        L4A[SpectralScorer]
+        L4B[SublinearOptimizer]
+        L4C[HolographicCompressor]
+        L4D[FractalPeeler]
+        L4E[HolographicEncoder]
+        L4F[ErgodicJump]
+    end
+    
+    subgraph Layer3[Layer 3: analysis/]
+        L3A[PerformanceProfiler]
+        L3B[ErrorPatternAnalyzer]
+        L3C[ConvergenceAnalyzer]
+        L3D[TimeAffinityOptimizer]
+    end
+    
+    subgraph Layer2[Layer 2: core/]
+        L2A[GushurstCrystal]
+        L2B[zetazero]
+        L2C[ZetaFiducials]
+    end
+    
+    subgraph Layer1[Layer 1: primitives/]
+        L1A[signal.normalize]
+        L1B[frequency.compute_fft]
+        L1C[phase.retrieve_hilbert]
+        L1D[kernels.gaussian]
+    end
+    
+    subgraph External[External Dependencies]
+        EXT[numpy, scipy, mpmath]
+    end
+    
+    %% Layer 5 → Layer 4
+    L5A --> L4A
+    L5A --> L4B
+    L5B --> L4A
+    
+    %% Layer 4 → Layer 3
+    L4A --> L3A
+    L4B --> L3A
+    L4C --> L3B
+    L4E --> L3B
+    
+    %% Layer 3 → Layer 2
+    L3A --> L2A
+    L3B --> L2B
+    L3C --> L2C
+    L3D --> L2B
+    
+    %% Layer 2 → Layer 1
+    L2A --> L1A
+    L2A --> L1B
+    L2B --> L1A
+    L2C --> L1B
+    
+    %% Layer 1 → External
+    L1A --> EXT
+    L1B --> EXT
+    L1C --> EXT
+    L1D --> EXT
+    
+    style Layer5 fill:#e1f5ff
+    style Layer4 fill:#fff4e1
+    style Layer3 fill:#ffe1f5
+    style Layer2 fill:#e1ffe1
+    style Layer1 fill:#f5e1ff
+    style External fill:#f0f0f0
 ```
 
 **Rule**: Higher layers can import from lower layers, never the reverse.
+
+**Key Relationships**:
+- `FormulaCodeGenerator` uses `SpectralScorer` and `SublinearOptimizer`
+- `SpectralScorer` uses `PerformanceProfiler` for optimization
+- `ErrorPatternAnalyzer` uses `zetazero` for spectral analysis
+- `GushurstCrystal` uses `signal.normalize` and `frequency.compute_fft`
+- All primitives depend on numpy/scipy/mpmath
 
 ## 🚀 5-Minute Quickstart
 
