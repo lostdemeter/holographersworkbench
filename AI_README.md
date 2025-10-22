@@ -22,7 +22,7 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | Module | Purpose | Key Exports | Deps |
 |--------|---------|-------------|------|
 | `core.zeta` | Fast zeta zeros (26× faster) | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaFiducials` | numpy, scipy, mpmath |
-| `core.quantum` | Quantum clock analysis | `QuantumClock` | numpy, matplotlib |
+| `core.gushurst_crystal` | Unified number-theoretic framework | `GushurstCrystal` | numpy, matplotlib |
 
 ### Layer 3: Analysis (Read-Only)
 | Module | Purpose | Key Exports | Deps |
@@ -314,60 +314,56 @@ for n, z in zetazero_range(1, 10000):
 
 ---
 
-## 7. Quantum Clock: Fractal Peel Analysis
+## 7. Gushurst Crystal: Unified Number-Theoretic Framework
 
-**Core Math**: Analyze Riemann zeta zero spacings as quantum timing reference with fractal structure. Fractal peel via Haar wavelet variance cascade:
+**Core Math**: Crystalline lattice structure unifying Riemann zeta zeros and prime numbers. Fractal peel via variance cascade:
 \[
-v_l = \text{Var}\left(\frac{\tilde{u}_{2j} + \tilde{u}_{2j+1}}{\sqrt{2}}\right), \quad \text{resfrac} = \frac{v_L}{v_0}
+\log(\text{var}_\ell) \propto -k \cdot \log(p)
 \]
+where \( p \) is prime power, \( \ell \) is scale level, \( k \) is fractal dimension.
 
-Fractal dimension: \( D = -\frac{\text{slope}(\log v_l / \log 2^l)}{2} \) (Hurst exponent analog).
+**Key Capabilities**:
+- **Prime Prediction**: Via crystalline resonance patterns
+- **Zeta Zero Prediction**: Via coherence analysis
+- **Fractal Analysis**: Multi-scale variance cascade
+- **Geometric RH**: Lattice symmetry perspective on Riemann Hypothesis
 
-Spectral sharpness: \( S = 1 - \frac{H}{H_{max}} \), where \( H = -\sum p_q \log p_q \) (entropy of power spectrum).
-
-RH falsification test: Compute resfrac under β-shift; resfrac > 0.05 falsifies β = 1/2 (zeros off critical line).
-
-Algorithm:
-1. Compute zeta zero spacings: \( \Delta_n = \gamma_{n+1} - \gamma_n \) (uses fast_zetas for 26× speedup).
-2. Fractal peel: Recursively downsample by 2, compute variance at each scale.
-3. Spectral analysis: FFT → power spectrum → sharpness metric.
-4. RH test: Apply β-shift, compute resfrac on unfolded residuals.
-
-Performance: 500 zeros → ~4min complete analysis with visualization.
-
-**API Table**:
+**Metrics**:
+- **Fractal Dimension** \( D_f \): Self-similarity exponent from log-log slope
+- **Residual Fraction** \( \rho \): Final/initial variance ratio (lower = more structure)
+- **Prime Resonances**: Detected at prime-power scales
+- **Spectral Entropy**: Lattice eigenvalue distribution
+- **Crystalline Lattice**: 9-node extended prism with zeta vertices
 
 | Class/Method | Params | Output | Description |
 |--------------|--------|--------|-------------|
-| `QuantumClock(n_zeros=500)` | n_zeros: number of zeros | QuantumClock instance | Initialize quantum clock |
-| `.compute_zeta_spacings()` | - | np.array (spacings) | Compute zero spacings |
-| `.fractal_peel(signal, max_levels=8)` | signal: np.array, max_levels: int | dict {levels, variances, fractal_dim, coherence_time, resfrac} | Multi-scale variance analysis |
-| `.analyze()` | - | dict (metrics) | Complete analysis pipeline |
-| `.visualize(save_path=None)` | save_path: str (optional) | None (displays plot) | Comprehensive visualization |
-| `.test_rh_falsification(beta_shift=0.01, n_test=100)` | beta_shift: float, n_test: int | (resfrac: float, falsify: bool) | RH falsification test |
+| `GushurstCrystal(n_zeros=500, max_prime=10000)` | n_zeros: int, max_prime: int | GushurstCrystal instance | Initialize crystal |
+| `.analyze_crystal_structure()` | - | dict (metrics) | Complete analysis pipeline |
+| `.predict_primes(n_primes=10)` | n_primes: int | np.array (primes) | Predict next primes |
+| `.predict_zeta_zeros(n_zeros=5)` | n_zeros: int | np.array (zeros) | Predict next zeros |
+| `.fractal_peel_cascade(signal, max_levels=7)` | signal: np.array, max_levels: int | dict {fractal_dim, resfrac, variances, scales} | Multi-scale analysis |
+| `.build_crystalline_lattice()` | - | np.array (9×9 matrix) | Construct lattice |
 
-**Snippet: Quantum Clock Analysis**:
+**Snippet: Gushurst Crystal Analysis**:
 ```python
-from workbench import QuantumClock
+from workbench import GushurstCrystal
 
-# Create quantum clock with 500 zeros
-qc = QuantumClock(n_zeros=500)
+# Create crystal with 500 zeros
+gc = GushurstCrystal(n_zeros=500, max_prime=10000)
 
 # Run complete analysis
-metrics = qc.analyze()
-print(f'Fractal Dimension: {metrics["fractal_dim"]:.3f}')
-print(f'Coherence Time: {metrics["coherence_time"]} ticks')
-print(f'Spectral Sharpness: {metrics["spectral_sharpness"]:.3f}')
+structure = gc.analyze_crystal_structure()
+print(f"Fractal dimension: {structure['fractal_dim']:.3f}")
+print(f"Residual fraction: {structure['resfrac']:.2e}")
+print(f"Prime resonances: {structure['n_resonances']}")
 
-# RH falsification test
-resfrac, falsify = qc.test_rh_falsification(beta_shift=0.0)  # β=1/2 (RH)
-print(f'RH case: resfrac={resfrac:.2e}, Falsifies: {falsify}')
+# Predict primes
+primes = gc.predict_primes(n_primes=10)
+print(f"Next 10 primes: {primes}")
 
-# Visualize
-qc.visualize('quantum_clock_analysis.png')
-
-# Export metrics
-qc.export_metrics('metrics.txt')
+# Predict zeta zeros
+zeros = gc.predict_zeta_zeros(n_zeros=5)
+print(f"Next 5 zeros: {zeros}")
 ```
 
 **Metrics**:
@@ -376,14 +372,14 @@ qc.export_metrics('metrics.txt')
 - **Residual Fraction**: Final/initial variance ratio (measures predictability)
 - **Spectral Sharpness**: Concentration of power spectrum (higher = more ordered)
 
-**AI Hook**: Quantum timing—prototype: Analyze zeta spacings for fractal structure, test RH via β-shift, use as precision timing reference.
+**AI Hook**: Unified number theory—prototype: Predict primes and zeta zeros via crystalline resonance, test RH via lattice symmetry, unify fractal and spectral analysis.
 
 **Applications**:
-- Precision timing and synchronization
-- Quantum computing error correction
-- Signal processing and communications
-- Gravitational wave detection
-- Riemann Hypothesis verification
+- Prime number generation and prediction
+- Zeta zero computation and prediction
+- Riemann Hypothesis investigation
+- Cryptographic applications
+- Number theory research
 
 ---
 
@@ -455,10 +451,10 @@ print(f'Recommendation: {diagnosis["recommendation"]}')
 
 **Applications**:
 - Uncover latent biases in error patterns
-- Stress-test ergodicity in quantum clocks
+- Stress-test ergodicity in signals
 - Enhance holographic refinement with filaments
 - Detect hidden harmonics in residuals
-- Validate RH via β-shift injection
+- Randomness testing for cryptography
 
 ---
 

@@ -776,12 +776,12 @@ print(f"Top 10: {top_100[:10]}")
 
 **Example**:
 ```python
-from workbench import HolographicEncoder, QuantumClock
+from workbench import HolographicEncoder, GushurstCrystal
 import numpy as np
 
 # Initialize
-qc = QuantumClock(n_zeros=100)
-encoder = HolographicEncoder(qc)
+gc = GushurstCrystal(n_zeros=100)
+encoder = HolographicEncoder(gc)
 
 # Encode weight matrix
 weights = np.random.randn(128, 784)
@@ -835,9 +835,10 @@ print(f"Recommendation: {diagnosis['recommendation']}")
 
 **Use Cases**:
 - Uncover latent biases in "random" errors
-- Stress-test ergodicity in quantum clocks
+- Stress-test ergodicity in signals
 - Extract filaments for holographic refinement
 - Detect hidden harmonics in residuals
+- Randomness testing for cryptography
 
 ## Demos
 
