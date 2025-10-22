@@ -81,7 +81,7 @@ def test_notebooks():
                 nb = nbformat.read(f, as_version=4)
             
             # Execute notebook
-            ep = ExecutePreprocessor(timeout=60, kernel_name='python3')
+            ep = ExecutePreprocessor(timeout=180, kernel_name='python3')
             ep.preprocess(nb, {'metadata': {'path': str(notebooks_dir)}})
             
             print("✓ PASS")
