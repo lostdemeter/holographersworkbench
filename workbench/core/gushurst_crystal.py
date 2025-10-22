@@ -36,6 +36,22 @@ The variance cascade v_l and prime scales p^k are related by:
     
 This reveals that prime powers are the natural scales of fractal decay.
 
+Quick Start:
+-----------
+    from workbench import GushurstCrystal
+    
+    # Create crystal
+    gc = GushurstCrystal(n_zeros=500, max_prime=10000)
+    
+    # Analyze structure
+    structure = gc.analyze_crystal_structure()
+    print(f"Fractal dimension: {structure['fractal_dim']:.3f}")
+    print(f"Prime resonances: {structure['n_resonances']}")
+    
+    # Predict primes and zeros
+    primes = gc.predict_primes(n_primes=10)
+    zeros = gc.predict_zeta_zeros(n_zeros=5)
+
 Usage:
 ------
     from gushurst_crystal import GushurstCrystal

@@ -143,6 +143,57 @@ examples/
 4. **Core Processors** - All main processing techniques
 5. **Ergodic Jump** - Specialized diagnostic for hidden structure
 
+## 📊 Architecture Overview
+
+### Dependency Graph
+
+```mermaid
+graph TD
+    A[Layer 5: generation/] --> B[Layer 4: processors/]
+    B --> C[Layer 3: analysis/]
+    C --> D[Layer 2: core/]
+    D --> E[Layer 1: primitives/]
+    E --> F[numpy, scipy, mpmath]
+    
+    A1[FormulaCodeGenerator] -.-> A
+    B1[SpectralScorer] -.-> B
+    B2[SublinearOptimizer] -.-> B
+    B3[HolographicCompressor] -.-> B
+    C1[PerformanceProfiler] -.-> C
+    C2[ErrorPatternAnalyzer] -.-> C
+    C3[ConvergenceAnalyzer] -.-> C
+    D1[GushurstCrystal] -.-> D
+    D2[zetazero] -.-> D
+    E1[signal.normalize] -.-> E
+    E2[frequency.compute_fft] -.-> E
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#ffe1f5
+    style D fill:#e1ffe1
+    style E fill:#f5e1ff
+```
+
+**Rule**: Higher layers can import from lower layers, never the reverse.
+
+### Quick Import Reference
+
+| Task | Import |
+|------|--------|
+| Score candidates | `from workbench import SpectralScorer, ZetaFiducials` |
+| Extract envelope | `from workbench import phase_retrieve_hilbert` |
+| Refine signal | `from workbench import holographic_refinement` |
+| Find top-k | `from workbench import SublinearOptimizer` |
+| Compress data | `from workbench import FractalPeeler` |
+| Compute zeta zeros | `from workbench import zetazero, zetazero_batch` |
+| Predict primes/zeros | `from workbench import GushurstCrystal` |
+| Profile performance | `from workbench import PerformanceProfiler` |
+| Analyze errors | `from workbench import ErrorPatternAnalyzer` |
+| Generate code | `from workbench import FormulaCodeGenerator` |
+| Check convergence | `from workbench import ConvergenceAnalyzer` |
+
+**📖 For complete import guide, see [QUICK_START_AI.md](QUICK_START_AI.md)**
+
 ## Core Modules
 
 ### 🌟 Gushurst Crystal

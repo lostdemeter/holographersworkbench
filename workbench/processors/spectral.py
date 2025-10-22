@@ -8,6 +8,20 @@ This module consolidates spectral techniques from:
 - sublinear_optimizer.py: SpectralScorer
 - zeta_chudnovsky.py: compute_spectral_scores
 - srt_auto_calibrator.py: Dirac operator construction
+
+Quick Start:
+-----------
+    from workbench import SpectralScorer, ZetaFiducials
+    
+    # Get zeta zeros as frequencies
+    zeros = ZetaFiducials.get_standard(20)
+    
+    # Score candidates
+    scorer = SpectralScorer(frequencies=zeros, damping=0.05)
+    scores = scorer.compute_scores(candidates, shift=0.05)
+    
+    # Find top candidates
+    top_idx = scores.argsort()[-10:][::-1]
 """
 
 import numpy as np
