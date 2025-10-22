@@ -44,6 +44,3 @@ Thumbs.db
 
 # Project specific
 *.log
-
-# Experimental/staging area (not tracked)
-experimental/

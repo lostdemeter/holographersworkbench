@@ -2,9 +2,10 @@
 workbench.core
 ~~~~~~~~~~~~~~
 
-Layer 2: Domain-specific primitives for zeta zeros and quantum modes.
+Layer 2: Domain-specific primitives for zeta zeros and crystalline structures.
 
 This layer contains domain primitives that build on Layer 1 functions.
+Includes the Gushurst Crystal - a unified number-theoretic crystalline structure.
 """
 
 from .zeta import (
@@ -15,8 +16,8 @@ from .zeta import (
     ZetaFiducials,
 )
 
-from .quantum import (
-    QuantumClock,
+from .gushurst_crystal import (
+    GushurstCrystal,
 )
 
 __all__ = [
@@ -27,6 +28,6 @@ __all__ = [
     'ZetaZeroParameters',
     'ZetaFiducials',
     
-    # Quantum clock
-    'QuantumClock',
+    # Gushurst crystal (unified framework)
+    'GushurstCrystal',
 ]

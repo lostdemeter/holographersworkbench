@@ -52,11 +52,11 @@ envelope = signal.compute_envelope(data)
 
 ### Layer 2: Core (`workbench/core/`)
 
-**Purpose**: Domain-specific primitives (zeta zeros, quantum modes)
+**Purpose**: Domain-specific primitives (zeta zeros, crystalline structures)
 
 **Modules**:
 - `zeta.py` - Riemann zeta zero computation, ZetaFiducials class
-- `quantum.py` - QuantumClock for fractal peel analysis
+- `gushurst_crystal.py` - **GushurstCrystal** unified number-theoretic framework
 
 **Rules**:
 - Can use Layer 1 (primitives)
@@ -64,14 +64,32 @@ envelope = signal.compute_envelope(data)
 - Minimal state (mostly caching)
 - No dependencies on Layers 3-5
 
+**The Gushurst Crystal**:
+
+The **GushurstCrystal** is a unified framework (named after its discoverer) that combines:
+- Quantum clock fractal peel analysis (Hurst exponent)
+- Geometric prime sieve spectral decomposition
+- Number-theoretic geometry
+
+It reveals that prime numbers and Riemann zeta zeros are dual manifestations of the same crystalline lattice structure, enabling:
+- Prime prediction via resonance patterns
+- Zeta zero prediction via coherence analysis
+- Code reuse by replacing separate quantum clock and prime sieve implementations
+- Geometric interpretation of the Riemann Hypothesis
+
 **Example**:
 ```python
-from workbench.core import zetazero, ZetaFiducials, QuantumClock
+from workbench.core import zetazero, ZetaFiducials, GushurstCrystal
 
 # Domain primitives
 zeros = ZetaFiducials.get_standard(20)
 z = zetazero(100)
-qc = QuantumClock(n_zeros=500)
+
+# Gushurst crystal (unified framework)
+gc = GushurstCrystal(n_zeros=500, max_prime=10000)
+structure = gc.analyze_crystal_structure()  # Fractal peel analysis
+primes = gc.predict_primes(n_primes=10)      # Prime prediction
+zeros_pred = gc.predict_zeta_zeros(n_zeros=5)  # Zero prediction
 ```
 
 ### Layer 3: Analysis (`workbench/analysis/`)
@@ -175,7 +193,7 @@ generator.export_to_file("improved.py", format="module")
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
 │ Layer 2: core/                                              │
-│   zeta.py, quantum.py                                       │
+│   zeta.py, gushurst_crystal.py                             │
 └─────────────────────────────────────────────────────────────┘
                            ↓
 ┌─────────────────────────────────────────────────────────────┐

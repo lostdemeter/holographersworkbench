@@ -12,7 +12,7 @@ Key Features:
 2. Lossy compression (store only dominant modes)
 3. Lossless compression (modes + residual)
 4. Resonance analysis (which modes capture structure)
-5. Integration with QuantumClock for fast zeta computation
+5. Integration with GushurstCrystal for fast zeta computation
 
 Mathematical Foundation:
 ------------------------
@@ -24,11 +24,11 @@ Mathematical Foundation:
 Usage:
 ------
     from holographic_encoder import HolographicEncoder
-    from quantum_clock import QuantumClock
+    from workbench.core import GushurstCrystal
     
-    # Initialize with quantum clock
-    qc = QuantumClock(n_zeros=100)
-    encoder = HolographicEncoder(qc)
+    # Initialize with Gushurst crystal
+    gc = GushurstCrystal(n_zeros=100)
+    encoder = HolographicEncoder(gc)
     
     # Encode weight matrix
     weights = np.random.randn(128, 784)
@@ -51,9 +51,9 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional
 
 try:
-    from workbench.core.quantum import QuantumClock
+    from workbench.core import GushurstCrystal
 except ImportError:
-    from ..core.quantum import QuantumClock
+    from ..core import GushurstCrystal
 
 
 class HolographicEncoder:
@@ -64,21 +64,21 @@ class HolographicEncoder:
     similar to Fourier transform but with cosmic frequencies.
     """
     
-    def __init__(self, quantum_clock: QuantumClock):
+    def __init__(self, gushurst_crystal: GushurstCrystal):
         """
         Initialize holographic encoder.
         
         Args:
-            quantum_clock: QuantumClock instance with computed zeros
+            gushurst_crystal: GushurstCrystal instance with computed zeros
         """
-        self.qc = quantum_clock
+        self.qc = gushurst_crystal
     
     def _get_spacing_basis(self, mode: int) -> np.ndarray:
-        """Get spacing basis for a given mode, compatible with any QuantumClock."""
+        """Get spacing basis for a given mode."""
         if hasattr(self.qc, 'get_spacing_basis'):
             return self.qc.get_spacing_basis(mode)
         else:
-            # Compute spacing basis manually for workbench QuantumClock
+            # Compute spacing basis manually for GushurstCrystal
             if not hasattr(self.qc, 'spacing_basis'):
                 self.qc.spacing_basis = {}
             if mode not in self.qc.spacing_basis:
@@ -109,12 +109,13 @@ class HolographicEncoder:
                 - signal_mean: Mean of flattened signal
                 - signal_std: Std of flattened signal
         """
-        # Ensure quantum clock has zeros computed
-        if not hasattr(self.qc, 'zeros') or self.qc.zeros is None:
-            # Workbench QuantumClock doesn't have compute_zeros, use core.zeta directly
-            from workbench.core.zeta import zetazero_batch
-            zeros_dict = zetazero_batch(1, self.qc.n_zeros, parallel=False)
-            self.qc.zeros = np.array([float(zeros_dict[k]) for k in range(1, self.qc.n_zeros + 1)])
+        # Ensure crystal has zeros computed
+        if not hasattr(self.qc, 'zeta_zeros') or self.qc.zeta_zeros is None:
+            self.qc._compute_zeta_zeros()
+        
+        # Use zeta_zeros attribute from GushurstCrystal
+        if not hasattr(self.qc, 'zeros'):
+            self.qc.zeros = self.qc.zeta_zeros
             # Also need spacing_basis dict
             if not hasattr(self.qc, 'spacing_basis'):
                 self.qc.spacing_basis = {}
@@ -335,13 +336,13 @@ def demo():
     print("Using Quantum Mode Projection (Zeta Zero Basis)")
     print("=" * 70)
     
-    # Initialize quantum clock
-    print("\nInitializing quantum clock...")
-    qc = QuantumClock(n_zeros=100)
-    qc.compute_zeros()
+    # Initialize Gushurst crystal
+    print("\nInitializing Gushurst crystal...")
+    gc = GushurstCrystal(n_zeros=100)
+    gc._compute_zeta_zeros()
     
     # Initialize encoder
-    encoder = HolographicEncoder(qc)
+    encoder = HolographicEncoder(gc)
     
     # Generate test weight matrices
     print("\nGenerating test weight matrices...")

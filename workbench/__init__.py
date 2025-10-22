@@ -55,7 +55,7 @@ from .core import (
     zetazero_range,
     ZetaZeroParameters,
     ZetaFiducials,
-    QuantumClock,
+    GushurstCrystal,
 )
 
 # Layer 3: Analysis (read-only analyzers)
@@ -157,7 +157,7 @@ __all__ = [
     'zetazero_range',
     'ZetaZeroParameters',
     'ZetaFiducials',
-    'QuantumClock',
+    'GushurstCrystal',
     
     # Layer 3: Analysis
     'PerformanceProfiler',

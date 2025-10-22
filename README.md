@@ -107,7 +107,7 @@ workbench/
 │   └── kernels.py       # Kernel functions
 ├── core/                # Layer 2: Domain primitives
 │   ├── zeta.py          # Fast zeta zero computation (26× faster)
-│   └── quantum.py       # Quantum clock fractal analysis
+│   └── gushurst_crystal.py  # 🌟 Gushurst crystal (unified framework)
 ├── analysis/            # Layer 3: Read-only analyzers
 │   ├── performance.py   # Performance profiling
 │   ├── errors.py        # Error pattern detection
@@ -126,7 +126,7 @@ workbench/
 examples/
 └── notebooks/           # 5 comprehensive notebooks
     ├── utilities_1_fast_zetas.ipynb
-    ├── utilities_2_quantum_clock.ipynb
+    ├── utilities_2_gushurst_crystal.ipynb
     ├── utilities_3_optimization_toolkit.ipynb
     ├── techniques_1_core_processors.ipynb
     └── techniques_2_ergodic_jump.ipynb
@@ -136,7 +136,7 @@ examples/
 
 ### Utilities (Foundational Tools)
 1. **Fast Zetas** - High-performance zeta zero computation
-2. **Quantum Clock** - Fractal peel analysis using zeta spacings
+2. **Gushurst Crystal** - 🌟 Unified number-theoretic framework
 3. **Optimization Toolkit** - Complete 4-step optimization pipeline
 
 ### Techniques (Processing Methods)
@@ -144,6 +144,56 @@ examples/
 5. **Ergodic Jump** - Specialized diagnostic for hidden structure
 
 ## Core Modules
+
+### 🌟 Gushurst Crystal (`gushurst_crystal.py`)
+
+**Purpose**: Unified number-theoretic crystalline structure connecting primes and zeta zeros
+
+The **Gushurst Crystal** is a breakthrough unified framework that reveals the deep geometric connection between Riemann zeta zeros and prime numbers. Named after its discoverer.
+
+**Key Capabilities**:
+- **Prime Prediction** - Uses crystalline resonance patterns from variance cascade
+- **Zeta Zero Prediction** - Uses coherence patterns from fractal peel analysis
+- **Code Reuse** - Replaces separate quantum clock and prime sieve implementations
+- **Geometric RH** - New perspective on Riemann Hypothesis via lattice symmetry
+
+**Mathematical Foundation**:
+```
+log(variance_l) ∝ -k·log(p)
+```
+This reveals that prime powers are the natural scales of fractal decay.
+
+**Example**:
+```python
+from workbench.core import GushurstCrystal
+
+# Initialize crystal
+gc = GushurstCrystal(n_zeros=500, max_prime=10000)
+
+# Analyze crystal structure
+structure = gc.analyze_crystal_structure()
+print(f"Fractal dimension: {structure['fractal_dim']:.3f}")
+print(f"Prime resonances: {structure['n_resonances']}")
+
+# Predict primes via resonances
+primes = gc.predict_primes(n_primes=10)
+print(f"Next primes: {primes}")
+
+# Predict zeta zeros via coherence
+zeros = gc.predict_zeta_zeros(n_zeros=5)
+print(f"Next zeros: {zeros}")
+
+# Visualize unified structure
+gc.visualize_unified_structure('crystal_analysis.png')
+```
+
+**Crystal Structure**:
+- 9-node extended prism lattice
+- Vertices: Zeta zeros (crystalline nodes)
+- Edges: Prime-power weighted (crystalline bonds)
+- Symmetries: Palindromic prime bases [2, 3, 2]
+
+**See**: `experimental/GUSHURST_CRYSTAL.md` for complete documentation
 
 ### 1. Spectral Module (`spectral.py`)
 

@@ -24,7 +24,7 @@ def test_imports():
         # Import from new workbench structure
         from workbench.processors import spectral, holographic, optimization
         from workbench.processors.compression import FractalPeeler, HolographicCompressor
-        from workbench.core import zeta, quantum
+        from workbench.core import zeta, GushurstCrystal
         from workbench.processors import encoding, ergodic
         from workbench.analysis import affinity, performance, errors, convergence
         from workbench.generation import code
@@ -191,45 +191,71 @@ def test_fast_zetas():
         return False
 
 
-def test_quantum_clock():
-    """Test quantum clock analysis."""
+def test_gushurst_crystal():
+    """Test Gushurst Crystal (replaces quantum clock)."""
     print("\n" + "="*70)
-    print("TEST 7: Quantum Clock")
+    print("TEST 7: Gushurst Crystal")
     print("="*70)
     
     try:
-        from workbench.core.quantum import QuantumClock
+        from workbench.core import GushurstCrystal
         
         # Test instantiation
-        qc = QuantumClock(n_zeros=20)
-        assert qc.n_zeros == 20, "Should initialize with 20 zeros"
-        print(f"✓ QuantumClock initialized with {qc.n_zeros} zeros")
+        gc = GushurstCrystal(n_zeros=50, max_prime=1000)
+        assert gc.n_zeros == 50, "Should initialize with 50 zeros"
+        assert gc.max_prime == 1000, "Should have max_prime=1000"
+        print(f"✓ GushurstCrystal initialized with {gc.n_zeros} zeros")
         
-        # Test compute spacings
-        spacings = qc.compute_zeta_spacings()
-        assert len(spacings) == 19, "Should get 19 spacings from 20 zeros"
-        assert np.all(spacings > 0), "All spacings should be positive"
-        print(f"✓ Computed {len(spacings)} spacings, mean={np.mean(spacings):.4f}")
+        # Test zeta computation
+        gc._compute_zeta_zeros()
+        assert gc.zeta_zeros is not None, "Should have zeta zeros"
+        assert len(gc.zeta_zeros) == 50, "Should have 50 zeros"
+        assert len(gc.zeta_spacings) == 49, "Should have 49 spacings"
+        assert np.all(gc.zeta_spacings > 0), "All spacings should be positive"
+        print(f"✓ Computed {len(gc.zeta_spacings)} spacings, mean={np.mean(gc.zeta_spacings):.4f}")
         
-        # Test fractal peel
-        fractal_data = qc.fractal_peel(spacings, max_levels=5)
-        assert 'fractal_dim' in fractal_data, "Should have fractal_dim"
-        assert 'coherence_time' in fractal_data, "Should have coherence_time"
-        assert 'resfrac' in fractal_data, "Should have resfrac"
-        assert 0 <= fractal_data['resfrac'] <= 1, "Resfrac should be in [0,1]"
-        print(f"✓ Fractal peel: dim={fractal_data['fractal_dim']:.3f}, resfrac={fractal_data['resfrac']:.2e}")
+        # Test prime computation
+        gc._compute_primes()
+        assert gc.primes is not None, "Should have primes"
+        assert gc.primes[0] == 2, "First prime should be 2"
+        print(f"✓ Computed {len(gc.primes)} primes up to {gc.max_prime}")
         
-        # Test spectral analysis
-        freqs, power = qc.compute_structure_factor(spacings)
-        sharpness = qc.compute_spectral_sharpness(freqs, power)
-        assert len(freqs) > 0, "Should have frequencies"
-        assert len(power) == len(freqs), "Power and freqs should match"
-        assert sharpness >= 0, "Sharpness should be non-negative"
-        print(f"✓ Spectral analysis: sharpness={sharpness:.3f}")
+        # Test fractal peel cascade
+        cascade = gc.fractal_peel_cascade(gc.zeta_spacings, max_levels=5)
+        assert 'fractal_dim' in cascade, "Should have fractal_dim"
+        assert 'resfrac' in cascade, "Should have resfrac"
+        assert 0 < cascade['fractal_dim'] < 2, "Fractal dim should be reasonable"
+        assert 0 < cascade['resfrac'] < 1, "Resfrac should be in (0,1)"
+        print(f"✓ Fractal peel: dim={cascade['fractal_dim']:.3f}, resfrac={cascade['resfrac']:.2e}")
+        
+        # Test crystalline lattice
+        lattice = gc.build_crystalline_lattice()
+        assert lattice.shape == (9, 9), "Lattice should be 9x9"
+        assert np.allclose(lattice, lattice.T), "Lattice should be symmetric"
+        print(f"✓ Crystalline lattice: {lattice.shape}")
+        
+        # Test prime prediction
+        primes = gc.predict_primes(n_primes=3)
+        assert len(primes) == 3, "Should predict 3 primes"
+        assert all(p > gc.max_prime for p in primes), "Predicted primes should be > max_prime"
+        print(f"✓ Prime prediction: {primes}")
+        
+        # Test zeta zero prediction
+        zeros = gc.predict_zeta_zeros(n_zeros=2)
+        assert len(zeros) == 2, "Should predict 2 zeros"
+        assert all(z > gc.zeta_zeros[-1] for z in zeros), "Predicted zeros should be > last known"
+        print(f"✓ Zeta prediction: {[f'{z:.2f}' for z in zeros]}")
+        
+        # Test complete analysis
+        structure = gc.analyze_crystal_structure()
+        assert 'fractal_dim' in structure, "Should have fractal_dim"
+        assert 'n_primes' in structure, "Should have n_primes"
+        assert 'n_zeros' in structure, "Should have n_zeros"
+        print(f"✓ Complete analysis: {structure['n_resonances']} resonances detected")
         
         return True
     except Exception as e:
-        print(f"✗ Quantum clock test failed: {e}")
+        print(f"✗ Gushurst Crystal test failed: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -243,14 +269,14 @@ def test_holographic_encoder():
     
     try:
         from workbench.processors.encoding import HolographicEncoder
-        from workbench.core.quantum import QuantumClock
+        from workbench.core import GushurstCrystal
         
-        # Initialize quantum clock
-        qc = QuantumClock(n_zeros=50)
+        # Initialize Gushurst crystal
+        gc = GushurstCrystal(n_zeros=50)
         
         # Initialize encoder (will compute zeros automatically)
-        encoder = HolographicEncoder(qc)
-        assert encoder.qc is not None, "Encoder should have quantum clock"
+        encoder = HolographicEncoder(gc)
+        assert encoder.qc is not None, "Encoder should have Gushurst crystal"
         print(f"✓ HolographicEncoder initialized")
         
         # Test encoding
@@ -566,7 +592,7 @@ def run_all_tests():
         ("Fractal Peeling", test_fractal_peeling),
         ("Holographic Compression", test_holographic_compression),
         ("Fast Zetas", test_fast_zetas),
-        ("Quantum Clock", test_quantum_clock),
+        ("Gushurst Crystal", test_gushurst_crystal),
         ("Holographic Encoder", test_holographic_encoder),
         ("Ergodic Jump", test_ergodic_jump),
         ("Time Affinity", test_time_affinity),
