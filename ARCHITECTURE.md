@@ -211,7 +211,7 @@ generator.export_to_file("improved.py", format="module")
 ```python
 from workbench import (
     # Layer 2: Core
-    zetazero, ZetaFiducials, QuantumClock,
+    zetazero, ZetaFiducials, GushurstCrystal,
     
     # Layer 3: Analysis
     PerformanceProfiler, ErrorPatternAnalyzer, ConvergenceAnalyzer,
@@ -232,7 +232,7 @@ from workbench.primitives import signal, frequency, phase
 
 # Layer 2: Domain primitives
 from workbench.core.zeta import zetazero, ZetaFiducials
-from workbench.core.quantum import QuantumClock
+from workbench.core import GushurstCrystal
 
 # Layer 3: Analyzers
 from workbench.analysis.performance import PerformanceProfiler
