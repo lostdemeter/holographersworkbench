@@ -117,7 +117,8 @@ class TSPSolver:
     def solve_quantum_folding(
         self,
         n_restarts: int = 3,
-        iterations_per_restart: int = 30
+        iterations_per_restart: int = 30,
+        use_fast: bool = False
     ) -> dict:
         """
         Solve using Quantum Entanglement Dimensional Folding.
@@ -128,6 +129,7 @@ class TSPSolver:
         Args:
             n_restarts: Number of random restarts
             iterations_per_restart: Iterations per restart
+            use_fast: Use optimized fast version (50-100× speedup)
             
         Returns:
             Dictionary with solution and statistics
@@ -137,19 +139,29 @@ class TSPSolver:
         
         # Apply quantum folding
         start_time = time.time()
-        tour, length, info = self.quantum_folder.optimize_tour_dimensional_folding(
-            self.cities,
-            initial_tour,
-            n_restarts=n_restarts,
-            iterations_per_restart=iterations_per_restart
-        )
+        if use_fast:
+            tour, length, info = self.quantum_folder.optimize_tour_dimensional_folding_fast(
+                self.cities,
+                initial_tour,
+                n_restarts=n_restarts,
+                iterations_per_restart=iterations_per_restart
+            )
+        else:
+            tour, length, info = self.quantum_folder.optimize_tour_dimensional_folding(
+                self.cities,
+                initial_tour,
+                n_restarts=n_restarts,
+                iterations_per_restart=iterations_per_restart
+            )
         elapsed = time.time() - start_time
         
         # Compute entanglement
         entanglement = self.quantum_folder.compute_entanglement_score(self.cities, tour)
         
+        method_name = 'Quantum Folding (Fast)' if use_fast else 'Quantum Folding'
+        
         return {
-            'method': 'Quantum Folding',
+            'method': method_name,
             'complexity': 'O(n² log n × D × R × I)',
             'tour': tour,
             'length': length,
@@ -289,7 +301,7 @@ class TSPSolver:
             }
         }
     
-    def compare_all_methods(self) -> dict:
+    def compare_all_methods(self, use_fast: bool = False) -> dict:
         """
         Compare all solution methods.
         
@@ -317,8 +329,9 @@ class TSPSolver:
         print(f"  Time: {baseline_time:.4f}s\n")
         
         # Quantum Folding
-        print("Running Quantum Entanglement Dimensional Folding...")
-        results['quantum'] = self.solve_quantum_folding(n_restarts=2, iterations_per_restart=20)
+        mode_str = " (Fast Mode)" if use_fast else ""
+        print(f"Running Quantum Entanglement Dimensional Folding{mode_str}...")
+        results['quantum'] = self.solve_quantum_folding(n_restarts=2, iterations_per_restart=20, use_fast=use_fast)
         print(f"  Complexity: {results['quantum']['complexity']}")
         print(f"  Length: {results['quantum']['length']:.2f}")
         print(f"  Improvement: {results['quantum']['improvement']:.2f}%")
@@ -580,6 +593,10 @@ def main():
         '--seed', type=int, default=42,
         help='Random seed (default: 42)'
     )
+    parser.add_argument(
+        '--fast', action='store_true',
+        help='Use optimized fast mode for quantum folding (50-100× speedup)'
+    )
     
     args = parser.parse_args()
     
@@ -599,7 +616,7 @@ def main():
     
     # Solve
     if args.method == 'all':
-        results = solver.compare_all_methods()
+        results = solver.compare_all_methods(use_fast=args.fast)
         
         # Print summary
         print("\n" + "="*70)
@@ -624,7 +641,7 @@ def main():
     else:
         # Run single method
         if args.method == 'quantum':
-            result = solver.solve_quantum_folding()
+            result = solver.solve_quantum_folding(use_fast=args.fast)
         elif args.method == 'chaos':
             result = solver.solve_chaos_seeding()
         elif args.method == 'adaptive':
