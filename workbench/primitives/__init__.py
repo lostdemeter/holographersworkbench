@@ -36,6 +36,9 @@ from .kernels import (
     gaussian_kernel,
 )
 
+from .quantum_folding import QuantumFolder
+from .chaos_seeding import ChaosSeeder, AdaptiveChaosSeeder
+
 __all__ = [
     # Signal processing
     'compute_envelope',
@@ -60,4 +63,9 @@ __all__ = [
     # Kernels
     'exponential_decay_kernel',
     'gaussian_kernel',
+    
+    # Optimization
+    'QuantumFolder',
+    'ChaosSeeder',
+    'AdaptiveChaosSeeder',
 ]

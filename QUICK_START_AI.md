@@ -21,6 +21,8 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Discover parameters** | `from workbench import quick_calibrate` | `result = quick_calibrate(algorithm, target_time, bounds)` |
 | **Encode neural weights** | `from workbench import HolographicEncoder` | `encoder = HolographicEncoder(gushurst_crystal)` |
 | **Test ergodicity** | `from workbench import ErgodicJump` | `jump = ErgodicJump(freq=0.447)` |
+| **Solve TSP (quantum)** | `from workbench.primitives import QuantumFolder` | `folder = QuantumFolder(); tour, length, info = folder.optimize_tour_dimensional_folding(cities, initial_tour)` |
+| **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
 
 ## 📁 File Locations (for web scraping)
 

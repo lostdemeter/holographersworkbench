@@ -33,6 +33,8 @@ Layer 1: primitives/     (Pure utility functions: signal processing, FFT, phase 
 - `frequency.py` - FFT and power spectrum computation
 - `phase.py` - Phase retrieval (retrieve_hilbert, retrieve_gs, align)
 - `kernels.py` - Kernel functions (exponential_decay, gaussian)
+- `quantum_folding.py` - Quantum-inspired TSP optimization (QuantumFolder)
+- `chaos_seeding.py` - Residual chaos optimization (ChaosSeeder, AdaptiveChaosSeeder)
 
 **Rules**:
 - No classes, only functions
