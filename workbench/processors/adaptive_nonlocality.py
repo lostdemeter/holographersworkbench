@@ -146,7 +146,7 @@ class AdaptiveNonlocalityOptimizer:
             return 2.0  # Default for small instances
             
         # Normalize points to [0, 1]
-        points_norm = (points - points.min(axis=0)) / (points.ptp(axis=0) + 1e-10)
+        points_norm = (points - points.min(axis=0)) / (np.ptp(points, axis=0) + 1e-10)
         
         # Box sizes
         epsilons = np.logspace(-2, 0, 10)

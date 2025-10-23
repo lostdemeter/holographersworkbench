@@ -725,7 +725,7 @@ def test_chaos_seeding():
         seeder = ChaosSeeder(window_size=3, chaos_weight=0.5)
         print(f"✓ ChaosSeeder instantiated")
         
-        adaptive_seeder = AdaptiveChaosSeeder(initial_weight=0.8, final_weight=0.2, decay_rate=0.95)
+        adaptive_seeder = AdaptiveChaosSeeder(initial_chaos_weight=0.8, final_chaos_weight=0.2, decay_rate=0.95)
         print(f"✓ AdaptiveChaosSeeder instantiated")
         
         np.random.seed(42)
@@ -829,7 +829,7 @@ def test_sublinear_qik():
         cities = np.random.rand(20, 2) * 100
         
         print("  Computing zeta zeros...")
-        zeta_zeros = zetazero_batch(list(range(1, 11)))
+        zeta_zeros = zetazero_batch(1, 11)
         assert len(zeta_zeros) == 10
         print(f"✓ Zeta zeros computed: {len(zeta_zeros)}")
         
