@@ -267,9 +267,15 @@ class SublinearQIK:
         
         # Sparse prime resonance
         if self.use_sparse_resonance and zeta_zeros is not None:
+            # Convert zeta_zeros dict to array if needed
+            if isinstance(zeta_zeros, dict):
+                zz_array = np.array(list(zeta_zeros.values()))
+            else:
+                zz_array = zeta_zeros
+            
             resonance = self._sparse_prime_resonance(
                 cities,
-                zeta_zeros[:k_zeros],
+                zz_array[:k_zeros],
                 dimensions[0]  # Use first dimension
             )
         else:
@@ -329,7 +335,7 @@ class SublinearQIK:
             resonance += amplitude * np.cos(2 * np.pi * phase)
             
         # Normalize
-        resonance = (resonance - resonance.min()) / (resonance.ptp() + 1e-10)
+        resonance = (resonance - resonance.min()) / (np.ptp(resonance) + 1e-10)
         
         return resonance
         
