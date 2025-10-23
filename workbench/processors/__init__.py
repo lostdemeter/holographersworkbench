@@ -60,6 +60,17 @@ from .ergodic import (
     ErgodicJump,
 )
 
+from .adaptive_nonlocality import (
+    AdaptiveNonlocalityOptimizer,
+    AffinityMetrics,
+    DimensionalTrajectory,
+)
+
+from .sublinear_qik import (
+    SublinearQIK,
+    SublinearQIKStats,
+)
+
 __all__ = [
     # Spectral processing
     'SpectralScorer',
@@ -104,4 +115,13 @@ __all__ = [
     
     # Ergodic analysis
     'ErgodicJump',
+    
+    # Adaptive nonlocality
+    'AdaptiveNonlocalityOptimizer',
+    'AffinityMetrics',
+    'DimensionalTrajectory',
+    
+    # Sublinear QIK
+    'SublinearQIK',
+    'SublinearQIKStats',
 ]

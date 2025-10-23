@@ -128,6 +128,11 @@ from .processors import (
     CompressionStats,
     HolographicEncoder,
     ErgodicJump,
+    AdaptiveNonlocalityOptimizer,
+    AffinityMetrics,
+    DimensionalTrajectory,
+    SublinearQIK,
+    SublinearQIKStats,
 )
 
 # Layer 5: Generation (artifact generators)
@@ -226,6 +231,11 @@ __all__ = [
     'CompressionStats',
     'HolographicEncoder',
     'ErgodicJump',
+    'AdaptiveNonlocalityOptimizer',
+    'AffinityMetrics',
+    'DimensionalTrajectory',
+    'SublinearQIK',
+    'SublinearQIKStats',
     
     # Layer 5: Generation
     'FormulaCodeGenerator',
