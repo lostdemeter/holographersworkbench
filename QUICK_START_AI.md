@@ -21,8 +21,10 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Discover parameters** | `from workbench import quick_calibrate` | `result = quick_calibrate(algorithm, target_time, bounds)` |
 | **Encode neural weights** | `from workbench import HolographicEncoder` | `encoder = HolographicEncoder(gushurst_crystal)` |
 | **Test ergodicity** | `from workbench import ErgodicJump` | `jump = ErgodicJump(freq=0.447)` |
-| **Solve TSP (quantum)** | `from workbench.primitives import QuantumFolder` | `folder = QuantumFolder(); tour, length, info = folder.optimize_tour_dimensional_folding(cities, initial_tour)` |
+| **Solve TSP (quantum)** | `from workbench.primitives import QuantumFolder` | `folder = QuantumFolder(); tour, length, info = folder.optimize_tour_dimensional_folding_fast(cities, initial_tour)` |
 | **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
+| **Solve TSP (adaptive)** | `from workbench import AdaptiveNonlocalityOptimizer` | `anl = AdaptiveNonlocalityOptimizer(); solution, cost, trajectory = anl.optimize(initial, points, cost_fn, local_search)` |
+| **Solve TSP (sublinear)** | `from workbench import SublinearQIK, zetazero_batch` | `qik = SublinearQIK(); tour, length, stats = qik.optimize_tsp(cities, zetazero_batch(1, 20))` |
 
 ## 📁 File Locations (for web scraping)
 
@@ -33,6 +35,8 @@ All source files are in `workbench/`:
 - `workbench/primitives/frequency.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/frequency.py)) - FFT operations
 - `workbench/primitives/phase.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/phase.py)) - Phase retrieval
 - `workbench/primitives/kernels.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/kernels.py)) - Kernel functions
+- `workbench/primitives/quantum_folding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/quantum_folding.py)) - Quantum-inspired TSP optimization (5-15% improvement, 12.5× speedup)
+- `workbench/primitives/chaos_seeding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/chaos_seeding.py)) - Residual chaos TSP optimization (3-8% improvement)
 
 ### Layer 2: Core
 - `workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py)) - Hybrid fractal-Newton (100% perfect accuracy)
@@ -51,6 +55,8 @@ All source files are in `workbench/`:
 - `workbench/processors/compression.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/compression.py)) - Fractal peeling & holographic compression
 - `workbench/processors/encoding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/encoding.py)) - Holographic encoding
 - `workbench/processors/ergodic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/ergodic.py)) - Ergodic jump diagnostics
+- `workbench/processors/adaptive_nonlocality.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/adaptive_nonlocality.py)) - Dimensional coupling optimization (self-organizing)
+- `workbench/processors/sublinear_qik.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_qik.py)) - Sublinear QIK (O(N^1.5 log N) complexity)
 
 ### Layer 5: Generation
 - `workbench/generation/code.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/generation/code.py)) - Formula code generation

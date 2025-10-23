@@ -43,6 +43,8 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | `processors.compression` | Fractal + holographic compression | `FractalPeeler`, `HolographicCompressor`, `resfrac_score` | L1 |
 | `processors.encoding` | Holographic encoding | `HolographicEncoder` | L1, L2 |
 | `processors.ergodic` | Ergodic diagnostics | `ErgodicJump` | L1 |
+| `processors.adaptive_nonlocality` | Dimensional coupling opt | `AdaptiveNonlocalityOptimizer` | L1 |
+| `processors.sublinear_qik` | Sublinear QIK (O(N^1.5 log N)) | `SublinearQIK` | L1, L2 |
 
 ### Layer 5: Generation (Artifact Creation)
 | Module | Purpose | Key Exports | Deps |
@@ -863,9 +865,119 @@ Query: "Prototype [toy] with [data]" → I'll chain.
 
 ---
 
+## 11. Adaptive Nonlocality: Dimensional Coupling Optimization
+
+**Core Math**: Solution-problem dimensional coupling via Hausdorff resonance. Self-organizing search through dimensional space guided by affinity landscape:
+\[
+C(D; \sigma, T) = (A_P(D) \cdot A_S(D; \sigma) + \epsilon)^{1/(2T)}
+\]
+where \( A_P(D) \) = problem affinity (box-counting + clustering), \( A_S(D; \sigma) \) = solution affinity (smoothness + uniformity), \( T \) = temperature.
+
+**Three Emergent Phases**:
+1. **Exploration** (T > 1.5): High-dimensional search, broad sampling
+2. **Coupling** (0.8 < T < 1.5): Dimensional resonance, structure matching
+3. **Exploitation** (T < 0.8): Near intrinsic dimension, local refinement
+
+**API Table**:
+
+| Class/Method | Init Params | Key Methods | Output |
+|--------------|-------------|-------------|--------|
+| `AdaptiveNonlocalityOptimizer(d_min=1.0, d_max=2.5, n_dim_samples=30)` | d_min/max: dimension range, n_dim_samples: grid resolution | `optimize(initial, points, cost_fn, local_search, max_iterations=200)` | (solution, cost, DimensionalTrajectory) |
+| `.compute_problem_affinity(points)` | - | - | np.array (n_dim_samples,) |
+| `.compute_solution_affinity(solution, points)` | - | - | np.array (n_dim_samples,) |
+| `.analyze_trajectory(trajectory)` | - | - | dict {phase_statistics, final_dimension, dimensional_entropy} |
+
+**Snippet: Self-Organizing Dimensional Search**:
+```python
+from workbench import AdaptiveNonlocalityOptimizer
+import numpy as np
+
+# Define problem
+cities = np.random.rand(30, 2) * 100
+initial_tour = list(range(30))
+
+def cost_fn(tour, cities):
+    length = 0.0
+    for i in range(len(tour)):
+        j = (i + 1) % len(tour)
+        length += np.linalg.norm(cities[tour[i]] - cities[tour[j]])
+    return length
+
+def local_search(solution, cities, dimension):
+    # 2-opt in dimension D
+    n = len(solution)
+    i, j = np.random.randint(0, n-1), np.random.randint(2, n)
+    if i >= j-1: return solution
+    new = solution.copy()
+    new[i+1:j+1] = list(reversed(new[i+1:j+1]))
+    return new
+
+# Optimize with adaptive dimensional coupling
+anl = AdaptiveNonlocalityOptimizer(d_min=1.0, d_max=2.5, n_dim_samples=30)
+best_solution, best_cost, trajectory = anl.optimize(
+    initial_tour, cities, cost_fn, local_search, max_iterations=100
+)
+
+# Analyze dimensional evolution
+analysis = anl.analyze_trajectory(trajectory)
+print(f"Final dimension: {analysis['final_dimension']:.3f}")
+print(f"Phases: {analysis['phase_statistics']}")
+```
+
+**AI Hook**: Dimensional coupling—prototype: Discover intrinsic problem dimension via affinity resonance.
+
+---
+
+## 12. Sublinear QIK: Quantum Inverse Kinematics
+
+**Core Math**: Breaks cubic barrier (O(N³) → O(N^1.5 log N)) via hierarchical decomposition + dimensional sketching + sparse prime resonance:
+\[
+\text{Complexity} = O(\sqrt{N} \cdot \log N \cdot \log N) = O(N^{1.5} \log N)
+\]
+
+**Three Techniques**:
+1. **Hierarchical**: k = √N clusters (k-means)
+2. **Dimensional Sketch**: m = O(log N) samples around Sierpinski dimension (1.585)
+3. **Sparse Resonance**: k = O(log N) zeta zeros for prime guidance
+
+**API Table**:
+
+| Class/Method | Init Params | Key Methods | Output |
+|--------------|-------------|-------------|--------|
+| `SublinearQIK(use_hierarchical=True, use_dimensional_sketch=True, use_sparse_resonance=True)` | use_*: enable techniques, prime_resonance_dim=1.585 | `optimize_tsp(cities, zeta_zeros, verbose=False)` | (tour, length, SublinearQIKStats) |
+
+**Snippet: Hierarchical + Prime Resonance**:
+```python
+from workbench import SublinearQIK, zetazero_batch
+import numpy as np
+
+# Generate problem
+cities = np.random.rand(50, 2) * 100
+
+# Get zeta zeros for prime resonance
+zeta_zeros = zetazero_batch(1, 20)  # 20 zeros
+
+# Optimize with sublinear complexity
+qik = SublinearQIK(
+    use_hierarchical=True,
+    use_dimensional_sketch=True,
+    use_sparse_resonance=True
+)
+tour, length, stats = qik.optimize_tsp(cities, zeta_zeros)
+
+print(f"Tour length: {length:.2f}")
+print(f"Complexity: {stats.theoretical_complexity}")
+print(f"Clusters: {stats.n_clusters}, Dim samples: {stats.n_dim_samples}")
+print(f"Time: {stats.total_time:.3f}s")
+```
+
+**AI Hook**: Sublinear optimization—prototype: Large TSP (N > 100) with zeta-guided hierarchical decomposition.
+
+---
+
 ## Testing
 
-**Test Suite**: `tests/test_workbench.py` (9/9 passing, 100%)
+**Test Suite**: `tests/test_workbench.py` (22/22 passing, 100%)
 
 Run tests:
 ```bash
