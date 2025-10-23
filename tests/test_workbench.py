@@ -829,7 +829,7 @@ def test_sublinear_qik():
         cities = np.random.rand(20, 2) * 100
         
         print("  Computing zeta zeros...")
-        zeta_zeros = zetazero_batch(1, 11)
+        zeta_zeros = zetazero_batch(1, 10)
         assert len(zeta_zeros) == 10
         print(f"✓ Zeta zeros computed: {len(zeta_zeros)}")
         
