@@ -92,6 +92,22 @@ class QuantumFolder:
         # Performance optimizations
         self.dimension_sampler = AdaptiveDimensionalSampler(self.dimensions)
         self._tour_length_cache = None
+        self._dist_matrix_cache = None
+    
+    def _get_distance_matrix(self, cities: np.ndarray) -> np.ndarray:
+        """
+        Get cached distance matrix or compute if not cached.
+        
+        Args:
+            cities: City coordinates
+            
+        Returns:
+            Distance matrix
+        """
+        # Simple cache check based on array shape
+        if self._dist_matrix_cache is None or self._dist_matrix_cache.shape[0] != len(cities):
+            self._dist_matrix_cache = squareform(pdist(cities))
+        return self._dist_matrix_cache
     
     def fold_dimension_collapse(self, cities: np.ndarray, target_dim: float) -> np.ndarray:
         """
@@ -497,6 +513,9 @@ class QuantumFolder:
         
         improvement_history = []
         
+        # Cache distance matrix for performance
+        dist_matrix = self._get_distance_matrix(cities)
+        
         for restart in range(n_restarts):
             current_tour = initial_tour.copy() if restart == 0 else self._random_tour(len(cities))
             current_length = self._tour_length(cities, current_tour)
@@ -676,6 +695,57 @@ class QuantumFolder:
                     if new_length < current_length:
                         current_tour = new_tour
                         current_length = new_length
+                        improved = True
+                        break
+                if improved:
+                    break
+        
+        return current_tour, current_length
+    
+    def _two_opt_local_search_fast(
+        self,
+        cities: np.ndarray,
+        tour: List[int],
+        dist_matrix: Optional[np.ndarray] = None
+    ) -> Tuple[List[int], float]:
+        """
+        Optimized 2-opt local search using delta calculations.
+        
+        Args:
+            cities: City coordinates
+            tour: Current tour
+            dist_matrix: Precomputed distance matrix (optional, computed if None)
+            
+        Returns:
+            Tuple of (optimized_tour, tour_length)
+        """
+        n_cities = len(tour)
+        
+        # Precompute distance matrix if not provided
+        if dist_matrix is None:
+            dist_matrix = squareform(pdist(cities))
+        
+        improved = True
+        current_tour = tour.copy()
+        current_length = self._tour_length(cities, current_tour)
+        
+        while improved:
+            improved = False
+            for i in range(n_cities - 1):
+                for j in range(i + 2, n_cities):
+                    # Calculate delta using precomputed distances
+                    a, b = current_tour[i], current_tour[i + 1]
+                    c, d = current_tour[j], current_tour[(j + 1) % n_cities]
+                    
+                    # Delta calculation
+                    old_dist = dist_matrix[a, b] + dist_matrix[c, d]
+                    new_dist = dist_matrix[a, c] + dist_matrix[b, d]
+                    delta = new_dist - old_dist
+                    
+                    if delta < -1e-10:  # Improvement found (with numerical tolerance)
+                        # Apply 2-opt swap
+                        current_tour[i+1:j+1] = reversed(current_tour[i+1:j+1])
+                        current_length += delta
                         improved = True
                         break
                 if improved:
