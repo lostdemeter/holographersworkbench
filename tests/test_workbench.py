@@ -665,6 +665,190 @@ def test_prime_benchmark():
         return False
 
 
+def test_quantum_folding():
+    """Test Quantum Entanglement Dimensional Folding."""
+    print("\n" + "="*70)
+    print("TEST: Quantum Folding")
+    print("="*70)
+    
+    try:
+        from workbench.primitives import QuantumFolder
+        
+        folder = QuantumFolder()
+        assert folder is not None and len(folder.dimensions) == 6
+        print(f"✓ QuantumFolder instantiated with {len(folder.dimensions)} dimensions")
+        
+        np.random.seed(42)
+        cities = np.random.rand(15, 2) * 100
+        
+        folded_collapse = folder.fold_dimension_collapse(cities, 1.5)
+        assert folded_collapse.shape == cities.shape
+        print(f"✓ Dimensional collapse (D=1.5)")
+        
+        folded_fast = folder.fold_dimension_expand_fast(cities, 3.0)
+        assert folded_fast.shape == cities.shape
+        print(f"✓ Fast dimensional expansion (D=3.0)")
+        
+        tour = list(range(len(cities)))
+        np.random.shuffle(tour)
+        
+        entanglement_vec = folder.compute_entanglement_vectorized(cities, tour)
+        assert entanglement_vec.shape == (len(cities), len(cities))
+        print(f"✓ Vectorized entanglement computed")
+        
+        sparse_ent = folder.compute_sparse_entanglement(cities, tour, k=5)
+        assert len(sparse_ent) == len(cities)
+        print(f"✓ Sparse entanglement (k=5)")
+        
+        initial_tour = list(range(len(cities)))
+        tour, length, info = folder.optimize_tour_dimensional_folding_fast(
+            cities, initial_tour, n_restarts=1, iterations_per_restart=5
+        )
+        assert len(tour) == len(cities) and length > 0
+        print(f"✓ Optimization: length={length:.2f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Quantum Folding test failed: {e}")
+        return False
+
+
+def test_chaos_seeding():
+    """Test Residual Chaos Seeding."""
+    print("\n" + "="*70)
+    print("TEST: Chaos Seeding")
+    print("="*70)
+    
+    try:
+        from workbench.primitives import ChaosSeeder, AdaptiveChaosSeeder
+        
+        seeder = ChaosSeeder(window_size=3, chaos_weight=0.5)
+        print(f"✓ ChaosSeeder instantiated")
+        
+        adaptive_seeder = AdaptiveChaosSeeder(initial_weight=0.8, final_weight=0.2, decay_rate=0.95)
+        print(f"✓ AdaptiveChaosSeeder instantiated")
+        
+        np.random.seed(42)
+        cities = np.random.rand(15, 2) * 100
+        tour = list(range(len(cities)))
+        
+        projection = seeder.compute_projection(cities, tour)
+        assert projection.shape == cities.shape
+        print(f"✓ Projection computed")
+        
+        chaos = seeder.compute_chaos_magnitude(cities, tour)
+        assert chaos >= 0
+        print(f"✓ Chaos magnitude: {chaos:.2f}")
+        
+        tour, chaos_val = seeder.greedy_construction_chaos_seeded(cities)
+        assert len(tour) == len(cities) and len(set(tour)) == len(cities)
+        print(f"✓ Greedy construction: chaos={chaos_val:.2f}")
+        
+        tour, length, info = seeder.hybrid_chaos_construction(cities, n_restarts=2)
+        assert len(tour) == len(cities) and length > 0
+        print(f"✓ Hybrid construction: length={length:.2f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Chaos Seeding test failed: {e}")
+        return False
+
+
+def test_adaptive_nonlocality():
+    """Test Adaptive Nonlocality Optimizer."""
+    print("\n" + "="*70)
+    print("TEST: Adaptive Nonlocality")
+    print("="*70)
+    
+    try:
+        from workbench import AdaptiveNonlocalityOptimizer
+        
+        anl = AdaptiveNonlocalityOptimizer(d_min=1.0, d_max=2.5, n_dim_samples=20)
+        assert anl is not None and len(anl.dimensions) == 20
+        print(f"✓ AdaptiveNonlocalityOptimizer instantiated")
+        
+        np.random.seed(42)
+        cities = np.random.rand(12, 2) * 100
+        
+        problem_affinity = anl.compute_problem_affinity(cities)
+        assert len(problem_affinity) == 20 and np.all(problem_affinity >= 0)
+        print(f"✓ Problem affinity computed")
+        
+        tour = list(range(len(cities)))
+        solution_affinity = anl.compute_solution_affinity(tour, cities)
+        assert len(solution_affinity) == 20
+        print(f"✓ Solution affinity computed")
+        
+        coupling = anl.compute_coupling(problem_affinity, solution_affinity, 1.0)
+        print(f"✓ Coupling computed")
+        
+        def cost_fn(tour, cities):
+            length = 0.0
+            for i in range(len(tour)):
+                j = (i + 1) % len(tour)
+                length += np.linalg.norm(cities[tour[i]] - cities[tour[j]])
+            return length
+        
+        def local_search(solution, cities, dimension):
+            n = len(solution)
+            i, j = np.random.randint(0, n-1), np.random.randint(2, n)
+            if i >= j-1: return solution
+            new_solution = solution.copy()
+            new_solution[i+1:j+1] = list(reversed(new_solution[i+1:j+1]))
+            return new_solution
+        
+        best_solution, best_cost, trajectory = anl.optimize(
+            tour, cities, cost_fn, local_search, max_iterations=10, verbose=False
+        )
+        assert len(best_solution) == len(cities)
+        print(f"✓ Optimization: cost={best_cost:.2f}")
+        
+        analysis = anl.analyze_trajectory(trajectory)
+        assert 'final_dimension' in analysis
+        print(f"✓ Trajectory analysis: final_D={analysis['final_dimension']:.3f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Adaptive Nonlocality test failed: {e}")
+        return False
+
+
+def test_sublinear_qik():
+    """Test Sublinear QIK."""
+    print("\n" + "="*70)
+    print("TEST: Sublinear QIK")
+    print("="*70)
+    
+    try:
+        from workbench import SublinearQIK, zetazero_batch
+        
+        qik = SublinearQIK(use_hierarchical=True, use_dimensional_sketch=True, use_sparse_resonance=True)
+        print(f"✓ SublinearQIK instantiated")
+        
+        np.random.seed(42)
+        cities = np.random.rand(20, 2) * 100
+        
+        print("  Computing zeta zeros...")
+        zeta_zeros = zetazero_batch(list(range(1, 11)))
+        assert len(zeta_zeros) == 10
+        print(f"✓ Zeta zeros computed: {len(zeta_zeros)}")
+        
+        tour, length, stats = qik.optimize_tsp(cities, zeta_zeros, verbose=False)
+        assert len(tour) == len(cities) and len(set(tour)) == len(cities) and length > 0
+        print(f"✓ Optimization: length={length:.2f}")
+        
+        assert stats.n_cities == len(cities) and stats.n_clusters > 0
+        print(f"✓ Statistics: {stats.n_clusters} clusters, {stats.n_dim_samples} dim samples")
+        
+        assert "N^1.5" in stats.theoretical_complexity
+        print(f"✓ Complexity: {stats.theoretical_complexity}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Sublinear QIK test failed: {e}")
+        return False
+
+
 def run_all_tests():
     """Run all tests and report results."""
     print("\n" + "="*70)
@@ -690,6 +874,10 @@ def run_all_tests():
         ("Error Pattern Visualizer", test_error_pattern_visualizer),
         ("Formula Code Generator", test_formula_code_generator),
         ("Convergence Analyzer", test_convergence_analyzer),
+        ("Quantum Folding", test_quantum_folding),
+        ("Chaos Seeding", test_chaos_seeding),
+        ("Adaptive Nonlocality", test_adaptive_nonlocality),
+        ("Sublinear QIK", test_sublinear_qik),
     ]
     
     results = []
