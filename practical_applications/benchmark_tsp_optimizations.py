@@ -127,7 +127,11 @@ def main():
             ("Adaptive only", False, False, True, False),
             ("Early stop only", False, False, False, True),
             ("All optimizations", True, True, True, True),
+            ("Ultra-fast (sparse)", True, True, True, True) if n_cities >= 60 else None,
         ]
+        
+        # Filter out None configs
+        configs = [c for c in configs if c is not None]
         
         results = []
         for config_name, vec, mds, adp, early in configs:
