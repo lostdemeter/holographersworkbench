@@ -147,9 +147,9 @@ def main():
     print("="*70)
     print()
     
-    # Test different problem sizes
-    problem_sizes = [20, 50, 100]
-    instance_types = ['random', 'clustered', 'circle']
+    # Test different problem sizes (reduced for demo speed)
+    problem_sizes = [20, 30]
+    instance_types = ['random', 'clustered']
     
     print("Testing Quantum Autoencoder on various TSP instances...\n")
     
@@ -209,7 +209,7 @@ def main():
                 print(f"  PID gains: Kp={stats.pid_gains[0]:.3f}, Ki={stats.pid_gains[1]:.3f}, Kd={stats.pid_gains[2]:.3f}")
             
             # Visualize for one representative case
-            if n == 50 and inst_type == 'clustered':
+            if n == 30 and inst_type == 'clustered':
                 print("\nGenerating visualization...")
                 visualize_results(cities, baseline_tour, qa_tour, stats, 
                                 save_path='quantum_autoencoder_demo.png')

@@ -103,12 +103,12 @@ def dimensional_local_search(solution: np.ndarray, cities: np.ndarray, dimension
     
     # Try a few random 2-opt swaps
     for _ in range(5):
-        i = np.random.randint(0, n-1)
+        i = np.random.randint(0, n-2)
         j = np.random.randint(i+2, n)
         
         # Create new tour with 2-opt swap
         new_solution = solution.copy()
-        new_solution[i+1:j+1] = reversed(new_solution[i+1:j+1])
+        new_solution[i+1:j+1] = list(reversed(new_solution[i+1:j+1]))
         
         # Compute length in dimension D
         new_length = 0.0
@@ -214,7 +214,7 @@ def main():
     # Get zeta zeros for prime resonance
     print("   Computing zeta zeros...")
     gc = GushurstCrystal(n_zeros=20)
-    zeta_zeros = zetazero_batch(list(range(1, 21)))
+    zeta_zeros = zetazero_batch(1, 20)
     
     qik = SublinearQIK(
         use_hierarchical=True,
