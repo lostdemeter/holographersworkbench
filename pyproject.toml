@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "holographersworkbench"
 version = "0.1.0"
 description = "Unified toolkit for holographic signal processing, spectral optimization, and sublinear algorithms"
-readme = "docs/README.md"
+readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
@@ -26,6 +26,11 @@ dev = [
     "black>=22.0",
     "flake8>=4.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["workbench*"]
+exclude = ["tests*", "examples*", "practical_applications*", "documents*"]
 
 [project.urls]
 Homepage = "https://github.com/yourusername/holographersworkbench"

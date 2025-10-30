@@ -25,6 +25,10 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
 | **Solve TSP (adaptive)** | `from workbench import AdaptiveNonlocalityOptimizer` | `anl = AdaptiveNonlocalityOptimizer(); solution, cost, trajectory = anl.optimize(initial, points, cost_fn, local_search)` |
 | **Solve TSP (sublinear)** | `from workbench import SublinearQIK, zetazero_batch` | `qik = SublinearQIK(); tour, length, stats = qik.optimize_tsp(cities, zetazero_batch(1, 20))` |
+| **Extract depth from image** | `from workbench import HolographicDepthExtractor` | `extractor = HolographicDepthExtractor(); depth, components = extractor.extract_depth(image)` |
+| **Generate stereo pair** | `from workbench import HolographicDepthExtractor` | `left, right = extractor.generate_stereo_pair(image, depth_map)` |
+| **Optimize TSP (quantum AE)** | `from workbench import QuantumAutoencoder` | `qae = QuantumAutoencoder(); tour, length, stats = qae.optimize(cities)` |
+| **Synthesize stereo (O(n))** | `from workbench import AdditiveErrorStereo` | `stereo = AdditiveErrorStereo(); left, right, stats = stereo.synthesize_stereo_pair(image, depth)` |
 
 ## 📁 File Locations (for web scraping)
 
@@ -51,12 +55,15 @@ All source files are in `workbench/`:
 ### Layer 4: Processors
 - `workbench/processors/spectral.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/spectral.py)) - Spectral scoring
 - `workbench/processors/holographic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/holographic.py)) - Phase retrieval & refinement
+- `workbench/processors/holographic_depth.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/holographic_depth.py)) - Monocular depth extraction (2.4× better dynamic range)
 - `workbench/processors/optimization.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/optimization.py)) - Sublinear optimization
 - `workbench/processors/compression.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/compression.py)) - Fractal peeling & holographic compression
 - `workbench/processors/encoding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/encoding.py)) - Holographic encoding
 - `workbench/processors/ergodic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/ergodic.py)) - Ergodic jump diagnostics
 - `workbench/processors/adaptive_nonlocality.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/adaptive_nonlocality.py)) - Dimensional coupling optimization (self-organizing)
 - `workbench/processors/sublinear_qik.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_qik.py)) - Sublinear QIK (O(N^1.5 log N) complexity)
+- `workbench/processors/quantum_autoencoder.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/quantum_autoencoder.py)) - Quantum autoencoder for TSP
+- `workbench/processors/additive_error_stereo.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/additive_error_stereo.py)) - O(n) stereo synthesis (2.5× speedup)
 
 ### Layer 5: Generation
 - `workbench/generation/code.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/generation/code.py)) - Formula code generation

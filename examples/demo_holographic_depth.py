@@ -1,15 +1,15 @@
 """
-Holographic Depth Extraction Demo
+Holographic Depth Extraction Demo (AI-Readable Version)
 
 Demonstrates monocular depth estimation using holographic signal processing.
-Generates depth maps and stereoscopic 3D image pairs from single photographs.
+This version focuses on numerical output and statistics without visualizations.
+For human-friendly visualizations, see practical_applications/depth_analysis/
 
 Based on: "Holographic Depth Extraction: Monocular Depth Estimation via 
 Spectral Analysis and Phase Retrieval"
 """
 
 import numpy as np
-import matplotlib.pyplot as plt
 from workbench import HolographicDepthExtractor
 import time
 
@@ -99,135 +99,44 @@ def create_test_image(size=512, image_type='portrait'):
     return image
 
 
-def visualize_depth_components(image, depth_map, components, stats, save_path=None):
-    """Visualize depth extraction components."""
-    fig = plt.figure(figsize=(16, 12))
+def print_component_stats(components):
+    """Print statistics for all depth components (AI-readable format)."""
+    print("\nComponent Statistics:")
+    print("-" * 60)
     
-    # 1. Original image
-    ax = plt.subplot(3, 4, 1)
-    ax.imshow(image, cmap='gray')
-    ax.set_title('Original Image')
-    ax.axis('off')
-    
-    # 2. Luminance depth
-    ax = plt.subplot(3, 4, 2)
-    ax.imshow(components['luminance'], cmap='viridis')
-    ax.set_title('Luminance Depth')
-    ax.axis('off')
-    
-    # 3. Edge depth
-    ax = plt.subplot(3, 4, 3)
-    ax.imshow(components['edges'], cmap='viridis')
-    ax.set_title('Edge Depth')
-    ax.axis('off')
-    
-    # 4. Frequency depth
-    ax = plt.subplot(3, 4, 4)
-    ax.imshow(components['frequency'], cmap='viridis')
-    ax.set_title('Frequency Depth')
-    ax.axis('off')
-    
-    # 5. Adaptive depth
-    ax = plt.subplot(3, 4, 5)
-    ax.imshow(components['adaptive'], cmap='viridis')
-    ax.set_title('Adaptive Weighted')
-    ax.axis('off')
-    
-    # 6. Saliency map
-    ax = plt.subplot(3, 4, 6)
-    ax.imshow(components['saliency_map'], cmap='hot')
-    ax.set_title('Saliency Map')
-    ax.axis('off')
-    
-    # 7. Center bias
-    ax = plt.subplot(3, 4, 7)
-    ax.imshow(components['center_bias'], cmap='hot')
-    ax.set_title('Center Bias')
-    ax.axis('off')
-    
-    # 8. Final depth map
-    ax = plt.subplot(3, 4, 8)
-    im = ax.imshow(depth_map, cmap='viridis')
-    ax.set_title(f'Final Depth Map\n{stats}')
-    ax.axis('off')
-    plt.colorbar(im, ax=ax, fraction=0.046)
-    
-    # 9. Depth histogram
-    ax = plt.subplot(3, 4, 9)
-    ax.hist(depth_map.ravel(), bins=50, color='blue', alpha=0.7)
-    ax.set_title('Depth Distribution')
-    ax.set_xlabel('Depth')
-    ax.set_ylabel('Frequency')
-    ax.grid(True, alpha=0.3)
-    
-    # 10. Saliency-enhanced depth
-    ax = plt.subplot(3, 4, 10)
-    ax.imshow(components['saliency'], cmap='viridis')
-    ax.set_title('Saliency-Enhanced')
-    ax.axis('off')
-    
-    # 11. Center-weighted depth
-    ax = plt.subplot(3, 4, 11)
-    ax.imshow(components['center'], cmap='viridis')
-    ax.set_title('Center-Weighted')
-    ax.axis('off')
-    
-    # 12. 3D surface plot
-    ax = plt.subplot(3, 4, 12, projection='3d')
-    h, w = depth_map.shape
-    x = np.arange(0, w, 4)
-    y = np.arange(0, h, 4)
-    X, Y = np.meshgrid(x, y)
-    Z = depth_map[::4, ::4]
-    ax.plot_surface(X, Y, Z, cmap='viridis', alpha=0.8)
-    ax.set_title('3D Depth Surface')
-    ax.set_xlabel('X')
-    ax.set_ylabel('Y')
-    ax.set_zlabel('Depth')
-    
-    plt.tight_layout()
-    
-    if save_path:
-        plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"Saved visualization to {save_path}")
-    
-    plt.show()
+    for name, component in components.items():
+        if isinstance(component, np.ndarray):
+            print(f"\n{name.upper()}:")
+            print(f"  Shape: {component.shape}")
+            print(f"  Range: [{component.min():.6f}, {component.max():.6f}]")
+            print(f"  Mean: {component.mean():.6f}")
+            print(f"  Std: {component.std():.6f}")
+            
+            # Show distribution percentiles
+            percentiles = np.percentile(component, [0, 25, 50, 75, 100])
+            print(f"  Percentiles [0, 25, 50, 75, 100]: {percentiles}")
 
 
-def visualize_stereo_pair(image, left_view, right_view, depth_map, save_path=None):
-    """Visualize stereoscopic pair."""
-    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+def analyze_stereo_quality(left_view, right_view, depth_map):
+    """Analyze stereoscopic pair quality (AI-readable format)."""
+    print("\nStereoscopic Pair Analysis:")
+    print("-" * 60)
     
-    # Original
-    axes[0, 0].imshow(image, cmap='gray')
-    axes[0, 0].set_title('Original Image')
-    axes[0, 0].axis('off')
+    # Compute disparity statistics
+    disparity = np.abs(left_view - right_view)
+    print(f"Disparity range: [{disparity.min():.6f}, {disparity.max():.6f}]")
+    print(f"Mean disparity: {disparity.mean():.6f}")
+    print(f"Disparity std: {disparity.std():.6f}")
     
-    # Depth map
-    im = axes[0, 1].imshow(depth_map, cmap='viridis')
-    axes[0, 1].set_title('Depth Map')
-    axes[0, 1].axis('off')
-    plt.colorbar(im, ax=axes[0, 1], fraction=0.046)
+    # Correlation with depth
+    correlation = np.corrcoef(depth_map.ravel(), disparity.ravel())[0, 1]
+    print(f"Depth-disparity correlation: {correlation:.6f}")
     
-    # Left view
-    axes[1, 0].imshow(left_view, cmap='gray')
-    axes[1, 0].set_title('Left Eye View')
-    axes[1, 0].axis('off')
-    
-    # Right view
-    axes[1, 1].imshow(right_view, cmap='gray')
-    axes[1, 1].set_title('Right Eye View')
-    axes[1, 1].axis('off')
-    
-    plt.suptitle('Stereoscopic 3D Image Pair\n(Use cross-eye or parallel viewing)', 
-                 fontsize=14, fontweight='bold')
-    plt.tight_layout()
-    
-    if save_path:
-        plt.savefig(save_path, dpi=150, bbox_inches='tight')
-        print(f"Saved stereo pair to {save_path}")
-    
-    plt.show()
+    # View quality metrics
+    print(f"\nLeft view range: [{left_view.min():.6f}, {left_view.max():.6f}]")
+    print(f"Right view range: [{right_view.min():.6f}, {right_view.max():.6f}]")
+    print(f"Left view mean: {left_view.mean():.6f}")
+    print(f"Right view mean: {right_view.mean():.6f}")
 
 
 def main():
@@ -269,6 +178,9 @@ def main():
         print(f"\nDepth Extraction Complete ({extraction_time:.3f}s)")
         print(f"Statistics: {stats}")
         
+        # Print detailed component statistics
+        print_component_stats(components)
+        
         # Generate stereoscopic pair
         print("\nGenerating stereoscopic views...")
         t0 = time.time()
@@ -278,17 +190,8 @@ def main():
         stereo_time = time.time() - t0
         print(f"Stereo generation complete ({stereo_time:.3f}s)")
         
-        # Visualize (only for portrait to avoid too many plots)
-        if img_type == 'portrait':
-            print("\nGenerating visualizations...")
-            visualize_depth_components(
-                image, depth_map, components, stats,
-                save_path=f'holographic_depth_{img_type}_components.png'
-            )
-            visualize_stereo_pair(
-                image, left_view, right_view, depth_map,
-                save_path=f'holographic_depth_{img_type}_stereo.png'
-            )
+        # Analyze stereo quality
+        analyze_stereo_quality(left_view, right_view, depth_map)
     
     print("\n" + "="*70)
     print("SUMMARY")

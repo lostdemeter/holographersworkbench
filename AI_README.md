@@ -39,12 +39,15 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 |--------|---------|-------------|------|
 | `processors.spectral` | Zeta-based scoring | `SpectralScorer`, `DiracOperator`, `compute_spectral_scores` | L1, L2 |
 | `processors.holographic` | Phase retrieval & refinement | `PhaseRetrieval`, `phase_retrieve_hilbert`, `holographic_refinement` | L1, L2 |
+| `processors.holographic_depth` | Monocular depth extraction | `HolographicDepthExtractor`, `DepthMapStats` | L1 |
 | `processors.optimization` | Sublinear algorithms | `SublinearOptimizer`, `SRTCalibrator`, `optimize_sublinear` | L1-L3 |
 | `processors.compression` | Fractal + holographic compression | `FractalPeeler`, `HolographicCompressor`, `resfrac_score` | L1 |
 | `processors.encoding` | Holographic encoding | `HolographicEncoder` | L1, L2 |
 | `processors.ergodic` | Ergodic diagnostics | `ErgodicJump` | L1 |
 | `processors.adaptive_nonlocality` | Dimensional coupling opt | `AdaptiveNonlocalityOptimizer` | L1 |
 | `processors.sublinear_qik` | Sublinear QIK (O(N^1.5 log N)) | `SublinearQIK` | L1, L2 |
+| `processors.quantum_autoencoder` | Quantum TSP autoencoder | `QuantumAutoencoder`, `HolographicProfile` | L1, L2 |
+| `processors.additive_error_stereo` | O(n) stereo synthesis | `AdditiveErrorStereo`, `StereoStats` | L1 |
 
 ### Layer 5: Generation (Artifact Creation)
 | Module | Purpose | Key Exports | Deps |

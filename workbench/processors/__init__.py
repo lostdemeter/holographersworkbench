@@ -25,6 +25,11 @@ from .holographic import (
     PhaseRetrievalConfig,
 )
 
+from .holographic_depth import (
+    HolographicDepthExtractor,
+    DepthMapStats,
+)
+
 from .optimization import (
     SublinearOptimizer,
     SRTCalibrator,
@@ -71,6 +76,17 @@ from .sublinear_qik import (
     SublinearQIKStats,
 )
 
+from .quantum_autoencoder import (
+    QuantumAutoencoder,
+    QuantumAutoencoderStats,
+    HolographicProfile,
+)
+
+from .additive_error_stereo import (
+    AdditiveErrorStereo,
+    StereoStats,
+)
+
 __all__ = [
     # Spectral processing
     'SpectralScorer',
@@ -86,6 +102,10 @@ __all__ = [
     'align_phase',
     'holographic_refinement',
     'PhaseRetrievalConfig',
+    
+    # Holographic depth extraction
+    'HolographicDepthExtractor',
+    'DepthMapStats',
     
     # Optimization
     'SublinearOptimizer',
@@ -124,4 +144,13 @@ __all__ = [
     # Sublinear QIK
     'SublinearQIK',
     'SublinearQIKStats',
+    
+    # Quantum autoencoder
+    'QuantumAutoencoder',
+    'QuantumAutoencoderStats',
+    'HolographicProfile',
+    
+    # Additive error stereo
+    'AdditiveErrorStereo',
+    'StereoStats',
 ]

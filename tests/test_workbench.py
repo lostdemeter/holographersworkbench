@@ -849,6 +849,129 @@ def test_sublinear_qik():
         return False
 
 
+def test_holographic_depth():
+    """Test Holographic Depth Extractor."""
+    print("\n" + "="*70)
+    print("TEST: Holographic Depth Extractor")
+    print("="*70)
+    
+    try:
+        from workbench import HolographicDepthExtractor
+        
+        # Create test image
+        np.random.seed(42)
+        image = np.random.rand(128, 128)
+        print(f"✓ Test image created: {image.shape}")
+        
+        # Create extractor
+        extractor = HolographicDepthExtractor(
+            adaptive_weight=0.4,
+            saliency_weight=0.3,
+            center_weight=0.3,
+            smoothing_sigma=4.0
+        )
+        print(f"✓ HolographicDepthExtractor instantiated")
+        
+        # Extract depth
+        depth_map, components = extractor.extract_depth(image)
+        assert depth_map.shape == image.shape
+        print(f"✓ Depth extraction: shape={depth_map.shape}, range=[{depth_map.min():.3f}, {depth_map.max():.3f}]")
+        
+        # Check components
+        required_components = ['luminance', 'edges', 'frequency', 'adaptive', 'saliency_map', 'center_bias']
+        for comp in required_components:
+            assert comp in components
+        print(f"✓ All components present: {len(components)} components")
+        
+        # Compute statistics
+        stats = extractor.compute_stats(depth_map)
+        print(f"✓ Statistics: range={stats.dynamic_range:.3f}, mean={stats.mean_depth:.3f}")
+        
+        # Generate stereo pair
+        left_view, right_view = extractor.generate_stereo_pair(image, depth_map, baseline=0.018, gamma=0.8)
+        assert left_view.shape == image.shape and right_view.shape == image.shape
+        print(f"✓ Stereo pair generated: {left_view.shape}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Holographic Depth test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_quantum_autoencoder():
+    """Test Quantum Autoencoder."""
+    print("\n" + "="*70)
+    print("TEST: Quantum Autoencoder")
+    print("="*70)
+    
+    try:
+        from workbench import QuantumAutoencoder
+        
+        # Create autoencoder
+        qae = QuantumAutoencoder(latent_dim=3, learning_rate=0.1)
+        print(f"✓ QuantumAutoencoder instantiated: latent_dim={qae.latent_dim}")
+        
+        # Create test TSP instance
+        np.random.seed(42)
+        cities = np.random.rand(15, 2) * 100
+        print(f"✓ Test TSP instance: {len(cities)} cities")
+        
+        # Optimize
+        tour, length, stats = qae.optimize_tsp(cities, max_iterations=10, verbose=False)
+        assert len(tour) == len(cities) and len(set(tour)) == len(cities)
+        print(f"✓ Optimization: length={length:.2f}, iterations={stats.n_iterations}")
+        
+        # Check stats
+        assert stats.n_cities == len(cities)
+        assert stats.latent_dim == 3
+        print(f"✓ Statistics: effective_dim={stats.holographic_profile.effective_dimension:.3f}")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Quantum Autoencoder test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
+def test_additive_error_stereo():
+    """Test Additive Error Stereo."""
+    print("\n" + "="*70)
+    print("TEST: Additive Error Stereo")
+    print("="*70)
+    
+    try:
+        from workbench import AdditiveErrorStereo
+        
+        # Create stereo generator
+        stereo = AdditiveErrorStereo(alpha=0.5, max_disparity=8, use_optimized=True)
+        print(f"✓ AdditiveErrorStereo instantiated: alpha={stereo.alpha}, optimized={stereo.use_optimized}")
+        
+        # Create test image
+        np.random.seed(42)
+        image = np.random.rand(128, 128)
+        depth = np.random.rand(128, 128)
+        print(f"✓ Test image created: {image.shape}")
+        
+        # Generate stereo pair
+        left_view, right_view, stats = stereo.generate_stereo_pair(image, depth)
+        assert left_view.shape == image.shape and right_view.shape == image.shape
+        print(f"✓ Stereo pair generated: {left_view.shape}")
+        
+        # Check stats
+        print(f"✓ Statistics: time={stats.total_time:.3f}s, holes={stats.hole_percentage:.2f}%")
+        print(f"  Disparity: mean={stats.mean_disparity:.4f}, speedup={stats.speedup_vs_traditional:.2f}×")
+        
+        return True
+    except Exception as e:
+        print(f"✗ Additive Error Stereo test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+
 def run_all_tests():
     """Run all tests and report results."""
     print("\n" + "="*70)
@@ -878,6 +1001,9 @@ def run_all_tests():
         ("Chaos Seeding", test_chaos_seeding),
         ("Adaptive Nonlocality", test_adaptive_nonlocality),
         ("Sublinear QIK", test_sublinear_qik),
+        ("Holographic Depth", test_holographic_depth),
+        ("Quantum Autoencoder", test_quantum_autoencoder),
+        ("Additive Error Stereo", test_additive_error_stereo),
     ]
     
     results = []

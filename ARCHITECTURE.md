@@ -136,10 +136,15 @@ report = analyzer.analyze_all()
 **Modules**:
 - `spectral.py` - Spectral scoring with zeta zeros
 - `holographic.py` - Phase retrieval and holographic refinement
+- `holographic_depth.py` - Monocular depth extraction (2.4× better dynamic range)
 - `optimization.py` - Sublinear optimization algorithms
 - `compression.py` - Fractal peeling + holographic compression
 - `encoding.py` - Holographic encoding
 - `ergodic.py` - Ergodic jump diagnostics
+- `adaptive_nonlocality.py` - Dimensional coupling optimization
+- `sublinear_qik.py` - Sublinear QIK (O(N^1.5 log N))
+- `quantum_autoencoder.py` - Quantum autoencoder for TSP
+- `additive_error_stereo.py` - O(n) stereo synthesis (2.5× speedup)
 
 **Rules**:
 - Can use Layers 1-3

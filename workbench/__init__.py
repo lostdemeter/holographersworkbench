@@ -107,6 +107,8 @@ from .processors import (
     align_phase,
     holographic_refinement,
     PhaseRetrievalConfig,
+    HolographicDepthExtractor,
+    DepthMapStats,
     SublinearOptimizer,
     SRTCalibrator,
     optimize_sublinear,
@@ -133,6 +135,11 @@ from .processors import (
     DimensionalTrajectory,
     SublinearQIK,
     SublinearQIKStats,
+    QuantumAutoencoder,
+    QuantumAutoencoderStats,
+    HolographicProfile,
+    AdditiveErrorStereo,
+    StereoStats,
 )
 
 # Layer 5: Generation (artifact generators)
@@ -210,6 +217,8 @@ __all__ = [
     'align_phase',
     'holographic_refinement',
     'PhaseRetrievalConfig',
+    'HolographicDepthExtractor',
+    'DepthMapStats',
     'SublinearOptimizer',
     'SRTCalibrator',
     'optimize_sublinear',
@@ -236,6 +245,11 @@ __all__ = [
     'DimensionalTrajectory',
     'SublinearQIK',
     'SublinearQIKStats',
+    'QuantumAutoencoder',
+    'QuantumAutoencoderStats',
+    'HolographicProfile',
+    'AdditiveErrorStereo',
+    'StereoStats',
     
     # Layer 5: Generation
     'FormulaCodeGenerator',
