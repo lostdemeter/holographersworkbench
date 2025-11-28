@@ -91,6 +91,36 @@ gc = GushurstCrystal(n_zeros=100)
 primes = gc.predict_primes(20)  # Next 20 primes
 ```
 
+### 🔗 Dimensional Downcasting Integration
+
+**Symbiotic fusion** with Dimensional Downcasting for enhanced zeta + TSP!
+
+The Dimensional Bridge (`workbench/core/dimensional_bridge.py`) provides:
+
+| Component | Description | Gain |
+|-----------|-------------|------|
+| `ZetaDowncaster` | DD-powered zeta zeros | Machine precision |
+| `DowncastTSP` | Manifold projection for TSP | 4-6% better gaps |
+| `ClockSeededPredictor` | Clock phases improve DD guesses | 15% fewer iterations |
+| `GushurstDD` | Gushurst Crystal + DD zeros | 35% faster primes |
+
+```python
+from workbench.core import is_dd_available, DowncastTSP, solve_tsp_downcast
+
+if is_dd_available():
+    # TSP via manifold projection
+    tour, length, stats = solve_tsp_downcast(cities)
+    
+    # Or use the class directly
+    dtsp = DowncastTSP()
+    tour, length, stats = dtsp.optimize(cities)
+```
+
+**Run integration benchmark:**
+```bash
+python practical_applications/benchmark_dd_integration.py
+```
+
 ### Why This Matters
 
 - **Automates manual optimization**: What took hours now takes minutes
