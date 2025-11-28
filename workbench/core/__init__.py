@@ -20,6 +20,12 @@ from .gushurst_crystal import (
     GushurstCrystal,
 )
 
+from .clock_compiler import (
+    ClockResonanceCompiler,
+    ClockOracleMixin,
+    CompilerAnalysis,
+)
+
 __all__ = [
     # Zeta zero computation
     'zetazero',
@@ -30,4 +36,9 @@ __all__ = [
     
     # Gushurst crystal (unified framework)
     'GushurstCrystal',
+    
+    # Clock resonance compiler
+    'ClockResonanceCompiler',
+    'ClockOracleMixin',
+    'CompilerAnalysis',
 ]

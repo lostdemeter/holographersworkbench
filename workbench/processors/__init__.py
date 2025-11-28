@@ -87,6 +87,18 @@ from .additive_error_stereo import (
     StereoStats,
 )
 
+from .sublinear_clock import (
+    SublinearClockOptimizer,
+    ClockResonanceStats,
+    solve_tsp_clock_resonant as solve_tsp_clock,
+)
+
+from .sublinear_clock_v2 import (
+    SublinearClockOptimizerV2,
+    ClockResonanceStatsV2,
+    solve_tsp_clock_v2,
+)
+
 __all__ = [
     # Spectral processing
     'SpectralScorer',
@@ -153,4 +165,12 @@ __all__ = [
     # Additive error stereo
     'AdditiveErrorStereo',
     'StereoStats',
+    
+    # Clock-resonant optimization
+    'SublinearClockOptimizer',
+    'ClockResonanceStats',
+    'solve_tsp_clock',
+    'SublinearClockOptimizerV2',
+    'ClockResonanceStatsV2',
+    'solve_tsp_clock_v2',
 ]
