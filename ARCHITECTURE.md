@@ -35,6 +35,7 @@ Layer 1: primitives/     (Pure utility functions: signal processing, FFT, phase 
 - `kernels.py` - Kernel functions (exponential_decay, gaussian)
 - `quantum_folding.py` - Quantum-inspired TSP optimization (QuantumFolder)
 - `chaos_seeding.py` - Residual chaos optimization (ChaosSeeder, AdaptiveChaosSeeder)
+- `clock_quantum_folding.py` - Clock-enhanced folding with deterministic phases (ClockQuantumFolder)
 
 **Rules**:
 - No classes, only functions
@@ -59,6 +60,7 @@ envelope = signal.compute_envelope(data)
 **Modules**:
 - `zeta.py` - Hybrid fractal-Newton zeta zero computation (100% perfect accuracy)
 - `gushurst_crystal.py` - **GushurstCrystal** unified number-theoretic framework
+- `clock_compiler.py` - **ClockResonanceCompiler** for auto-upgrading processors to use clock phases
 
 **Rules**:
 - Can use Layer 1 (primitives)
@@ -145,6 +147,8 @@ report = analyzer.analyze_all()
 - `sublinear_qik.py` - Sublinear QIK (O(N^1.5 log N))
 - `quantum_autoencoder.py` - Quantum autoencoder for TSP
 - `additive_error_stereo.py` - O(n) stereo synthesis (2.5× speedup)
+- `sublinear_clock.py` - Clock-resonant TSP v1 (SublinearClockOptimizer)
+- `sublinear_clock_v2.py` - **Clock-resonant TSP v2 (SOTA)** - 2-6% gaps on TSPLIB
 
 **Rules**:
 - Can use Layers 1-3

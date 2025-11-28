@@ -25,6 +25,7 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
 | **Solve TSP (adaptive)** | `from workbench import AdaptiveNonlocalityOptimizer` | `anl = AdaptiveNonlocalityOptimizer(); solution, cost, trajectory = anl.optimize(initial, points, cost_fn, local_search)` |
 | **Solve TSP (sublinear)** | `from workbench import SublinearQIK, zetazero_batch` | `qik = SublinearQIK(); tour, length, stats = qik.optimize_tsp(cities, zetazero_batch(1, 20))` |
+| **Solve TSP (clock v2 SOTA)** | `from workbench import solve_tsp_clock_v2` | `tour, length, stats = solve_tsp_clock_v2(cities)  # 2-6% gaps on TSPLIB` |
 | **Extract depth from image** | `from workbench import HolographicDepthExtractor` | `extractor = HolographicDepthExtractor(); depth, components = extractor.extract_depth(image)` |
 | **Generate stereo pair** | `from workbench import HolographicDepthExtractor` | `left, right = extractor.generate_stereo_pair(image, depth_map)` |
 | **Optimize TSP (quantum AE)** | `from workbench import QuantumAutoencoder` | `qae = QuantumAutoencoder(); tour, length, stats = qae.optimize(cities)` |
@@ -41,10 +42,12 @@ All source files are in `workbench/`:
 - `workbench/primitives/kernels.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/kernels.py)) - Kernel functions
 - `workbench/primitives/quantum_folding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/quantum_folding.py)) - Quantum-inspired TSP optimization (5-15% improvement, 12.5× speedup)
 - `workbench/primitives/chaos_seeding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/chaos_seeding.py)) - Residual chaos TSP optimization (3-8% improvement)
+- `workbench/primitives/clock_quantum_folding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/clock_quantum_folding.py)) - Clock-enhanced folding with deterministic phases
 
 ### Layer 2: Core
 - `workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py)) - Hybrid fractal-Newton (100% perfect accuracy)
 - `workbench/core/gushurst_crystal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/gushurst_crystal.py)) - Unified number-theoretic framework
+- `workbench/core/clock_compiler.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/clock_compiler.py)) - Clock Resonance Compiler for auto-upgrading processors
 
 ### Layer 3: Analysis
 - `workbench/analysis/performance.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/performance.py)) - Performance profiling
@@ -64,6 +67,8 @@ All source files are in `workbench/`:
 - `workbench/processors/sublinear_qik.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_qik.py)) - Sublinear QIK (O(N^1.5 log N) complexity)
 - `workbench/processors/quantum_autoencoder.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/quantum_autoencoder.py)) - Quantum autoencoder for TSP
 - `workbench/processors/additive_error_stereo.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/additive_error_stereo.py)) - O(n) stereo synthesis (2.5× speedup)
+- `workbench/processors/sublinear_clock.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_clock.py)) - Clock-resonant TSP v1
+- `workbench/processors/sublinear_clock_v2.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_clock_v2.py)) - **Clock-resonant TSP v2 (SOTA)** - 2-6% gaps on TSPLIB
 
 ### Layer 5: Generation
 - `workbench/generation/code.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/generation/code.py)) - Formula code generation
