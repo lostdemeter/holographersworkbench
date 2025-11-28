@@ -24,6 +24,7 @@ from .clock_compiler import (
     ClockResonanceCompiler,
     ClockOracleMixin,
     CompilerAnalysis,
+    make_clock_resonant,
 )
 
 __all__ = [
@@ -37,8 +38,9 @@ __all__ = [
     # Gushurst crystal (unified framework)
     'GushurstCrystal',
     
-    # Clock resonance compiler
+    # Clock Resonance Compiler
     'ClockResonanceCompiler',
     'ClockOracleMixin',
     'CompilerAnalysis',
+    'make_clock_resonant',
 ]

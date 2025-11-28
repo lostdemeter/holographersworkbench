@@ -76,6 +76,23 @@ from .sublinear_qik import (
     SublinearQIKStats,
 )
 
+from .sublinear_clock import (
+    SublinearClockOptimizer,
+    ClockResonanceStats,
+    ClockResonanceCache,
+    solve_tsp_clock_resonant,
+    CLOCK_AVAILABLE,
+)
+
+from .sublinear_clock_v2 import (
+    SublinearClockOptimizerV2,
+    ClockResonanceStatsV2,
+    LazyClockOracle,
+    solve_tsp_clock_v2,
+    estimate_instance_dimension,
+    CLOCK_RATIOS_6D,
+)
+
 from .quantum_autoencoder import (
     QuantumAutoencoder,
     QuantumAutoencoderStats,
@@ -85,18 +102,6 @@ from .quantum_autoencoder import (
 from .additive_error_stereo import (
     AdditiveErrorStereo,
     StereoStats,
-)
-
-from .sublinear_clock import (
-    SublinearClockOptimizer,
-    ClockResonanceStats,
-    solve_tsp_clock_resonant as solve_tsp_clock,
-)
-
-from .sublinear_clock_v2 import (
-    SublinearClockOptimizerV2,
-    ClockResonanceStatsV2,
-    solve_tsp_clock_v2,
 )
 
 __all__ = [
@@ -157,6 +162,21 @@ __all__ = [
     'SublinearQIK',
     'SublinearQIKStats',
     
+    # Clock-Resonant Optimizer v1 (upgraded SublinearQIK)
+    'SublinearClockOptimizer',
+    'ClockResonanceStats',
+    'ClockResonanceCache',
+    'solve_tsp_clock_resonant',
+    'CLOCK_AVAILABLE',
+    
+    # Clock-Resonant Optimizer v2 (6D tensor, ARD, gradient flow)
+    'SublinearClockOptimizerV2',
+    'ClockResonanceStatsV2',
+    'LazyClockOracle',
+    'solve_tsp_clock_v2',
+    'estimate_instance_dimension',
+    'CLOCK_RATIOS_6D',
+    
     # Quantum autoencoder
     'QuantumAutoencoder',
     'QuantumAutoencoderStats',
@@ -165,12 +185,4 @@ __all__ = [
     # Additive error stereo
     'AdditiveErrorStereo',
     'StereoStats',
-    
-    # Clock-resonant optimization
-    'SublinearClockOptimizer',
-    'ClockResonanceStats',
-    'solve_tsp_clock',
-    'SublinearClockOptimizerV2',
-    'ClockResonanceStatsV2',
-    'solve_tsp_clock_v2',
 ]

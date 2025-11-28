@@ -42,25 +42,18 @@ import inspect
 import ast
 import time
 
-# Clock oracle will be imported lazily to avoid circular imports
-CLOCK_AVAILABLE = True
-_LazyClockOracle = None
-_CLOCK_RATIOS_6D = None
+# Import the lazy clock oracle
+import sys
+import os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-def _get_lazy_clock_oracle():
-    """Lazy import of LazyClockOracle to avoid circular imports."""
-    global _LazyClockOracle, _CLOCK_RATIOS_6D, CLOCK_AVAILABLE
-    if _LazyClockOracle is None:
-        try:
-            from workbench.processors.sublinear_clock_v2 import (
-                LazyClockOracle, CLOCK_RATIOS_6D
-            )
-            _LazyClockOracle = LazyClockOracle
-            _CLOCK_RATIOS_6D = CLOCK_RATIOS_6D
-        except ImportError:
-            CLOCK_AVAILABLE = False
-            _LazyClockOracle = None
-    return _LazyClockOracle
+try:
+    from workbench.processors.sublinear_clock_v2 import (
+        LazyClockOracle, CLOCK_RATIOS_6D
+    )
+    CLOCK_AVAILABLE = True
+except ImportError:
+    CLOCK_AVAILABLE = False
 
 
 @dataclass
@@ -122,16 +115,14 @@ class ClockOracleMixin:
                 ...
     """
     
-    _clock_oracle: Optional[Any] = None  # LazyClockOracle, but typed as Any to avoid import
+    _clock_oracle: Optional[LazyClockOracle] = None
     _clock_counter: int = 0
     
     @property
-    def clock_oracle(self):
+    def clock_oracle(self) -> LazyClockOracle:
         """Get or create the clock oracle."""
         if self._clock_oracle is None:
-            LazyClockOracle = _get_lazy_clock_oracle()
-            if LazyClockOracle is not None:
-                self._clock_oracle = LazyClockOracle()
+            self._clock_oracle = LazyClockOracle()
         return self._clock_oracle
     
     def get_clock_phase(self, n: int = None, clock: str = 'golden') -> float:
