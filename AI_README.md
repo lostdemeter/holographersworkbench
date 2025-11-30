@@ -987,13 +987,21 @@ print(f"Time: {stats.total_time:.3f}s")
 
 ## Testing
 
-**Test Suite**: `tests/test_workbench.py` (22/22 passing, 100%)
+**Test Suites**: 81 tests across 3 files (100% passing)
 
-Run tests:
 ```bash
-source venv/bin/activate && python3 tests/test_workbench.py
+python tests/smoke_test.py                    # 28 tests, ~10s
+python tests/test_workbench.py                # 25 tests  
+python tests/test_practical_applications.py   # 28 tests
 ```
 
-Coverage: All 8 modules + imports verified. See `tests/TEST_RESULTS.md` for details.
+**Showcases**:
+```bash
+python practical_applications/showcases/clock_resonant_tsp/benchmark_v2.py
+python practical_applications/showcases/gushurst_crystal/benchmark_zeta_zeros.py
+python practical_applications/showcases/clock_compiler/demo_clock_compiler.py
+```
 
---- 
+---
+
+**© 2025 Lesley Gushurst. GPL-3.0-or-later.** 

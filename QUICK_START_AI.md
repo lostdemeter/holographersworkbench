@@ -2,335 +2,146 @@
 
 **Author: Lesley Gushurst** | **License: GPL-3.0** | **2025**
 
-This guide provides the fastest path for AI agents to understand and use the Holographer's Workbench.
-
-**Also read:** [`AI_README.md`](AI_README.md) for complete API tables and [`ARCHITECTURE.md`](ARCHITECTURE.md) for system design.
-
-## 🎯 Common Tasks → Exact Imports
-
-| Task | Import | Example |
-|------|--------|---------|
-| **Score candidates with zeta zeros** | `from workbench import SpectralScorer, ZetaFiducials` | `scorer = SpectralScorer(frequencies=ZetaFiducials.get_standard(20))` |
-| **Extract signal envelope** | `from workbench import phase_retrieve_hilbert` | `envelope, pv = phase_retrieve_hilbert(signal)` |
-| **Refine noisy signal** | `from workbench import holographic_refinement` | `refined = holographic_refinement(signal, reference)` |
-| **Find top-k efficiently** | `from workbench import SublinearOptimizer` | `top_k, stats = optimizer.optimize(candidates, score_fn, top_k=100)` |
-| **Compress data losslessly** | `from workbench import FractalPeeler` | `tree = peeler.compress(data)` |
-| **Compress images** | `from workbench import HolographicCompressor` | `compressed, stats = compressor.compress(image)` |
-| **Compute zeta zeros (perfect)** | `from workbench import zetazero, zetazero_batch` | `z = zetazero(100)  # 100% perfect, 2.7× faster` |
-| **Predict primes/zeros** | `from workbench import GushurstCrystal` | `gc = GushurstCrystal(n_zeros=500)` |
-| **Profile performance** | `from workbench import PerformanceProfiler` | `profiler = PerformanceProfiler()` |
-| **Analyze errors** | `from workbench import ErrorPatternAnalyzer` | `analyzer = ErrorPatternAnalyzer(actual, predicted, x)` |
-| **Generate code** | `from workbench import FormulaCodeGenerator` | `gen = FormulaCodeGenerator('np.sin(x)', 'my_func')` |
-| **Check convergence** | `from workbench import ConvergenceAnalyzer` | `analyzer = ConvergenceAnalyzer(history)` |
-| **Discover parameters** | `from workbench import quick_calibrate` | `result = quick_calibrate(algorithm, target_time, bounds)` |
-| **Encode neural weights** | `from workbench import HolographicEncoder` | `encoder = HolographicEncoder(gushurst_crystal)` |
-| **Test ergodicity** | `from workbench import ErgodicJump` | `jump = ErgodicJump(freq=0.447)` |
-| **Solve TSP (quantum)** | `from workbench.primitives import QuantumFolder` | `folder = QuantumFolder(); tour, length, info = folder.optimize_tour_dimensional_folding_fast(cities, initial_tour)` |
-| **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
-| **Solve TSP (adaptive)** | `from workbench import AdaptiveNonlocalityOptimizer` | `anl = AdaptiveNonlocalityOptimizer(); solution, cost, trajectory = anl.optimize(initial, points, cost_fn, local_search)` |
-| **Solve TSP (sublinear)** | `from workbench import SublinearQIK, zetazero_batch` | `qik = SublinearQIK(); tour, length, stats = qik.optimize_tsp(cities, zetazero_batch(1, 20))` |
-| **Solve TSP (clock v2)** | `from workbench.processors import solve_tsp_clock_v2` | `tour, length, stats = solve_tsp_clock_v2(cities)  # 5.7% avg gap on TSPLIB` |
-| **Extract depth from image** | `from workbench import HolographicDepthExtractor` | `extractor = HolographicDepthExtractor(); depth, components = extractor.extract_depth(image)` |
-| **Generate stereo pair** | `from workbench import HolographicDepthExtractor` | `left, right = extractor.generate_stereo_pair(image, depth_map)` |
-| **Optimize TSP (quantum AE)** | `from workbench import QuantumAutoencoder` | `qae = QuantumAutoencoder(); tour, length, stats = qae.optimize(cities)` |
-| **Synthesize stereo (O(n))** | `from workbench import AdditiveErrorStereo` | `stereo = AdditiveErrorStereo(); left, right, stats = stereo.synthesize_stereo_pair(image, depth)` |
-
-## 📁 File Locations (for web scraping)
-
-All source files are in `workbench/`:
-
-### Layer 1: Primitives
-- `workbench/primitives/signal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/signal.py)) - Signal processing utilities
-- `workbench/primitives/frequency.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/frequency.py)) - FFT operations
-- `workbench/primitives/phase.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/phase.py)) - Phase retrieval
-- `workbench/primitives/kernels.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/kernels.py)) - Kernel functions
-- `workbench/primitives/quantum_folding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/quantum_folding.py)) - Quantum-inspired TSP optimization (5-15% improvement, 12.5× speedup)
-- `workbench/primitives/chaos_seeding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/primitives/chaos_seeding.py)) - Residual chaos TSP optimization (3-8% improvement)
-
-### Layer 2: Core
-- `workbench/core/zeta.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/zeta.py)) - Hybrid fractal-Newton (100% perfect accuracy)
-- `workbench/core/gushurst_crystal.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/core/gushurst_crystal.py)) - Unified number-theoretic framework
-
-### Layer 3: Analysis
-- `workbench/analysis/performance.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/performance.py)) - Performance profiling
-- `workbench/analysis/errors.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/errors.py)) - Error pattern detection
-- `workbench/analysis/convergence.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/convergence.py)) - Convergence analysis
-- `workbench/analysis/affinity.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/analysis/affinity.py)) - Time affinity optimization
-
-### Layer 4: Processors
-- `workbench/processors/spectral.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/spectral.py)) - Spectral scoring
-- `workbench/processors/holographic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/holographic.py)) - Phase retrieval & refinement
-- `workbench/processors/holographic_depth.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/holographic_depth.py)) - Monocular depth extraction (2.4× better dynamic range)
-- `workbench/processors/optimization.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/optimization.py)) - Sublinear optimization
-- `workbench/processors/compression.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/compression.py)) - Fractal peeling & holographic compression
-- `workbench/processors/encoding.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/encoding.py)) - Holographic encoding
-- `workbench/processors/ergodic.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/ergodic.py)) - Ergodic jump diagnostics
-- `workbench/processors/adaptive_nonlocality.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/adaptive_nonlocality.py)) - Dimensional coupling optimization (self-organizing)
-- `workbench/processors/sublinear_qik.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/sublinear_qik.py)) - Sublinear QIK (O(N^1.5 log N) complexity)
-- `workbench/processors/quantum_autoencoder.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/quantum_autoencoder.py)) - Quantum autoencoder for TSP
-- `workbench/processors/additive_error_stereo.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/processors/additive_error_stereo.py)) - O(n) stereo synthesis (2.5× speedup)
-
-### Layer 5: Generation
-- `workbench/generation/code.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/workbench/generation/code.py)) - Formula code generation
-
-## 🔄 Dependency Flow
-
-```mermaid
-graph TD
-    subgraph Layer5[Layer 5: generation/]
-        L5A[FormulaCodeGenerator]
-        L5B[CodeValidator]
-        L5C[TestGenerator]
-    end
-    
-    subgraph Layer4[Layer 4: processors/]
-        L4A[SpectralScorer]
-        L4B[SublinearOptimizer]
-        L4C[HolographicCompressor]
-        L4D[FractalPeeler]
-        L4E[HolographicEncoder]
-        L4F[ErgodicJump]
-    end
-    
-    subgraph Layer3[Layer 3: analysis/]
-        L3A[PerformanceProfiler]
-        L3B[ErrorPatternAnalyzer]
-        L3C[ConvergenceAnalyzer]
-        L3D[TimeAffinityOptimizer]
-    end
-    
-    subgraph Layer2[Layer 2: core/]
-        L2A[GushurstCrystal]
-        L2B[zetazero]
-        L2C[ZetaFiducials]
-    end
-    
-    subgraph Layer1[Layer 1: primitives/]
-        L1A[signal.normalize]
-        L1B[frequency.compute_fft]
-        L1C[phase.retrieve_hilbert]
-        L1D[kernels.gaussian]
-    end
-    
-    subgraph External[External Dependencies]
-        EXT[numpy, scipy, mpmath]
-    end
-    
-    %% Layer 5 → Layer 4
-    L5A --> L4A
-    L5A --> L4B
-    L5B --> L4A
-    
-    %% Layer 4 → Layer 3
-    L4A --> L3A
-    L4B --> L3A
-    L4C --> L3B
-    L4E --> L3B
-    
-    %% Layer 3 → Layer 2
-    L3A --> L2A
-    L3B --> L2B
-    L3C --> L2C
-    L3D --> L2B
-    
-    %% Layer 2 → Layer 1
-    L2A --> L1A
-    L2A --> L1B
-    L2B --> L1A
-    L2C --> L1B
-    
-    %% Layer 1 → External
-    L1A --> EXT
-    L1B --> EXT
-    L1C --> EXT
-    L1D --> EXT
-    
-    style Layer5 fill:#e1f5ff
-    style Layer4 fill:#fff4e1
-    style Layer3 fill:#ffe1f5
-    style Layer2 fill:#e1ffe1
-    style Layer1 fill:#f5e1ff
-    style External fill:#f0f0f0
-```
-
-**Rule**: Higher layers can import from lower layers, never the reverse.
-
-**Key Relationships**:
-- `FormulaCodeGenerator` uses `SpectralScorer` and `SublinearOptimizer`
-- `SpectralScorer` uses `PerformanceProfiler` for optimization
-- `ErrorPatternAnalyzer` uses `zetazero` for spectral analysis
-- `GushurstCrystal` uses `signal.normalize` and `frequency.compute_fft`
-- All primitives depend on numpy/scipy/mpmath
-
-## 🚀 5-Minute Quickstart
-
-### 1. Spectral Scoring (Most Common)
-```python
-from workbench import SpectralScorer, ZetaFiducials
-
-# Get zeta zeros as frequencies
-zeros = ZetaFiducials.get_standard(20)
-
-# Score candidates
-scorer = SpectralScorer(frequencies=zeros, damping=0.05)
-scores = scorer.compute_scores(candidates, shift=0.05)
-
-# Find top candidates
-top_idx = scores.argsort()[-10:][::-1]
-```
-
-### 2. Complete Optimization Pipeline
-```python
-from workbench import (
-    SpectralScorer, 
-    holographic_refinement,
-    SublinearOptimizer,
-    ZetaFiducials
-)
-
-# Step 1: Spectral scoring
-zeros = ZetaFiducials.get_standard(20)
-scorer = SpectralScorer(frequencies=zeros)
-scores = scorer.compute_scores(candidates)
-
-# Step 2: Holographic refinement
-reference = 1.0 / (np.log(candidates + 2) + 1e-12)
-refined = holographic_refinement(scores, reference)
-
-# Step 3: Sublinear optimization
-optimizer = SublinearOptimizer()
-top_k, stats = optimizer.optimize(candidates, lambda c: refined[c], top_k=100)
-```
-
-### 3. Full Optimization Toolkit (4 Steps)
-```python
-from workbench import (
-    PerformanceProfiler,
-    ErrorPatternAnalyzer,
-    FormulaCodeGenerator,
-    ConvergenceAnalyzer
-)
-
-# Step 1: Profile
-profiler = PerformanceProfiler()
-result, profile = profiler.profile_function(my_func, args)
-
-# Step 2: Analyze errors
-analyzer = ErrorPatternAnalyzer(actual, predicted, x)
-report = analyzer.analyze_all()
-
-# Step 3: Generate code
-generator = FormulaCodeGenerator('base_formula', 'improved_func')
-for suggestion in report.suggestions:
-    generator.add_correction(suggestion.code_snippet)
-code = generator.generate_function()
-
-# Step 4: Monitor convergence
-conv_analyzer = ConvergenceAnalyzer(rmse_history)
-conv_report = conv_analyzer.analyze()
-if conv_report.stopping_recommendation.should_stop:
-    print("Optimization complete!")
-```
-
-## 💡 Key Patterns
-
-### Pattern 1: All imports work from `workbench`
-```python
-# Simple (recommended for users)
-from workbench import SpectralScorer
-
-# Explicit (recommended for library developers)
-from workbench.processors.spectral import SpectralScorer
-
-# Both work identically!
-```
-
-### Pattern 2: Zeta zeros are everywhere
-```python
-# Fast computation (26× faster than mpmath)
-from workbench import zetazero, zetazero_batch
-
-z = zetazero(100)  # Single zero: ~2.5ms
-zeros = zetazero_batch(1, 1000)  # Batch: ~1.68ms/zero
-
-# Standard sets (cached)
-from workbench import ZetaFiducials
-zeros = ZetaFiducials.get_standard(20)  # Most common
-```
-
-### Pattern 3: Unified framework
-```python
-# Gushurst Crystal: Primes + Zeta Zeros + Fractal Analysis
-from workbench import GushurstCrystal
-
-gc = GushurstCrystal(n_zeros=500, max_prime=10000)
-structure = gc.analyze_crystal_structure()
-primes = gc.predict_primes(n_primes=10)
-zeros = gc.predict_zeta_zeros(n_zeros=5)
-```
-
-### Pattern 4: Pipelines compose naturally
-```python
-# Each module returns data that the next module expects
-scores = scorer.compute_scores(candidates)          # → np.array
-refined = holographic_refinement(scores, ref)       # → np.array  
-top_k, stats = optimizer.optimize(candidates, ...)  # → (np.array, stats)
-```
-
-## 📚 Documentation Hierarchy
-
-1. **QUICK_START_AI.md** ([this file](QUICK_START_AI.md) | [view on GitHub](https://github.com/lostdemeter/holographersworkbench/blob/main/QUICK_START_AI.md)) - Start here for imports
-2. **README.md** ([local](README.md) | [view on GitHub](https://github.com/lostdemeter/holographersworkbench/blob/main/README.md)) - Full module documentation with examples
-3. **AI_README.md** ([local](AI_README.md) | [view on GitHub](https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md)) - Concise API tables and math formulas
-4. **ARCHITECTURE.md** ([local](ARCHITECTURE.md) | [view on GitHub](https://github.com/lostdemeter/holographersworkbench/blob/main/ARCHITECTURE.md)) - Layer structure and design patterns
-5. **Source files** - Docstrings with inline examples (see file locations above)
-
-## 🎓 Learning Path for AI
-
-1. **Read this file** (5 min) - Get import patterns
-2. **Try one example** (5 min) - Run spectral scoring
-3. **Read README.md** (15 min) - Understand all modules
-4. **Check ARCHITECTURE.md** (10 min) - Understand layer rules
-5. **Browse source** (as needed) - Deep dive into implementations
-
-## 🔍 Finding Functionality
-
-**By task**: Use the table at the top of this file
-**By module**: Check [README.md](https://github.com/lostdemeter/holographersworkbench/blob/main/README.md) section headers
-**By layer**: See [ARCHITECTURE.md](https://github.com/lostdemeter/holographersworkbench/blob/main/ARCHITECTURE.md)
-**By API**: Check [AI_README.md](https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md) tables
-**By example**: See `examples/` ([view on GitHub](https://github.com/lostdemeter/holographersworkbench/tree/main/examples))
-
-## ⚡ Performance Tips
-
-- Use `zetazero_batch()` for multiple zeros (parallel)
-- Use `ZetaFiducials.get_standard()` for cached zeros
-- Use `SublinearOptimizer` for O(√n) complexity
-- Use `quick_calibrate()` for parameter discovery
-- Use `PerformanceProfiler` to find bottlenecks
-
-## 🐛 Common Mistakes
-
-1. ❌ `from workbench.spectral import SpectralScorer`
-   - ✅ `from workbench.processors.spectral import SpectralScorer`
-   - ✅ `from workbench import SpectralScorer` (simpler!)
-
-2. ❌ Using `mpmath.zetazero()` directly
-   - ✅ Use `workbench.zetazero()` (26× faster)
-
-3. ❌ Importing from higher layers in lower layers
-   - ✅ Follow dependency flow: 1→2→3→4→5
-
-4. ❌ Not using `ZetaFiducials` for repeated zeros
-   - ✅ Use `ZetaFiducials.get_standard()` (cached)
-
-## 📞 Need Help?
-
-- **Examples**: See `examples/` directory ([view on GitHub](https://github.com/lostdemeter/holographersworkbench/tree/main/examples)) - 6 Python scripts, 5 notebooks
-- **Tests**: See `tests/test_workbench.py` ([view source](https://github.com/lostdemeter/holographersworkbench/blob/main/tests/test_workbench.py)) - 16 unit tests
-- **Notebooks**: See `examples/notebooks/` ([view on GitHub](https://github.com/lostdemeter/holographersworkbench/tree/main/examples/notebooks)) - 5 Jupyter notebooks
-- **Issues**: [GitHub Issues](https://github.com/lostdemeter/holographersworkbench/issues) for bugs/questions
+Fastest path for AI agents to use the Holographer's Workbench.
 
 ---
 
-**TL;DR**: Import everything from `workbench`, follow the task table, compose pipelines naturally. 🚀
+## Repository Structure
+
+```
+holographersworkbench/
+├── workbench/                    # Core library (import from here)
+│   ├── primitives/               # Pure functions (signal, frequency, phase)
+│   ├── core/                     # Domain primitives (zeta, gushurst_crystal, clock_compiler)
+│   ├── analysis/                 # Analyzers (performance, errors, convergence)
+│   ├── processors/               # Transformers (spectral, holographic, clock optimizers)
+│   └── generation/               # Code generation
+├── practical_applications/       # Demos and applications
+│   ├── showcases/                # Feature demonstrations
+│   │   ├── clock_resonant_tsp/   # TSP optimizer benchmarks
+│   │   ├── gushurst_crystal/     # Zeta + prime prediction
+│   │   ├── clock_compiler/       # Auto clock-phase upgrades
+│   │   └── dimensional_downcasting/
+│   ├── ribbon_demos/             # Clock-phase diffusion demos
+│   ├── ribbon_math/              # φ-BBP formula discovery
+│   └── clock_downcaster/         # Clock state solver
+├── tests/                        # 81 tests (smoke, workbench, practical)
+└── protocols/                    # Research protocols
+```
+
+---
+
+## Common Tasks → Imports
+
+| Task | Import |
+|------|--------|
+| **Solve TSP (best)** | `from workbench.processors import solve_tsp_clock_v2` |
+| **Compute zeta zeros** | `from workbench import zetazero, zetazero_batch` |
+| **Predict primes** | `from workbench import GushurstCrystal` |
+| **Score with zeta** | `from workbench import SpectralScorer, ZetaFiducials` |
+| **Phase retrieval** | `from workbench import phase_retrieve_hilbert` |
+| **Profile code** | `from workbench import PerformanceProfiler` |
+| **Analyze errors** | `from workbench import ErrorPatternAnalyzer` |
+| **Generate code** | `from workbench import FormulaCodeGenerator` |
+| **Compress data** | `from workbench import FractalPeeler, HolographicCompressor` |
+| **Extract depth** | `from workbench import HolographicDepthExtractor` |
+
+---
+
+## Quick Examples
+
+### Clock-Resonant TSP (Best TSP Solver)
+```python
+from workbench.processors import solve_tsp_clock_v2
+import numpy as np
+
+cities = np.random.rand(50, 2) * 100
+tour, length, stats = solve_tsp_clock_v2(cities)
+print(f"Tour length: {length:.2f}, Resonance: {stats.resonance_strength:.3f}")
+```
+
+### Gushurst Crystal (Primes + Zeta)
+```python
+from workbench import GushurstCrystal
+
+gc = GushurstCrystal(n_zeros=100, max_prime=1000)
+primes = gc.predict_primes(n_primes=10)  # 100% accurate
+zeros = gc.predict_zeta_zeros(n_zeros=5)
+```
+
+### Zeta Zeros (100% Perfect)
+```python
+from workbench import zetazero, zetazero_batch
+
+z100 = zetazero(100)           # Single zero
+zeros = zetazero_batch(1, 50)  # Batch (2.7× faster than mpmath)
+```
+
+### Spectral Scoring
+```python
+from workbench import SpectralScorer, ZetaFiducials
+
+zeros = ZetaFiducials.get_standard(20)
+scorer = SpectralScorer(frequencies=zeros)
+scores = scorer.compute_scores(candidates)
+```
+
+---
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `workbench/processors/sublinear_clock_v2.py` | Clock-Resonant TSP v2 (5.7% gap on TSPLIB) |
+| `workbench/core/zeta.py` | Hybrid fractal-Newton zeta zeros |
+| `workbench/core/gushurst_crystal.py` | Unified number-theoretic framework |
+| `workbench/core/clock_compiler.py` | Auto-upgrade processors to clock phases |
+| `workbench/analysis/performance.py` | Performance profiling |
+| `workbench/analysis/errors.py` | Error pattern detection |
+
+---
+
+## Run Tests
+
+```bash
+python tests/smoke_test.py                    # 28 tests, ~10s
+python tests/test_workbench.py                # 25 tests
+python tests/test_practical_applications.py   # 28 tests
+```
+
+---
+
+## Run Showcases
+
+```bash
+python practical_applications/showcases/clock_resonant_tsp/benchmark_v2.py
+python practical_applications/showcases/gushurst_crystal/benchmark_zeta_zeros.py
+python practical_applications/showcases/gushurst_crystal/benchmark_primes.py
+python practical_applications/showcases/clock_compiler/demo_clock_compiler.py
+```
+
+---
+
+## Import Pattern
+
+```python
+# Simple (recommended)
+from workbench import SpectralScorer, zetazero, GushurstCrystal
+
+# Explicit (for developers)
+from workbench.processors.spectral import SpectralScorer
+from workbench.core.zeta import zetazero
+from workbench.core.gushurst_crystal import GushurstCrystal
+```
+
+---
+
+## Documentation
+
+- **README.md** - Full documentation for humans
+- **AI_README.md** - Detailed API tables and math
+- **ARCHITECTURE.md** - 5-layer design with mermaid diagrams
+
+---
+
+**© 2025 Lesley Gushurst. GPL-3.0-or-later.**
