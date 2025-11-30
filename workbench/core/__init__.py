@@ -20,6 +20,38 @@ from .gushurst_crystal import (
     GushurstCrystal,
 )
 
+from .clock_compiler import (
+    ClockResonanceCompiler,
+    ClockOracleMixin,
+    CompilerAnalysis,
+    make_clock_resonant,
+)
+
+# Dimensional Bridge (DD-Workbench integration)
+try:
+    from .dimensional_bridge import (
+        ZetaDowncaster,
+        ClockSeededPredictor,
+        DowncastTSP,
+        GushurstDD,
+        zetazero_dd,
+        zetazero_batch_dd,
+        solve_tsp_downcast,
+        is_dd_available,
+    )
+    _DD_EXPORTS = [
+        'ZetaDowncaster',
+        'ClockSeededPredictor', 
+        'DowncastTSP',
+        'GushurstDD',
+        'zetazero_dd',
+        'zetazero_batch_dd',
+        'solve_tsp_downcast',
+        'is_dd_available',
+    ]
+except ImportError:
+    _DD_EXPORTS = []
+
 __all__ = [
     # Zeta zero computation
     'zetazero',
@@ -30,4 +62,10 @@ __all__ = [
     
     # Gushurst crystal (unified framework)
     'GushurstCrystal',
-]
+    
+    # Clock Resonance Compiler
+    'ClockResonanceCompiler',
+    'ClockOracleMixin',
+    'CompilerAnalysis',
+    'make_clock_resonant',
+] + _DD_EXPORTS

@@ -470,3 +470,116 @@ def quick_calibrate(algorithm: Callable,
     
     else:
         raise ValueError(f"Unknown method: {method}")
+
+
+def estimate_spectral_alpha(signal: np.ndarray) -> Tuple[float, float]:
+    """
+    Estimate 1/f^α spectral exponent from a signal.
+    
+    The spectral exponent α characterizes the power-law decay of the
+    power spectrum: P(f) ∝ 1/f^α
+    
+    - α ≈ 0: White noise (flat spectrum)
+    - α ≈ 1: Pink noise (1/f)
+    - α ≈ 2: Brown noise (1/f²)
+    - α > 2: Highly correlated
+    
+    Parameters
+    ----------
+    signal : np.ndarray
+        1D signal to analyze
+        
+    Returns
+    -------
+    alpha : float
+        Spectral exponent
+    r_squared : float
+        Goodness of fit (0-1)
+        
+    Examples
+    --------
+    >>> phases = [recursive_theta(i) / (2*np.pi) % 1 for i in range(1, 1001)]
+    >>> alpha, r2 = estimate_spectral_alpha(phases)
+    >>> print(f"Alpha: {alpha:.2f}, R²: {r2:.3f}")
+    """
+    from scipy import signal as sig
+    
+    # Compute power spectrum
+    freqs, psd = sig.welch(signal, nperseg=min(256, len(signal) // 4))
+    
+    # Avoid DC component and very high frequencies
+    mask = (freqs > freqs[1]) & (freqs < freqs[-1] * 0.8)
+    freqs = freqs[mask]
+    psd = psd[mask]
+    
+    if len(freqs) < 5:
+        return 1.0, 0.0
+    
+    # Log-log linear regression
+    log_f = np.log10(freqs)
+    log_psd = np.log10(psd + 1e-20)
+    
+    # Linear fit: log(P) = -α * log(f) + c
+    coeffs = np.polyfit(log_f, log_psd, 1)
+    alpha = -coeffs[0]
+    
+    # R² goodness of fit
+    predicted = np.polyval(coeffs, log_f)
+    ss_res = np.sum((log_psd - predicted) ** 2)
+    ss_tot = np.sum((log_psd - np.mean(log_psd)) ** 2)
+    r_squared = 1 - ss_res / (ss_tot + 1e-10)
+    
+    return alpha, r_squared
+
+
+def estimate_fractal_dimension_from_alpha(alpha: float) -> float:
+    """
+    Estimate fractal dimension from spectral exponent.
+    
+    Uses the relationship: D = (5 - α) / 2 for 1D signals
+    
+    - α = 1 → D = 2.0 (space-filling)
+    - α = 2 → D = 1.5 (Brownian)
+    - α = 3 → D = 1.0 (smooth)
+    """
+    return np.clip((5 - alpha) / 2, 1.0, 2.0)
+
+
+def compute_adaptive_n_phases(n: int, alpha: float = None, signal: np.ndarray = None) -> int:
+    """
+    Compute adaptive number of phases based on 1/f^α spectral analysis.
+    
+    Higher α (more correlated) → fewer phases needed
+    Lower α (more random) → more phases needed
+    
+    Parameters
+    ----------
+    n : int
+        Problem size
+    alpha : float, optional
+        Pre-computed spectral exponent
+    signal : np.ndarray, optional
+        Signal to analyze for alpha
+        
+    Returns
+    -------
+    n_phases : int
+        Recommended number of phases
+    """
+    if alpha is None and signal is not None:
+        alpha, _ = estimate_spectral_alpha(signal)
+    elif alpha is None:
+        alpha = 1.5  # Default: pink noise assumption
+    
+    # Base: 8 * log2(N)
+    base_phases = 8 * np.log2(max(2, n))
+    
+    # Scale by alpha: higher α → fewer phases
+    # α = 1.0 → scale = 1.0
+    # α = 1.5 → scale = 0.85
+    # α = 2.0 → scale = 0.7
+    scale = 1.0 - 0.15 * (alpha - 1.0)
+    scale = np.clip(scale, 0.5, 1.5)
+    
+    n_phases = int(np.ceil(base_phases * scale))
+    return max(10, min(n_phases, 100))  # Clamp to [10, 100]

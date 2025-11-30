@@ -8,9 +8,9 @@ version = "0.1.0"
 description = "Unified toolkit for holographic signal processing, spectral optimization, and sublinear algorithms"
 readme = "README.md"
 requires-python = ">=3.8"
-license = {text = "MIT"}
+license = {text = "GPL-3.0-or-later"}
 authors = [
-    {name = "Holographer's Workbench Contributors"}
+    {name = "Lesley Gushurst"}
 ]
 dependencies = [
     "numpy>=1.20.0",
@@ -33,9 +33,9 @@ include = ["workbench*"]
 exclude = ["tests*", "examples*", "practical_applications*", "documents*"]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/holographersworkbench"
-Documentation = "https://github.com/yourusername/holographersworkbench/tree/main/docs"
-Repository = "https://github.com/yourusername/holographersworkbench"
+Homepage = "https://github.com/lostdemeter/holographersworkbench"
+Documentation = "https://github.com/lostdemeter/holographersworkbench#readme"
+Repository = "https://github.com/lostdemeter/holographersworkbench"
 
 [tool.black]
 line-length = 100

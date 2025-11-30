@@ -1,6 +1,10 @@
 # Quick Start for AI
 
+**Author: Lesley Gushurst** | **License: GPL-3.0** | **2025**
+
 This guide provides the fastest path for AI agents to understand and use the Holographer's Workbench.
+
+**Also read:** [`AI_README.md`](AI_README.md) for complete API tables and [`ARCHITECTURE.md`](ARCHITECTURE.md) for system design.
 
 ## 🎯 Common Tasks → Exact Imports
 
@@ -25,6 +29,7 @@ This guide provides the fastest path for AI agents to understand and use the Hol
 | **Solve TSP (chaos)** | `from workbench.primitives import ChaosSeeder` | `seeder = ChaosSeeder(); tour, length, info = seeder.hybrid_chaos_construction(cities)` |
 | **Solve TSP (adaptive)** | `from workbench import AdaptiveNonlocalityOptimizer` | `anl = AdaptiveNonlocalityOptimizer(); solution, cost, trajectory = anl.optimize(initial, points, cost_fn, local_search)` |
 | **Solve TSP (sublinear)** | `from workbench import SublinearQIK, zetazero_batch` | `qik = SublinearQIK(); tour, length, stats = qik.optimize_tsp(cities, zetazero_batch(1, 20))` |
+| **Solve TSP (clock v2)** | `from workbench.processors import solve_tsp_clock_v2` | `tour, length, stats = solve_tsp_clock_v2(cities)  # 5.7% avg gap on TSPLIB` |
 | **Extract depth from image** | `from workbench import HolographicDepthExtractor` | `extractor = HolographicDepthExtractor(); depth, components = extractor.extract_depth(image)` |
 | **Generate stereo pair** | `from workbench import HolographicDepthExtractor` | `left, right = extractor.generate_stereo_pair(image, depth_map)` |
 | **Optimize TSP (quantum AE)** | `from workbench import QuantumAutoencoder` | `qae = QuantumAutoencoder(); tour, length, stats = qae.optimize(cities)` |

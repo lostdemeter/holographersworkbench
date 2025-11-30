@@ -1,8 +1,12 @@
 # Holographer's Workbench: AI-Optimized Spec
 
-**V0.1.0** | **Core: Holography + Zeta Spectral + Sublinear Opt** | **Deps: numpy scipy mpmath fast_zetas** | **API: Decompose → Retrieve → Refine → Optimize**
+**V0.1.0** | **Author: Lesley Gushurst** | **License: GPL-3.0** | **2025**
 
-AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/concepts. Tables = API specs. Equations = derivations (LaTeX-ready). Snippets = REPL-executable (copy-paste into code_execution). Patterns = chainable pipelines. Demos = interactive hooks. Skip prose; extract math/code directly.
+**Core: Holography + Zeta Spectral + Sublinear Opt** | **Deps: numpy scipy mpmath** | **API: Decompose → Retrieve → Refine → Optimize**
+
+AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/concepts. Tables = API specs. Equations = derivations (LaTeX-ready). Snippets = REPL-executable (copy-paste into code_execution). Patterns = chainable pipelines. Skip prose; extract math/code directly.
+
+**Also read:** [`QUICK_START_AI.md`](QUICK_START_AI.md) for practical examples and [`ARCHITECTURE.md`](ARCHITECTURE.md) for system design.
 
 ---
 
@@ -25,6 +29,7 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 |--------|---------|-------------|------|
 | `core.zeta` | Hybrid fractal-Newton (100% perfect) | `zetazero`, `zetazero_batch`, `zetazero_range`, `ZetaFiducials` | numpy, scipy, mpmath |
 | `core.gushurst_crystal` | Unified number-theoretic framework | `GushurstCrystal` | numpy, matplotlib |
+| `core.clock_compiler` | Auto clock-phase upgrades | `ClockResonanceCompiler`, `ClockOracleMixin` | numpy |
 
 ### Layer 3: Analysis (Read-Only)
 | Module | Purpose | Key Exports | Deps |
@@ -46,6 +51,8 @@ AI-Tailored: Dense, parseable structure for fast ingestion. Headers = modules/co
 | `processors.ergodic` | Ergodic diagnostics | `ErgodicJump` | L1 |
 | `processors.adaptive_nonlocality` | Dimensional coupling opt | `AdaptiveNonlocalityOptimizer` | L1 |
 | `processors.sublinear_qik` | Sublinear QIK (O(N^1.5 log N)) | `SublinearQIK` | L1, L2 |
+| `processors.sublinear_clock` | Clock-resonant TSP v1 | `SublinearClockOptimizer` | L1, L2 |
+| `processors.sublinear_clock_v2` | Clock-resonant TSP v2 (12D tensor) | `SublinearClockOptimizerV2`, `solve_tsp_clock_v2`, `LazyClockOracle` | L1, L2, jax |
 | `processors.quantum_autoencoder` | Quantum TSP autoencoder | `QuantumAutoencoder`, `HolographicProfile` | L1, L2 |
 | `processors.additive_error_stereo` | O(n) stereo synthesis | `AdditiveErrorStereo`, `StereoStats` | L1 |
 

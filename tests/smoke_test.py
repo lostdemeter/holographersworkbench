@@ -7,8 +7,12 @@ Tests all major components to ensure the package is working correctly.
 
 import numpy as np
 import sys
+import os
 import traceback
 from typing import Tuple, List
+
+# Add repo root to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # Color codes for terminal output
 GREEN = '\033[92m'
@@ -259,6 +263,35 @@ tests_run.append(("Adaptive nonlocality optimizer", test_adaptive_nonlocality))
 tests_run.append(("Sublinear QIK", test_sublinear_qik))
 tests_run.append(("Quantum autoencoder", test_quantum_autoencoder))
 tests_run.append(("Additive error stereo", test_additive_error_stereo))
+
+def test_sublinear_clock():
+    from workbench.processors.sublinear_clock import SublinearClockOptimizer
+    optimizer = SublinearClockOptimizer()
+    cities = np.random.rand(15, 2) * 100
+    tour, length, stats = optimizer.optimize_tsp(cities)
+    assert len(tour) == len(cities)
+    assert length > 0
+
+def test_sublinear_clock_v2():
+    from workbench.processors.sublinear_clock_v2 import SublinearClockOptimizerV2, solve_tsp_clock_v2
+    cities = np.random.rand(15, 2) * 100
+    tour, length, stats = solve_tsp_clock_v2(cities)
+    assert len(tour) == len(cities)
+    assert length > 0
+    assert hasattr(stats, 'resonance_strength')
+
+def test_clock_compiler():
+    from workbench.core.clock_compiler import ClockResonanceCompiler, ClockOracleMixin
+    compiler = ClockResonanceCompiler(verbose=False)
+    # Test analysis on a simple class
+    from workbench.processors.spectral import SpectralScorer
+    analysis = compiler.analyze(SpectralScorer)
+    assert hasattr(analysis, 'estimated_difficulty')
+    assert hasattr(analysis, 'processor_name')
+
+tests_run.append(("Sublinear clock optimizer", test_sublinear_clock))
+tests_run.append(("Sublinear clock v2", test_sublinear_clock_v2))
+tests_run.append(("Clock resonance compiler", test_clock_compiler))
 
 # ============================================================================
 # LAYER 5: GENERATION

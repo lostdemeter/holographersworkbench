@@ -1,5 +1,9 @@
 # Workbench Architecture
 
+**Author: Lesley Gushurst** | **License: GPL-3.0** | **2025**
+
+**Also read:** [`AI_README.md`](AI_README.md) for API tables and [`QUICK_START_AI.md`](QUICK_START_AI.md) for practical examples.
+
 ## Design Philosophy
 
 The workbench follows a **5-layer architecture** with strict unidirectional dependencies:
@@ -54,11 +58,12 @@ envelope = signal.compute_envelope(data)
 
 ### Layer 2: Core (`workbench/core/`)
 
-**Purpose**: Domain-specific primitives (zeta zeros, crystalline structures)
+**Purpose**: Domain-specific primitives (zeta zeros, crystalline structures, clock phases)
 
 **Modules**:
 - `zeta.py` - Hybrid fractal-Newton zeta zero computation (100% perfect accuracy)
 - `gushurst_crystal.py` - **GushurstCrystal** unified number-theoretic framework
+- `clock_compiler.py` - **ClockResonanceCompiler** for auto-upgrading processors to clock phases
 
 **Rules**:
 - Can use Layer 1 (primitives)
@@ -143,6 +148,8 @@ report = analyzer.analyze_all()
 - `ergodic.py` - Ergodic jump diagnostics
 - `adaptive_nonlocality.py` - Dimensional coupling optimization
 - `sublinear_qik.py` - Sublinear QIK (O(N^1.5 log N))
+- `sublinear_clock.py` - Clock-resonant TSP optimizer v1
+- `sublinear_clock_v2.py` - **Clock-resonant TSP optimizer v2** (12D tensor, 5.7% avg gap on TSPLIB)
 - `quantum_autoencoder.py` - Quantum autoencoder for TSP
 - `additive_error_stereo.py` - O(n) stereo synthesis (2.5× speedup)
 
@@ -188,34 +195,77 @@ generator.export_to_file("improved.py", format="module")
 
 ## Dependency Graph
 
+```mermaid
+graph TD
+    subgraph "Layer 5: Generation"
+        G[code.py<br/>FormulaCodeGenerator]
+    end
+    
+    subgraph "Layer 4: Processors"
+        P1[spectral.py<br/>SpectralScorer]
+        P2[holographic.py<br/>PhaseRetrieval]
+        P3[compression.py<br/>FractalPeeler]
+        P4[sublinear_clock_v2.py<br/>solve_tsp_clock_v2]
+        P5[optimization.py<br/>SublinearOptimizer]
+    end
+    
+    subgraph "Layer 3: Analysis"
+        A1[performance.py<br/>PerformanceProfiler]
+        A2[errors.py<br/>ErrorPatternAnalyzer]
+        A3[convergence.py<br/>ConvergenceAnalyzer]
+    end
+    
+    subgraph "Layer 2: Core"
+        C1[zeta.py<br/>zetazero_batch]
+        C2[gushurst_crystal.py<br/>GushurstCrystal]
+        C3[clock_compiler.py<br/>ClockResonanceCompiler]
+    end
+    
+    subgraph "Layer 1: Primitives"
+        L1[signal.py]
+        L2[frequency.py]
+        L3[phase.py]
+        L4[quantum_folding.py]
+        L5[chaos_seeding.py]
+    end
+    
+    subgraph "External"
+        E1[numpy]
+        E2[scipy]
+        E3[mpmath]
+        E4[jax]
+    end
+    
+    G --> P1 & P2 & P3 & P4 & P5
+    P1 & P2 & P3 & P4 & P5 --> A1 & A2 & A3
+    A1 & A2 & A3 --> C1 & C2 & C3
+    C1 & C2 & C3 --> L1 & L2 & L3 & L4 & L5
+    L1 & L2 & L3 & L4 & L5 --> E1 & E2 & E3
+    P4 --> E4
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 5: generation/                                        │
-│   code.py                                                   │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 4: processors/                                        │
-│   spectral.py, holographic.py, optimization.py,            │
-│   compression.py, encoding.py, ergodic.py                  │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 3: analysis/                                          │
-│   performance.py, errors.py, convergence.py, affinity.py   │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 2: core/                                              │
-│   zeta.py, gushurst_crystal.py                             │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Layer 1: primitives/                                        │
-│   signal.py, frequency.py, phase.py, kernels.py            │
-└─────────────────────────────────────────────────────────────┘
-                           ↓
-                    numpy, scipy, mpmath
+
+**Text Version:**
+```
+Layer 5: generation/
+   └── code.py (FormulaCodeGenerator)
+         ↓
+Layer 4: processors/
+   ├── spectral.py, holographic.py, compression.py
+   ├── sublinear_clock.py, sublinear_clock_v2.py (Clock TSP)
+   ├── optimization.py, encoding.py, ergodic.py
+   └── quantum_autoencoder.py, additive_error_stereo.py
+         ↓
+Layer 3: analysis/
+   └── performance.py, errors.py, convergence.py, affinity.py
+         ↓
+Layer 2: core/
+   └── zeta.py, gushurst_crystal.py, clock_compiler.py
+         ↓
+Layer 1: primitives/
+   └── signal.py, frequency.py, phase.py, kernels.py,
+       quantum_folding.py, chaos_seeding.py
+         ↓
+External: numpy, scipy, mpmath, jax (optional)
 ```
 
 ## Import Patterns
@@ -559,9 +609,31 @@ The repository has been reorganized from a flat structure to a 5-layer architect
 
 All functionality has been preserved and enhanced with the new structure.
 
+## Repository Structure
+
+```
+holographersworkbench/
+├── workbench/              # Core library (5-layer architecture)
+│   ├── primitives/         # Layer 1: Pure functions
+│   ├── core/               # Layer 2: Domain primitives
+│   ├── analysis/           # Layer 3: Read-only analyzers
+│   ├── processors/         # Layer 4: Stateful transformers
+│   └── generation/         # Layer 5: Artifact generation
+├── practical_applications/ # Real-world applications
+│   ├── showcases/          # Feature demonstrations
+│   ├── ribbon_demos/       # Clock-phase diffusion
+│   └── ribbon_math/        # φ-BBP formula discovery
+├── tests/                  # Test suite (81 tests)
+└── protocols/              # Research protocols
+```
+
 ## Questions?
 
 - **README.md** - Usage guide and quick start
 - **AI_README.md** - Concise API reference for AI assistants
-- **examples/** - Working code examples
+- **QUICK_START_AI.md** - Practical examples for AI
 - **tests/** - Test suite demonstrating usage
+
+---
+
+**© 2025 Lesley Gushurst. Licensed under GPL-3.0-or-later.**

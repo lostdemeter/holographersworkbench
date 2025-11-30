@@ -1,10 +1,25 @@
 # Holographer's Workbench
 
-[![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 A unified toolkit for holographic signal processing, spectral optimization, and sublinear algorithms.
 
-## 🤖 New AI? Start Here
+**Author:** Lesley Gushurst  
+**License:** GPL-3.0-or-later  
+**Repository:** [github.com/lostdemeter/holographersworkbench](https://github.com/lostdemeter/holographersworkbench)
+
+---
+
+## 🤖 AI Assistants: Read This First!
+
+> **Before doing anything else, read [`AI_README.md`](AI_README.md) and [`QUICK_START_AI.md`](QUICK_START_AI.md).**
+> 
+> These files contain concise API tables, code snippets, and architectural guidance specifically designed for AI assistants to quickly understand and work with this codebase.
+
+---
+
+## For Humans
 
 **The Optimization Toolkit is the most powerful part of this workbench.** It provides a complete pipeline from profiling to deployment:
 
@@ -44,23 +59,45 @@ if conv_report.stopping_recommendation.should_stop:
 ### Quick Start for AIs
 
 1. **Read AI_README.md first**: [AI_README.md](https://github.com/lostdemeter/holographersworkbench/blob/main/AI_README.md) - Concise API tables and code snippets
-2. **Try the notebooks**: `examples/notebooks/` - techniques and utilities demonstrations
-3. **Run the benchmarks**: `practical_applications/` - zeta zeros and prime prediction
+2. **Run the showcases**: `practical_applications/showcases/` - organized feature demonstrations
+3. **Run the benchmarks**: `practical_applications/` - zeta zeros, TSP, and prime prediction
 4. **Real-world example**: See `workbench/core/zeta.py` - hybrid fractal-Newton method achieves 100% perfect accuracy
 
-### 🎉 Latest Breakthrough: Hybrid Fractal-Newton Method
+### 🎯 Showcases
 
-**100% perfect accuracy** for Riemann zeta zeros using dimensional lifting!
+See [`practical_applications/showcases/`](practical_applications/showcases/) for organized demonstrations:
 
-- **Accuracy**: 100% perfect (error < 1e-12 for all zeros)
-- **Speed**: 2.7× faster than mpmath (for batches ≥20)
-- **Innovation**: Sierpinski fractal exploration + adaptive Newton refinement
-- **Impact**: Fixes difficult high-curvature zeros (270,000× improvement!)
-- **Status**: Production-ready, default in Gushurst Crystal
+| Showcase | Description | Key Result |
+|----------|-------------|------------|
+| [**Clock-Resonant TSP v2**](practical_applications/showcases/clock_resonant_tsp/) | 12D clock tensor optimization | 5.7% avg gap on TSPLIB |
+| [**Gushurst Crystal**](practical_applications/showcases/gushurst_crystal/) | Zeta zeros + prime prediction | 100% perfect, 2.7× faster |
+| [**Dimensional Downcasting**](practical_applications/showcases/dimensional_downcasting/) | Manifold projection integration | 4-15% TSP gains |
+| [**Clock Compiler**](practical_applications/showcases/clock_compiler/) | Auto-upgrade to clock phases | 84.9% improvement |
+
+```bash
+# Run all showcases
+python practical_applications/showcases/clock_resonant_tsp/benchmark_tsplib.py
+python practical_applications/showcases/gushurst_crystal/benchmark_zeta_zeros.py
+python practical_applications/showcases/dimensional_downcasting/benchmark_dd_integration.py
+python practical_applications/showcases/clock_compiler/demo_clock_compiler.py
+```
+
+### Quick Examples
 
 ```python
-from workbench.core import zetazero_batch
+# Clock-Resonant TSP
+from workbench.processors import solve_tsp_clock_v2
+tour, length, stats = solve_tsp_clock_v2(cities)
+
+# Gushurst Crystal
+from workbench.core import zetazero_batch, GushurstCrystal
 zeros = zetazero_batch(1, 100)  # 100% perfect, 2.7× faster
+gc = GushurstCrystal(n_zeros=100)
+primes = gc.predict_primes(20)
+
+# Dimensional Downcasting
+from workbench.core import solve_tsp_downcast
+tour, length, stats = solve_tsp_downcast(cities)
 ```
 
 ### Why This Matters
@@ -71,6 +108,28 @@ zeros = zetazero_batch(1, 100)  # 100% perfect, 2.7× faster
 - **Prevents over-optimization**: Knows when to stop with confidence
 
 **→ For the complete toolkit guide, see [Optimization Toolkit](#optimization-toolkit) below.**
+
+## 📁 Project Structure
+
+```
+holographersworkbench/
+├── workbench/              # Core library
+│   ├── core/               # Zeta, Gushurst Crystal, clock compiler
+│   ├── processors/         # Clock optimizer, spectral, holographic
+│   ├── primitives/         # Quantum folding, chaos seeding
+│   ├── analysis/           # Performance, errors, convergence
+│   └── generation/         # Code generation
+├── practical_applications/ # Real-world applications
+│   ├── showcases/          # Feature demonstrations
+│   │   ├── clock_resonant_tsp/   # TSP optimizer benchmarks
+│   │   ├── gushurst_crystal/     # Zeta + prime prediction
+│   │   ├── dimensional_downcasting/
+│   │   └── clock_compiler/       # Auto clock-phase upgrades
+│   ├── ribbon_demos/       # Clock-phase diffusion demos
+│   └── ribbon_math/        # φ-BBP formula discovery
+├── protocols/              # Research protocols
+└── tests/                  # Test suite
+```
 
 ## Overview
 
@@ -1164,36 +1223,33 @@ recon = encoder.decode(holograms)
 Run the comprehensive test suite:
 
 ```bash
-# Activate virtual environment
-source venv/bin/activate
+# Quick smoke test (28 tests, ~10 seconds)
+python tests/smoke_test.py
 
-# Run all tests
-python3 tests/test_workbench.py
+# Full test suite (81 tests total)
+python tests/smoke_test.py && python tests/test_workbench.py && python tests/test_practical_applications.py
 ```
 
-**Test Coverage**: 9/9 tests passing (100%)
-- Module imports
-- Spectral analysis
-- Holographic processing
-- Fractal peeling
-- Holographic compression
-- Fast zeta zeros
-- Time affinity optimization
-- Sublinear optimization
-- Utility functions
+**Test Coverage**: 81 tests across 3 suites (100% passing)
+- Core imports and modules
+- All processors (Clock v1/v2, Spectral, Holographic, etc.)
+- All showcases (TSP, Gushurst Crystal, Clock Compiler)
+- CLI commands
 
-See `tests/TEST_RESULTS.md` for detailed results.
+See `tests/README.md` for detailed test organization.
 
 ## Contributing
 
 To add new functionality:
 
-1. Identify which module it belongs to (spectral/holographic/optimization)
+1. Identify which module it belongs to (core/processors/primitives/analysis)
 2. Check if similar functionality exists
 3. Add to appropriate module with consistent API
 4. Update `__init__.py` exports
-5. Add tests to `tests/test_workbench.py`
-6. Add examples to this README or `demos/`
+5. Add tests to appropriate test file
+6. Update documentation
 
 ---
+
+**© 2025 Lesley Gushurst. Licensed under GPL-3.0-or-later.**
 
