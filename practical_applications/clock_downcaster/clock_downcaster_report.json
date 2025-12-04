@@ -1,0 +1,139 @@
+{
+  "ribbon_solver_report": {
+    "version": "1.0",
+    "generated": "2025-12-01T01:55:27.365625",
+    "summary": {
+      "files_scanned": 7,
+      "total_findings": 2,
+      "total_optimizations": 0
+    },
+    "optimizations": [],
+    "algorithmic_patterns": [
+      {
+        "file": "practical_applications/clock_downcaster/demo_clock_downcaster.py",
+        "patterns": [
+          {
+            "pattern": "loop_accumulation",
+            "suggestion": "Consider closed-form or vectorization",
+            "potential_speedup": "O(n) \u2192 O(1) or O(n) with SIMD"
+          },
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/clock_downcaster.py",
+        "patterns": [
+          {
+            "pattern": "loop_accumulation",
+            "suggestion": "Consider closed-form or vectorization",
+            "potential_speedup": "O(n) \u2192 O(1) or O(n) with SIMD"
+          },
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/__init__.py",
+        "patterns": [
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/clock_solver.py",
+        "patterns": [
+          {
+            "pattern": "loop_accumulation",
+            "suggestion": "Consider closed-form or vectorization",
+            "potential_speedup": "O(n) \u2192 O(1) or O(n) with SIMD"
+          },
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/fast_clock_predictor.py",
+        "patterns": [
+          {
+            "pattern": "loop_accumulation",
+            "suggestion": "Consider closed-form or vectorization",
+            "potential_speedup": "O(n) \u2192 O(1) or O(n) with SIMD"
+          },
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/clock_predictor.py",
+        "patterns": [
+          {
+            "pattern": "loop_accumulation",
+            "suggestion": "Consider closed-form or vectorization",
+            "potential_speedup": "O(n) \u2192 O(1) or O(n) with SIMD"
+          },
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      },
+      {
+        "file": "practical_applications/clock_downcaster/paper/generate_figures.py",
+        "patterns": [
+          {
+            "pattern": "recursion",
+            "suggestion": "Consider memoization or iterative conversion",
+            "potential_speedup": "O(2^n) \u2192 O(n) with memoization"
+          },
+          {
+            "pattern": "nested_loops",
+            "suggestion": "Consider matrix operations or algorithmic improvement",
+            "potential_speedup": "O(n\u00b2) \u2192 O(n log n) or better"
+          }
+        ]
+      }
+    ]
+  }
+}
